@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Dušan\\Desktop\\XMLCodeGeneratorRepo\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj": {}
+    "C:\\Users\\Dušan\\Desktop\\diplomski\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Dušan\\Desktop\\XMLCodeGeneratorRepo\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj": {
+    "C:\\Users\\Dušan\\Desktop\\diplomski\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Dušan\\Desktop\\XMLCodeGeneratorRepo\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj",
+        "projectUniqueName": "C:\\Users\\Dušan\\Desktop\\diplomski\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj",
         "projectName": "XMLCodeGenerator",
-        "projectPath": "C:\\Users\\Dušan\\Desktop\\XMLCodeGeneratorRepo\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj",
+        "projectPath": "C:\\Users\\Dušan\\Desktop\\diplomski\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj",
         "packagesPath": "C:\\Users\\Dušan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Dušan\\Desktop\\XMLCodeGeneratorRepo\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator\\obj\\",
+        "outputPath": "C:\\Users\\Dušan\\Desktop\\diplomski\\XMLCodeGenerator\\XMLCodeGenerator\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

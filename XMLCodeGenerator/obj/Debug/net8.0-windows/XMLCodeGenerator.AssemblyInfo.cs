@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("XMLCodeGenerator")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f936648dfc1f0c7298382aabc3990656fad5b442")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+815f65356a0d41755561ae4cd278ae0052c46bc8")]
 [assembly: System.Reflection.AssemblyProductAttribute("XMLCodeGenerator")]
 [assembly: System.Reflection.AssemblyTitleAttribute("XMLCodeGenerator")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

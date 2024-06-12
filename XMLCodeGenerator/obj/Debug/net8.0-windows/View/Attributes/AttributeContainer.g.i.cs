@@ -118,7 +118,7 @@ namespace XMLCodeGenerator.View.Attributes {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/XMLCodeGenerator;component/view/attributes/attributecontainer.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/XMLCodeGenerator;V1.0.0.0;component/view/attributes/attributecontainer.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\..\View\Attributes\AttributeContainer.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
