@@ -99,7 +99,7 @@
                 <StackPanel Grid.Row="2" x:Name="ChildrenContainer" Margin="0 0 5 2" Visibility="Visible" AllowDrop="True">
                     <!-- Child elements go here -->
                 </StackPanel>
-                <Label x:Name="EndLabel" FontSize="8" Grid.Row="3" Content="{Binding XML_Name}" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Bottom"></Label>
+                <Label x:Name="EndLabel" FontSize="8" Grid.Row="3" Content="{Binding XML_Name}" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Bottom"></Label>
             </Grid>
         </Grid>
     </Border>
