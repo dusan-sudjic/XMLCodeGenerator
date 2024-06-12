@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "FQfTfqvNbSePiLjdDYBz6yr8RMBMSwGICIDthrghr82baPiUwcAJpXbMPi3dRatEgdkVk18iMF+T7Kp/ed9YIA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Dušan\\Desktop\\XMLCodeGeneratorRepo\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Dušan\\.nuget\\packages\\extended.wpf.toolkit\\4.6.0\\extended.wpf.toolkit.4.6.0.nupkg.sha512",
+    "C:\\Users\\Dušan\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.122\\microsoft.xaml.behaviors.wpf.1.1.122.nupkg.sha512"
+  ],
+  "logs": []
+}

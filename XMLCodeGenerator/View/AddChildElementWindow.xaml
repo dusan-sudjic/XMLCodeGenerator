@@ -1,0 +1,17 @@
+﻿<Window x:Class="XMLCodeGenerator.View.AddChildElementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:XMLCodeGenerator.View"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="AddChildElementWindow" Height="400" Width="360"
+        PreviewKeyDown="Window_KeyDown">
+    <StackPanel>
+        <Label Width="100">Search elements</Label>
+        <xctk:WatermarkTextBox Width="160" x:Name="search" Watermark="Search" Margin="10 0 10 10" TextChanged="TextChanged"></xctk:WatermarkTextBox>
+        <ListBox x:Name="listBox" SelectionMode="Single" Height="240" ></ListBox>
+        <Button Content="Select" Click="OKButton_Click" Margin="10" Width="100"/>
+    </StackPanel>
+</Window>
