@@ -8,8 +8,8 @@ using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
 namespace XMLCodeGenerator.Model.BuildingBlocks
 {
-    public sealed class BooleanOperator: Element, IBooleanOperator
+    public sealed class CimClass: Element, ICimClass
     {
-        public BooleanOperator(ElementBlueprint blueprint): base(blueprint) { }
+        public CimClass(ElementBlueprint blueprint) : base(blueprint) { }
     }
 }

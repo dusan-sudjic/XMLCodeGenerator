@@ -19,8 +19,7 @@ using System.Windows.Shapes;
 using XMLCodeGenerator.Behaviors;
 using XMLCodeGenerator.Model;
 using XMLCodeGenerator.Model.BuildingBlocks;
-using XMLCodeGenerator.Model.Elements;
-using XMLCodeGenerator.Model.Elements.GetOperators;
+using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 using XMLCodeGenerator.View.Attributes;
 
 namespace XMLCodeGenerator.View
@@ -46,14 +45,16 @@ namespace XMLCodeGenerator.View
         private Point _dragStartPoint;
         private UIElement _draggedElement;
         public string XML_Name { get { return Element.XML_Name; } set { } }
-        public string AdditionalInfo { 
-            get {
-                if (Element is CimClassElement || Element is CimPropertyElement)
-                    return "["+Element.Attributes.Where(a => a.Name == "name").ToList()[0].Value+"]";
+        public string AdditionalInfo
+        {
+            get
+            {
+                if (Element is CimClass || Element is CimProperty)
+                    return "[" + Element.Attributes.Where(a => a.Name == "name").ToList()[0].Value + "]";
                 else
                     return "";
-            } 
-            set { } 
+            }
+            set { }
         }
         private int _originalIndex;
         public IElement Element { get; set; }
@@ -73,7 +74,7 @@ namespace XMLCodeGenerator.View
 
             SetUpUI();
             SetButtons();
-            if (Element.MaxContentSize == 0)
+            if (Element.ContentPattern.Length == 0)
             {
                 Border dock = (Border)this.FindName("Border");
                 _childrenContainer.Visibility = Visibility.Collapsed;
@@ -90,38 +91,39 @@ namespace XMLCodeGenerator.View
         {
             _childrenContainer.Visibility = Opened ? Visibility.Visible : Visibility.Collapsed;
 
-            Border border = (Border)this.FindName("Border");
-            if (Opened)
-            {
-                border.BorderBrush = Element.MinContentSize > Element.ChildElements.Count ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
-                border.BorderThickness = Element.MinContentSize > Element.ChildElements.Count ? new Thickness(2) : new Thickness(1);
-            }
-            else
-            {
-                border.BorderBrush = !IsOk() ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
-                border.BorderThickness = !IsOk() ? new Thickness(2) : new Thickness(1);
-            }
+            //Border border = (Border)this.FindName("Border");
+            //if (Opened)
+            //{
+            //    border.BorderBrush = Element.MinContentSize > Element.ChildElements.Count ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
+            //    border.BorderThickness = Element.MinContentSize > Element.ChildElements.Count ? new Thickness(2) : new Thickness(1);
+            //}
+            //else
+            //{
+            //    border.BorderBrush = !IsOk() ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
+            //    border.BorderThickness = !IsOk() ? new Thickness(2) : new Thickness(1);
+            //}
             var addButton = (Button)this.FindName("AddButton");
-            addButton.Visibility = Element.MaxContentSize != Element.ChildElements.Count ? Visibility.Visible : Visibility.Collapsed;
-            addButton.ToolTip = "Add new child element to "+ Element.ToString();
+            //addButton.Visibility = Element.MaxContentSize != Element.ChildElements.Count ? Visibility.Visible : Visibility.Collapsed;
+            addButton.Visibility = Visibility.Visible;
+            addButton.ToolTip = "Add new child element to " + Element.ToString();
 
             var toggleButton = (ToggleButton)this.FindName("ToggleButton");
-            toggleButton.Visibility = Element.MaxContentSize == 0 ? Visibility.Collapsed : Visibility.Visible;
+            toggleButton.Visibility = Element.ContentPattern.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
 
             var attributes = (GroupBox)this.FindName("AttributesGroupBox");
-            attributes.Visibility = Element.Attributes.Count > 0 && Opened && Element.MaxContentSize != 0 ? Visibility.Visible : Visibility.Collapsed;
+            attributes.Visibility = Element.Attributes.Count > 0 && Opened && Element.ContentPattern.Length != 0 ? Visibility.Visible : Visibility.Collapsed;
 
             var deleteButton = (Button)this.FindName("DeleteButton");
-            deleteButton.ToolTip = "Delete "+ Element.ToString();
+            deleteButton.ToolTip = "Delete " + Element.ToString();
         }
 
-        public bool IsOk()
-        {
-            foreach (ElementUserControl child in _childrenContainer.Children)
-                if (!child.IsOk())
-                    return false;
-            return Element.MinContentSize <= Element.ChildElements.Count;
-        }
+        //public bool IsOk()
+        //{
+        //    foreach (ElementUserControl child in _childrenContainer.Children)
+        //        if (!child.IsOk())
+        //            return false;
+        //    return Element.MinContentSize <= Element.ChildElements.Count;
+        //}
 
         public void DeleteChildElement(IElement element)
         {
@@ -132,11 +134,11 @@ namespace XMLCodeGenerator.View
         public void SetUpUI()
         {
             _unexpandableAttributesContainer.Children.Clear();
-            if (Element.MaxContentSize == 0)
+            if (Element.ContentPattern.Length == 0)
             {
                 foreach (var attr in Element.Attributes)
                 {
-                    if (Element is GetValueElement)
+                    if (false)
                     {
                         _unexpandableAttributesContainer.Children.Add(new AttributeContainer(attr, true));
                         break;
@@ -189,7 +191,7 @@ namespace XMLCodeGenerator.View
         }
         private void DeleteElement_Click(object sender, RoutedEventArgs e)
         {
-            if(Element is ICim)
+            if(Element is ICimClass)
             {
                 MainWindow.RemoveCimClass(this);
             }
@@ -219,7 +221,7 @@ namespace XMLCodeGenerator.View
         public void AddChildElement(string elementName)
         {
             string selectedElement = elementName;
-            Element.AddChildElementToContent(ElementProviderReflection.CreateNewElement(selectedElement));
+            //Element.AddChildElementToContent(ElementProviderReflection.CreateNewElement(selectedElement));
             SetUpUI();
             SetButtons();
         }

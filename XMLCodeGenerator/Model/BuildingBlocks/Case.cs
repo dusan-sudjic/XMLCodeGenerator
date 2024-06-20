@@ -8,8 +8,8 @@ using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
 namespace XMLCodeGenerator.Model.BuildingBlocks
 {
-    public sealed class BooleanOperator: Element, IBooleanOperator
+    public sealed class Case: Element, ICase
     {
-        public BooleanOperator(ElementBlueprint blueprint): base(blueprint) { }
+        public Case(ElementBlueprint blueprint) : base(blueprint) { }
     }
 }

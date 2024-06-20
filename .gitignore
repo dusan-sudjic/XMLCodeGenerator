@@ -39,3 +39,6 @@
 /XMLCodeGenerator/obj/Debug/net8.0-windows/XMLCodeGenerator_MarkupCompile.i.cache
 /XMLCodeGenerator/obj/Debug/net8.0-windows/XMLCodeGenerator_MarkupCompile.i.lref
 *.v2
+/XMLCodeGenerator/obj/XMLCodeGenerator_br4ak4ye_wpftmp.csproj.nuget.dgspec.json
+/XMLCodeGenerator/obj/XMLCodeGenerator_br4ak4ye_wpftmp.csproj.nuget.g.props
+/XMLCodeGenerator/obj/XMLCodeGenerator_br4ak4ye_wpftmp.csproj.nuget.g.targets

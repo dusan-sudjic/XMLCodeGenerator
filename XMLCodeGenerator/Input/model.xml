@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+    <Section>
+        <SectionTitle>Common elements</SectionTitle>
+        <Element Name="CimClass" Interface="ICimClass" ContentPattern="(ICimProperty{1,})">
+            <Attribute Name="name" IsRequired="true" ValueType="STRING"/>
+            <Attribute Name="source" IsRequired="true" ValueType="STRING"/>
+        </Element>
+        <Element Name="CimProperty" Interface="ICimProperty" ContentPattern="(IExpression{1,1})">
+            <Attribute Name="name" IsRequired="true" ValueType="STRING"/>
+            <Attribute Name="mandatory" IsRequired="false" ValueType="BOOLEAN"/>
+        </Element>
+        <Element Name="Constant" Interface="INumberExpression">
+            <Attribute Name="Value" IsRequired="true" ValueType="STRING"/>
+        </Element>
+        <Element Name="SetDefault" Interface="IExpression">
+            <Attribute Name="Value" IsRequired="true" ValueType="STRING"/>
+        </Element>
+        <Element Name="BreakInstanceCreation" Interface="IExpression"/>
+    </Section>
+    
+    <Section>
+        <SectionTitle>String operators</SectionTitle>
+        <Element Name="StringConcatenate" Interface="IExpression" ContentPattern="(IExpression{2,})">
+            <Attribute Name="delimiter" IsRequired="false" ValueType="STRING"/>
+        </Element>
+        <Element Name="StringRemove" Interface="IExpression" ContentPattern="(IExpression{1,1})">
+            <Attribute Name="StartIndex" IsRequired="true" ValueType="INTEGER"/>
+            <Attribute Name="Count" IsRequired="true" ValueType="INTEGER"/>
+        </Element>
+        <Element Name="StringSplit" Interface="IExpression" ContentPattern="(IExpression{1,1})">
+            <Attribute Name="Separator" IsRequired="true" ValueType="STRING"/>
+            <Attribute Name="Index" IsRequired="true" ValueType="INTEGER"/>
+        </Element>
+        <Element Name="Substring" Interface="IExpression" ContentPattern="(IExpression{1,1})">
+            <Attribute Name="StartIndex" IsRequired="true" ValueType="INTEGER"/>
+        </Element>
+        <Element Name="StringToLower" Interface="IExpression" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="StringToUpper" Interface="IExpression" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="StringTrim" Interface="IExpression" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="StringTrimEnd" Interface="IExpression" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="StringTrimStart" Interface="IExpression" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="StringIndexOf" Interface="IExpression" ContentPattern="(IExpression{2,2})"/>
+        <Element Name="StringLastIndexOf" Interface="IExpression" ContentPattern="(IExpression{2,2})"/>
+        <Element Name="StringLength" Interface="IExpression" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="StringFormat" Interface="IExpression" ContentPattern="(IExpression{2,})"/>
+    </Section>
+
+    <Section>
+        <SectionTitle>Math operations</SectionTitle>
+        <Element Name="Substraction" Interface="INumberExpression" ContentPattern="(INumberExpression{2,2})"/>
+        <Element Name="MathPow" Interface="INumberExpression" ContentPattern="(INumberExpression{2,2})"/>
+        <Element Name="Division" Interface="INumberExpression" ContentPattern="(INumberExpression{2,2})"/>
+        <Element Name="MathMax" Interface="INumberExpression" ContentPattern="(INumberExpression{2,2})"/>
+        <Element Name="MathMin" Interface="INumberExpression" ContentPattern="(INumberExpression{2,2})"/>
+
+        <Element Name="AbsoluteValue" Interface="INumberExpression" ContentPattern="(INumberExpression{1,1})"/>
+        <Element Name="MathSqrt" Interface="INumberExpression" ContentPattern="(INumberExpression{1,1})"/>
+        <Element Name="MathCeiling" Interface="INumberExpression" ContentPattern="(INumberExpression{1,1})"/>
+        <Element Name="MathFloor" Interface="INumberExpression" ContentPattern="(INumberExpression{1,1})"/>
+        <Element Name="MathRound" Interface="INumberExpression" ContentPattern="(INumberExpression{1,1})"/>
+        <Element Name="MathTruncate" Interface="INumberExpression" ContentPattern="(INumberExpression{1,1})"/>
+        <Element Name="MatchCos" Interface="INumberExpression" ContentPattern="(INumberExpression{1,1})"/>
+        <Element Name="MathSin" Interface="INumberExpression" ContentPattern="(INumberExpression{1,1})"/>
+        <Element Name="MathTan" Interface="INumberExpression" ContentPattern="(INumberExpression{1,1})"/>
+        
+        <Element Name="Addition" Interface="INumberExpression" ContentPattern="(INumberExpression{2,})"/>
+        <Element Name="Multiplication" Interface="INumberExpression" ContentPattern="(INumberExpression{2,})"/>
+    </Section>
+    
+    <Section>
+        <SectionTitle>Get operators</SectionTitle>
+        <Element Name="GetPrimarySource" Interface="IExpression"/>
+        <Element Name="GetSourceColumn" Interface="IExpression">
+            <Attribute Name="EntityProperty" IsRequired="true" ValueType="STRING"/>
+        </Element>
+        <Element Name="GetSourceTable" Interface="IExpression">
+            <Attribute Name="EntityName" IsRequired="true" ValueType="STRING"/>
+        </Element>
+        <Element Name="GetValue" Interface="INumberExpression">
+            <Attribute Name="EntityName" IsRequired="false" ValueType="STRING"/>
+            <Attribute Name="SourceName" IsRequired="false" ValueType="STRING"/>
+        </Element>
+    </Section>
+
+    <Section>
+        <SectionTitle>Conditions</SectionTitle>
+        <Element Name="Condition" Interface="ICondition" ContentPattern="(IBooleanOperator{1,1})">
+            <Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN"/>
+        </Element>
+        <Element Name="AndConditions" Interface="ICondition" ContentPattern="(IBooleanOperator{2,})">
+            <Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN"/>
+        </Element>
+        <Element Name="OrConditions" Interface="ICondition" ContentPattern="(IBooleanOperator{2,})">
+            <Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN"/>
+        </Element>
+        <Element Name="If" Interface="IIf" ContentPattern="(ICondition{1,1})(IExpression{1,1})"/>
+        <Element Name="IfBlock" Interface="IIf" ContentPattern="(IIf{1,})(IElse{0,1})"/>
+        <Element Name="Else" Interface="IElse" ContentPattern="(IExpression{1,1})"/>    
+        <Element Name="SwitchCase" Interface="IExpression" ContentPattern="(IInputParameter{1,1})(ICase{1,})(IDefault{1,1})"/>
+        <Element Name="InputParameter" Interface="IInputParameter" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="Case" Interface="ICase" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="Default" Interface="IDefault" ContentPattern="(IExpression{1,1})"/>
+    </Section>
+
+    <Section>
+        <SectionTitle>Boolean operators</SectionTitle>
+        <Element Name="IsNull" Interface="IBooleanOperator" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="StringContains" Interface="IBooleanOperator" ContentPattern="(IExpression{1,1})">
+            <Attribute Name="Value" IsRequired="true" ValueType="STRING"/>
+        </Element>
+        <Element Name="StringEndsWith" Interface="IBooleanOperator" ContentPattern="(IExpression{1,1})">
+            <Attribute Name="Value" IsRequired="true" ValueType="STRING"/>
+        </Element>
+        <Element Name="StringStartsWith" Interface="IBooleanOperator" ContentPattern="(IExpression{1,1})">
+            <Attribute Name="Value" IsRequired="true" ValueType="STRING"/>
+        </Element>
+        <Element Name="IsInConcreteModel" Interface="IBooleanOperator" ContentPattern="(IExpression{1,1})">
+            <Attribute Name="CIMClassName" IsRequired="true" ValueType="STRING"/>
+        </Element>
+        <Element Name="ContainsProperty" Interface="IBooleanOperator">
+            <Attribute Name="PropertyName" IsRequired="true" ValueType="STRING"/>
+        </Element>
+        <Element Name="StringIsNullOrEmpty" Interface="IBooleanOperator" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="StringIsNullOrWhiteSpace" Interface="IBooleanOperator" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="AreEqual" Interface="IBooleanOperator" ContentPattern="(IExpression{2,})"/>
+        <Element Name="IsSourceElement" Interface="IBooleanOperator" ContentPattern="(IExpression{1,1})"/>
+        <Element Name="IsFalse" Interface="IBooleanOperator" ContentPattern="(IBooleanOperator{1,1})"/>
+        <Element Name="IsTrue" Interface="IBooleanOperator" ContentPattern="(IBooleanOperator{1,1})"/>
+        <Element Name="GreaterThan" Interface="IBooleanOperator" ContentPattern="(INumberExpression{2,2})"/>
+        <Element Name="GreaterThanOrEqual" Interface="IBooleanOperator" ContentPattern="(INumberExpression{2,2})"/>
+        <Element Name="LessThan" Interface="IBooleanOperator" ContentPattern="(INumberExpression{2,2})"/>
+        <Element Name="LessThanOrEqual" Interface="IBooleanOperator" ContentPattern="(INumberExpression{2,2})"/>
+    </Section>
+</Model>

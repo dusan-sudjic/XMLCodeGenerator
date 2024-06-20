@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using Xceed.Wpf.Toolkit;
-using XMLCodeGenerator.Model;
+using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 namespace XMLCodeGenerator.View.Attributes
 {
     /// <summary>
@@ -10,7 +10,7 @@ namespace XMLCodeGenerator.View.Attributes
     /// </summary>
     public partial class AttributeContainer : UserControl
     {
-        public Model.Attribute Attribute { get; set; }
+        public Model.BuildingBlocks.Abstractions.Attribute Attribute { get; set; }
         public string Required
         {
             get { return Attribute.IsRequired ? "*" : ""; }
@@ -22,7 +22,7 @@ namespace XMLCodeGenerator.View.Attributes
         {
             InitializeComponent();
         }
-        public AttributeContainer(Model.Attribute attribute, bool getValueAttribute = false):this()
+        public AttributeContainer(Model.BuildingBlocks.Abstractions.Attribute attribute, bool getValueAttribute = false):this()
         {
             DataContext = this;
             Attribute = attribute;
@@ -44,7 +44,7 @@ namespace XMLCodeGenerator.View.Attributes
         {
             switch (Attribute.ValueType)
             {
-                case Model.ValueType.BOOLEAN:
+                case Model.BuildingBlocks.Abstractions.ValueType.BOOLEAN:
                     {
                         var stringVal = (TextBox)this.FindName("StringValue");
                         stringVal.Visibility = System.Windows.Visibility.Collapsed;
@@ -52,7 +52,7 @@ namespace XMLCodeGenerator.View.Attributes
                         intVal.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     }
-                case Model.ValueType.STRING:
+                case Model.BuildingBlocks.Abstractions.ValueType.STRING:
                     {
                         var boolVal = (CheckBox)this.FindName("BoolValue");
                         boolVal.Visibility = System.Windows.Visibility.Collapsed;
@@ -60,7 +60,7 @@ namespace XMLCodeGenerator.View.Attributes
                         intVal.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     }
-                case Model.ValueType.INTEGER:
+                case Model.BuildingBlocks.Abstractions.ValueType.INTEGER:
                     {
                         var boolVal = (CheckBox)this.FindName("BoolValue");
                         boolVal.Visibility = System.Windows.Visibility.Collapsed;

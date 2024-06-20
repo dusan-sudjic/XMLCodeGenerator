@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XMLCodeGenerator.Model.BuildingBlocks;
+using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
 namespace XMLCodeGenerator.Model
 {
@@ -15,7 +15,7 @@ namespace XMLCodeGenerator.Model
             string xml = "[b]<" + element.XML_Name+"[/b]";
             foreach(var attr in  element.Attributes)
                 xml += "  " + attr.Name + "="+"[r]\"" + attr.Value + "\"[/r]";
-            if(element.MaxContentSize != 0) 
+            if(element.ContentPattern.Length > 0) 
             {
                 xml += "[b]>[/b]\n";
                 foreach(var el in element.ChildElements)

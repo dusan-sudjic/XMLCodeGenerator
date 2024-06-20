@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XMLCodeGenerator.Model.Blueprints;
+using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
 namespace XMLCodeGenerator.Model.BuildingBlocks
 {
-    public abstract class Condition: Element, ICondition
+    public sealed class Condition: Element, ICondition
     {
-        private List<Type> _SupportedChildElementTypes = new List<Type> { typeof(IBooleanOperator) };
-        public override List<Type> SupportedChildElementTypes { get { return _SupportedChildElementTypes; } }
+        public Condition(ElementBlueprint blueprint) : base(blueprint) { }
     }
 }

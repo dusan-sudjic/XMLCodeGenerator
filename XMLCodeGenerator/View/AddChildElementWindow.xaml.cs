@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Xceed.Wpf.Toolkit;
 using XMLCodeGenerator.Model;
-using XMLCodeGenerator.Model.BuildingBlocks;
+using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
 namespace XMLCodeGenerator.View
 {
@@ -33,7 +33,7 @@ namespace XMLCodeGenerator.View
             Element = element;
             DataContext = this;
             lb = (ListBox)this.FindName("listBox");
-            SupportedChildElements= ElementProviderReflection.GetSupportedChildElements(Element);
+            //SupportedChildElements= ElementProviderReflection.GetSupportedChildElements(Element);
             lb.ItemsSource = SupportedChildElements;
             lb.SelectedIndex = 0;
             this.Title = "Add child element to " + Element.XML_Name;
