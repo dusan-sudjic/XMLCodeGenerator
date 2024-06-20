@@ -20,5 +20,9 @@ namespace XMLCodeGenerator.Model.Blueprints
             Attributes = new();
             Interface = _interface;
         }
+        public override string ToString()
+        {
+            return XML_Name + " pattern";
+        }
     }
 }

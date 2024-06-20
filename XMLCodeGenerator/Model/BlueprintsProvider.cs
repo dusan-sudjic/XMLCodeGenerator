@@ -14,7 +14,7 @@ namespace XMLCodeGenerator.Model
     public static class BlueprintsProvider
     {
         private static string path = "../../../Input/model.xml";
-        public static List<ElementBlueprint> Elements = new();
+        public static List<ElementBlueprint> Blueprints = new();
 
         public static void LoadModel()
         {
@@ -41,7 +41,7 @@ namespace XMLCodeGenerator.Model
                             AttributeBlueprint ablueprint = new AttributeBlueprint(aname, isRequired, (XMLCodeGenerator.Model.BuildingBlocks.Abstractions.ValueType)Enum.Parse(typeof(XMLCodeGenerator.Model.BuildingBlocks.Abstractions.ValueType), type));
                             blueprint.Attributes.Add(ablueprint);
                         }
-                        Elements.Add(blueprint);
+                        Blueprints.Add(blueprint);
                     }
                 }
             }
@@ -66,17 +66,49 @@ namespace XMLCodeGenerator.Model
             }
             return ret;
         }
+        public static List<ElementBlueprint> GetReplacementBlueprintsForElement(IElement element)
+        {
+            return Blueprints.Where(e => e.Interface.IsAssignableFrom(element.GetType())).ToList().Where(bp=>!bp.XML_Name.Equals(element.XML_Name)).ToList();
+        }
+        public static List<ElementBlueprint> GetBlueprintsForNewChildElement(IElement element)
+        {
+            List<ElementBlueprint> ret = new();
+            List<ChildrenPattern> patterns = GetChildrenPatternsOfContentPattern(element.ContentPattern);
+            foreach (var pattern in patterns)
+            {
+                if (pattern.MaxSize == -1)
+                    ret.AddRange(GetAllByInterface(pattern.Interface));
+                else
+                {
+                    int counter = 0;
+                    foreach(var elem in element.ChildElements)
+                    {
+                        if (pattern.Interface.IsAssignableFrom(elem.GetType())) 
+                        {
+                            counter++;
+                            continue;
+                        }
+                        if (counter > 0) break;
+                    }
+                    if(counter < pattern.MaxSize)
+                    {
+                        ret.AddRange(GetAllByInterface(pattern.Interface));
+                    }
+                }
+            }
+            return ret;
+        }
         public static ElementBlueprint GetBlueprint(string name)
         {
-            return Elements.FirstOrDefault(e => e.XML_Name.Equals(name));
+            return Blueprints.FirstOrDefault(e => e.XML_Name.Equals(name));
         }
         public static ElementBlueprint GetDefaultByInterface(Type _interface)
         {
-            return Elements.FirstOrDefault(e => _interface.IsAssignableFrom(e.Interface));
+            return Blueprints.FirstOrDefault(e => _interface.IsAssignableFrom(e.Interface));
         }
         public static List<ElementBlueprint> GetAllByInterface(Type _interface)
         {
-            return Elements.Where(e => _interface.IsAssignableFrom(e.Interface)).ToList();
+            return Blueprints.Where(e => _interface.IsAssignableFrom(e.Interface)).ToList();
         }
         private static Type getInterface(string _interface)
         {

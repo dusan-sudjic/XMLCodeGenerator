@@ -71,7 +71,10 @@ namespace XMLCodeGenerator
             XMLPreviewTextBlock = (TextBlock)this.FindName("XMLPreview");
             IsProviderReaderImported = false;
             BlueprintsProvider.LoadModel();
-            
+            IElement element = ElementFactory.CreateElementFromBlueprint(BlueprintsProvider.GetBlueprint("Addition"));
+            IElement element2 = element.ChildElements[1];
+            List<ElementBlueprint> bp = BlueprintsProvider.GetReplacementBlueprintsForElement(element2);
+            bp.Clear();
         }
 
         public static void BindElementToXMLPreview(IElement element)
