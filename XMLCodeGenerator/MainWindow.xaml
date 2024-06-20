@@ -7,21 +7,14 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:behaviors="clr-namespace:XMLCodeGenerator.Behaviors"
         mc:Ignorable="d"
         Title="MainWindow"
+        xmlns:converters="clr-namespace:XMLCodeGenerator.Converters"
         WindowStartupLocation="CenterScreen"
+        Background="LightSlateGray"
         Loaded="Window_Loaded">
-        <!--<Button Click="ReadClassesFromFileClick" Height="50px" Width="140px" VerticalAlignment="Top" Margin="0,20,0,0">Read classes from file</Button>
-        <Label FontSize="12" Margin="30,70,0,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left">Loaded Classes</Label>-->
-            <!--<ListBox x:Name="classListBox" Margin="20,100,20,20">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding ClassName}" FontWeight="Bold" FontSize="10" Margin="0,0,0,5"/>
-                        <TextBlock Text="{Binding Properties}" FontSize="7"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>-->
+        
     <Window.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <Style x:Key="RoundedButton" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
@@ -49,23 +42,81 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" Margin="10 10 10 0" BorderBrush="Black" BorderThickness="2"></Border>
+        <Border Grid.Row="0" Background="White" Margin="1 0 1 0" BorderBrush="Black" BorderThickness="2">
+            <Grid>
+                <Menu Height="25" VerticalAlignment="Top">
+                    <MenuItem Height="25" Header="File">
+                        <MenuItem Header="New File" />
+                        <MenuItem Header="Open File" />
+                        <MenuItem Header="Export to XML" />
+                        <Separator />
+                        <MenuItem Header="Recent Files">
+                            <MenuItem Header="File 1" />
+                            <MenuItem Header="File 2" />
+                            <MenuItem Header="File 3" />
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="Exit" />
+                    </MenuItem>
+                    <MenuItem Height="25" Header="Import">
+                        <MenuItem Header="Provider reader" Click="ImportProviderReader"/>
+                        <Separator />
+                        <MenuItem Header="Source provider" Click="ImportSourceProvider" />
+                        </MenuItem>
+                    <MenuItem Header="Edit">
+                        <MenuItem Header="Cut" />
+                        <MenuItem Header="Copy" />
+                        <MenuItem Header="Paste" />
+                    </MenuItem>
+                    <MenuItem Header="View">
+                        <MenuItem Header="Zoom">
+                            <MenuItem Header="Zoom In" />
+                            <MenuItem Header="Zoom Out" />
+                        </MenuItem>
+                        <MenuItem Header="Tool Windows">
+                            <MenuItem Header="Solution Explorer" />
+                            <MenuItem Header="Properties" />
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Options">
+                        <MenuItem Header="Settings">
+                            <MenuItem Header="General" />
+                            <MenuItem Header="Advanced" />
+                        </MenuItem>
+                        <MenuItem Header="Preferences">
+                            <MenuItem Header="Appearance" />
+                            <MenuItem Header="Behavior" />
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+                <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Vertical">
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Click="ImportSourceProvider" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="Red" Height ="22" Background="LightPink" FontWeight="Bold" Visibility="{Binding isSourceProviderImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="Red" Width="200" Margin="0 0 5 5">🗙 Source provider not imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding isSourceProviderImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Source provider imported</Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Click="ImportProviderReader" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="Red" Height ="22" Background="LightPink" FontWeight="Bold" Visibility="{Binding IsProviderReaderImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="Red" Width="200" Margin="0 0 5 5">🗙 Provider reader not imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding IsProviderReaderImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Provider reader imported</Button>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*"/>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Height="580" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="10 10 0 10" BorderThickness="2" BorderBrush="Black">
+            <Border Background="White" Grid.Column="0" Height="580" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="1 10 0 10" BorderThickness="2" BorderBrush="Black">
                 <TabControl>
                     <TabItem Header="Cim Classes">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" x:Name="CimClassesScroll" Padding="6">
-                            <!--<i:Interaction.Behaviors>
+                            <i:Interaction.Behaviors>
                                 <behaviors:ScrollViewStickyBehavior/>
-                            </i:Interaction.Behaviors>-->
+                            </i:Interaction.Behaviors>
                             <StackPanel>
-                                <Button Height="27" Style="{StaticResource RoundedButton}" ToolTip="Add new CIM class element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="140" Click="AddNewCimClass_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add CIM Class</Button>
-                                <StackPanel x:Name="Stack">
+                                <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new CIM class element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="140" Click="AddNewCimClass_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add CIM Class</Button>
+                                <StackPanel x:Name="Stack" Margin="0 0 0 60">
 
                                 </StackPanel>
                             </StackPanel>
@@ -82,7 +133,7 @@
                       VerticalAlignment="Stretch"
                       Background="Gray"
                       ShowsPreview="True" />
-            <Border Grid.Column="2" Margin="0 10 10 10" BorderThickness="2" BorderBrush="Black">
+            <Border Background="White" Grid.Column="2" Margin="0 10 1 10" BorderThickness="2" BorderBrush="Black">
                 <TabControl>
                     <TabItem Header="XML Element Preview">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" Padding="6" MaxHeight="540">
@@ -108,10 +159,8 @@
             <GeometryDrawing>
                 <GeometryDrawing.Geometry>
                     <GeometryGroup>
-                        --><!-- Horizontal dash --><!--
-                        <LineGeometry StartPoint="0,0" EndPoint="4,0"/>
+                        <LineGeometry StartPoint="0,0"  EndPoint="4,0"/>
                         <LineGeometry StartPoint="0,4" EndPoint="4,4"/>
-                        --><!-- Vertical dash --><!--
                         <LineGeometry StartPoint="0,0" EndPoint="0,4"/>
                         <LineGeometry StartPoint="4,0" EndPoint="4,4"/>
                     </GeometryGroup>
