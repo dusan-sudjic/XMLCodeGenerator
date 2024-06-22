@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using XMLCodeGenerator.Model;
 using XMLCodeGenerator.Model.Blueprints;
 using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
@@ -17,10 +19,11 @@ namespace XMLCodeGenerator.ViewModel
         public string XML_Name { get => Element.XML_Name; set { } }
         public bool HasAttributes { get => Element.Attributes.Count > 0; }
         public bool IsExtendable { get => Element.ContentPattern.Length > 0; set { } }
+        public bool IsExtendedAndHasAttributes { get => IsExtended && HasAttributes; set { } }
         private bool _isExtended;
         public bool IsExtended
         {
-            get=>_isExtended;
+            get=>_isExtended && IsExtendable;
             set
             {
                 if(value!=_isExtended)
@@ -74,6 +77,35 @@ namespace XMLCodeGenerator.ViewModel
             get => _isReplacable || _isRemovable;
             set{}
         }
+        private ObservableCollection<AttributeViewModel> _attributes;
+        public ObservableCollection<AttributeViewModel> Attributes
+        {
+            get { return _attributes; }
+            set
+            {
+                _attributes = value;
+                foreach (var attribute in _attributes)
+                {
+                    attribute.PropertyChanged += Attribute_PropertyChanged;
+                }
+            }
+        }
+
+        private string _additionalInfo;
+        public string AdditionalInfo
+        {
+            get
+            {
+                if (Element is ICimClass || Element is ICimProperty)
+                    return "[" + Attributes.FirstOrDefault(a => a.Name == "name")?.Value + "]";
+                else return "";
+            }
+            set
+            {
+                _additionalInfo = value;
+                OnPropertyChanged();
+            }
+        }
         public ObservableCollection<ElementViewModel> ChildViewModels = new();
         public IElement Element { get; set; }
         
@@ -83,24 +115,36 @@ namespace XMLCodeGenerator.ViewModel
             HasRoomForNewChildElement = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count > 0;
             IsRemovable = XML_Name.Equals("CimClass");
             IsReplacable = BlueprintsProvider.GetReplacementBlueprintsForElement(Element).Count > 0;
+            Attributes = new();
+            IsExtended = true;
+            Attributes.CollectionChanged += Attributes_CollectionChanged;
             foreach (var child in element.ChildElements)
                 ChildViewModels.Add(new ElementViewModel(child));
+            foreach(var attribute in element.Attributes)
+                Attributes.Add(new AttributeViewModel(attribute));
         }
         public void AddNewChildElement(IElement e)
         {
-            for(int i=Element.ChildElements.Count; i>= 0; i--)
+            var newViewModel = new ElementViewModel(e);
+            for(int i=ChildViewModels.Count; i>= 0; i--)
             {
-                if(i<Element.ChildElements.Count)
+                if (i < ChildViewModels.Count)
+                {
                     Element.ChildElements.Insert(i, e);
+                    ChildViewModels.Insert(i, newViewModel);
+                }
                 else if (i == Element.ChildElements.Count)
+                {
                     Element.ChildElements.Add(e);
+                    ChildViewModels.Add(newViewModel);
+                }
                 if (!BlueprintsProvider.ElementMatchesPattern(Element))
                 {
                     Element.ChildElements.RemoveAt(i);
+                    ChildViewModels.RemoveAt(i);
                     continue;
                 }
                 HasRoomForNewChildElement = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count > 0;
-                ReloadChildren();
                 setRemovableForChildren();
                 return;
             }
@@ -128,17 +172,27 @@ namespace XMLCodeGenerator.ViewModel
                 viewModels.Clear();
             }
         }
-        private void ReloadChildren()
+        private void Attributes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            ChildViewModels.Clear();
-            foreach (var child in Element.ChildElements)
-                ChildViewModels.Add(new ElementViewModel(child));
+            if (e.NewItems != null)
+                foreach (AttributeViewModel newItem in e.NewItems)
+                    newItem.PropertyChanged += Attribute_PropertyChanged;
+            if (e.OldItems != null)
+                foreach (AttributeViewModel oldItem in e.OldItems)
+                    oldItem.PropertyChanged -= Attribute_PropertyChanged;
         }
 
+        private void Attribute_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Value")
+                OnPropertyChanged(nameof(AdditionalInfo));
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            if (propertyName == "IsExtended")
+                OnPropertyChanged(nameof(IsExtendedAndHasAttributes));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public override string ToString()

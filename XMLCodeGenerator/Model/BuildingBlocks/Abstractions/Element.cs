@@ -23,7 +23,7 @@ namespace XMLCodeGenerator.Model.BuildingBlocks.Abstractions
             foreach (var attribute in blueprint.Attributes)
             {
                 Attribute a = new Attribute(attribute.Name, attribute.IsRequired, attribute.ValueType);
-                a.setValue(attribute.DefaultValue);
+                a.Value = attribute.DefaultValue;
                 Attributes.Add(a);
             }
             ChildElements = new();

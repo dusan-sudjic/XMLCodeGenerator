@@ -95,7 +95,7 @@
             <Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN"/>
         </Element>
         <Element Name="If" Interface="IIf" ContentPattern="(ICondition{1,1})(IExpression{1,1})"/>
-        <Element Name="IfBlock" Interface="IIf" ContentPattern="(IIf{1,})(IElse{0,1})"/>
+        <Element Name="IfBlock" Interface="IExpression" ContentPattern="(IIf{1,})(IElse{0,1})"/>
         <Element Name="Else" Interface="IElse" ContentPattern="(IExpression{1,1})"/>    
         <Element Name="SwitchCase" Interface="IExpression" ContentPattern="(IInputParameter{1,1})(ICase{1,})(IDefault{1,1})"/>
         <Element Name="InputParameter" Interface="IInputParameter" ContentPattern="(IExpression{1,1})"/>

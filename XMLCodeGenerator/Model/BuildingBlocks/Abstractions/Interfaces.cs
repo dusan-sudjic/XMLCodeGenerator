@@ -18,7 +18,7 @@ namespace XMLCodeGenerator.Model.BuildingBlocks.Abstractions
         HashSet<Attribute> Attributes { get; set; }
     }
     public interface ICimClass : IElement { }
-    public interface IIf : IExpression { }
+    public interface IIf : IElement { }
     public interface IElse : IElement { }
     public interface ICimProperty : IElement { }
     public interface IExpression : IElement { }

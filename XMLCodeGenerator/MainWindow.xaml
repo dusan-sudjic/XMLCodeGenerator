@@ -9,7 +9,7 @@
         Title="MainWindow"
         xmlns:converters="clr-namespace:XMLCodeGenerator.Converters"
         WindowStartupLocation="CenterScreen"
-        Background="LightSlateGray"
+        Background="White"
         Loaded="Window_Loaded">
         
     <Window.Resources>
@@ -107,7 +107,7 @@
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <Border Background="White" Grid.Column="0" Height="580" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="1 5 0 10" BorderThickness="2" BorderBrush="Black">
+            <Border Background="LightCyan" Grid.Column="0" Height="580" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="1 5 0 10" BorderThickness="2" BorderBrush="Black">
                 <TabControl>
                     <TabItem Header="Cim Classes">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" x:Name="CimClassesScroll" Padding="6">
@@ -133,7 +133,7 @@
                       VerticalAlignment="Stretch"
                       Background="DarkOrange"
                       ShowsPreview="True" />
-            <Border Background="White" Grid.Column="2" Margin="0 5 1 10" BorderThickness="2" BorderBrush="Black">
+            <Border  Grid.Column="2" Margin="0 5 1 10" Background="LightCyan" BorderThickness="2" BorderBrush="Black">
                 <TabControl>
                     <TabItem Header="XML Element Preview">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" Padding="6" MaxHeight="540">

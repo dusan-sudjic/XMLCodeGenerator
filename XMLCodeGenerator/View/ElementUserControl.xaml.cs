@@ -46,20 +46,8 @@ namespace XMLCodeGenerator.View
         private Point _dragStartPoint;
         private UIElement _draggedElement;
         public string XML_Name { get { return Element.XML_Name; } set { } }
-        public string AdditionalInfo
-        {
-            get
-            {
-                if (Element is CimClass || Element is CimProperty)
-                    return "[" + Element.Element.Attributes.Where(a => a.Name == "name").ToList()[0].Value + "]";
-                else
-                    return "";
-            }
-            set { }
-        }
         private int _originalIndex;
         public ElementViewModel Element { get; set; }
-        public bool Opened = true;
         public ElementUserControl()
         {
             InitializeComponent();
@@ -75,35 +63,21 @@ namespace XMLCodeGenerator.View
 
             SetUpUI();
             SetButtons();
-            if (Element.Element.ContentPattern.Length == 0)
-            {
-                Border dock = (Border)this.FindName("Border");
-                _childrenContainer.Visibility = Visibility.Collapsed;
-                StackPanel SidePanel = (StackPanel)this.FindName("SidePanel");
-                SidePanel.Visibility = Visibility.Collapsed;
-                Label endLabel = (Label)this.FindName("EndLabel");
-                endLabel.Visibility = Visibility.Collapsed;
-                //dock.HorizontalAlignment = HorizontalAlignment.Left;
-                Opened = false;
-            }
         }
 
         public void SetButtons()
         {
-            _childrenContainer.Visibility = Opened ? Visibility.Visible : Visibility.Collapsed;
             var addButton = (Button)this.FindName("AddButton");
             addButton.ToolTip = "Add new child element to " + Element.ToString();
-
-            var toggleButton = (ToggleButton)this.FindName("ToggleButton");
-            toggleButton.Visibility = Element.Element.ContentPattern.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-
-            var attributes = (GroupBox)this.FindName("AttributesGroupBox");
-            attributes.Visibility = Element.Element.Attributes.Count > 0 && Opened && Element.Element.ContentPattern.Length != 0 ? Visibility.Visible : Visibility.Collapsed;
-
             var deleteButton = (Button)this.FindName("DeleteButton");
             deleteButton.ToolTip = "Delete " + Element.ToString();
             var replaceButton = (Button)this.FindName("ReplaceButton");
             replaceButton.ToolTip = "Replace " + Element.ToString();
+            var toggleButton = (ToggleButton)this.FindName("ToggleButton");
+            toggleButton.Content = Element.IsExtended ? "-" : "+";
+            Border dock = (Border)this.FindName("Border");
+            dock.HorizontalAlignment = Element.IsExtended ? HorizontalAlignment.Stretch: HorizontalAlignment.Left;
+            dock.HorizontalAlignment = !Element.IsExtendable ? HorizontalAlignment.Stretch: dock.HorizontalAlignment;
         }
 
         public void DeleteChildElement(ElementViewModel element)
@@ -126,11 +100,11 @@ namespace XMLCodeGenerator.View
         public void SetUpUI()
         {
             _unexpandableAttributesContainer.Children.Clear();
-            if (Element.Element.ContentPattern.Length == 0)
+            if (!Element.IsExtendable)
             {
-                foreach (var attr in Element.Element.Attributes)
+                foreach (var attr in Element.Attributes)
                 {
-                    if (false)
+                    if (Element.XML_Name.Equals("GetValue"))
                     {
                         _unexpandableAttributesContainer.Children.Add(new AttributeContainer(attr, true));
                         break;
@@ -144,40 +118,30 @@ namespace XMLCodeGenerator.View
             else
             {
                 _attributesContainer.Children.Clear();
-                foreach (var attr in Element.Element.Attributes)
-                {
+                foreach (var attr in Element.Attributes)
                     _attributesContainer.Children.Add(new AttributeContainer(attr));
-                }
+
                 _childrenContainer.Children.Clear();
                 foreach (var child in Element.ChildViewModels)
-                {
                     _childrenContainer.Children.Add(CreateDraggableElement(child));
-                }
-                _childrenContainer.Visibility = Visibility.Visible;
             }
         }
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
             IsMainLabelWithinViewport = true;
             Border dock = (Border)this.FindName("Border");
-            if (_childrenContainer.Visibility == Visibility.Collapsed)
+            if (!Element.IsExtended)
             {
-                _childrenContainer.Visibility = Visibility.Visible;
-                ((ToggleButton)sender).Content = "-"; // Change content to down arrow
+                ((ToggleButton)sender).Content = "-";
                 dock.HorizontalAlignment = HorizontalAlignment.Stretch;
-                dock.MaxWidth = 1220;
-                Label endLabel = (Label)this.FindName("EndLabel");
-                endLabel.Visibility = Visibility.Visible;
-                Opened = true;
+                //dock.MaxWidth = 1220;
+                Element.IsExtended = true;
             }
             else
             {
-                _childrenContainer.Visibility = Visibility.Collapsed;
-                ((ToggleButton)sender).Content = "+"; // Change content to right arrow
+                ((ToggleButton)sender).Content = "+";
                 dock.HorizontalAlignment = HorizontalAlignment.Left;
-                Opened = false;
-                Label endLabel = (Label)this.FindName("EndLabel");
-                endLabel.Visibility = Visibility.Collapsed;
+                Element.IsExtended = false;
             }
             SetButtons();
         }
@@ -209,9 +173,7 @@ namespace XMLCodeGenerator.View
         {
             AddChildElementWindow window = new AddChildElementWindow(Element);
             if (window.ShowDialog() == true)
-            {
                 AddChildElement(window.SelectedOption);
-            }
         }
 
         public void AddChildElement(string elementName)
