@@ -66,6 +66,26 @@ namespace XMLCodeGenerator.Model
             }
             return ret;
         }
+        public static bool ElementMatchesPattern(IElement element)
+        {
+            int index = 0;
+            List<ChildrenPattern> patterns = GetChildrenPatternsOfContentPattern(element.ContentPattern);
+            foreach (ChildrenPattern pattern in patterns)
+            {
+                int counter = 0;
+                while (index<element.ChildElements.Count)
+                {
+                    IElement child = element.ChildElements[index];
+                    if (!pattern.Interface.IsAssignableFrom(child.GetType()))
+                        break;
+                    counter++;
+                    index++;
+                }
+                if (counter < pattern.MinSize || (pattern.MaxSize!=-1 && counter > pattern.MaxSize))
+                    return false;
+            }
+            return index==element.ChildElements.Count;
+        }
         public static List<ElementBlueprint> GetReplacementBlueprintsForElement(IElement element)
         {
             return Blueprints.Where(e => e.Interface.IsAssignableFrom(element.GetType())).ToList().Where(bp=>!bp.XML_Name.Equals(element.XML_Name)).ToList();

@@ -25,7 +25,7 @@ using XMLCodeGenerator.Model.Blueprints;
 using XMLCodeGenerator.Model.BuildingBlocks;
 using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 using XMLCodeGenerator.View;
-using static System.Net.Mime.MediaTypeNames;
+using XMLCodeGenerator.ViewModel;
 
 namespace XMLCodeGenerator
 {
@@ -58,29 +58,32 @@ namespace XMLCodeGenerator
             }
         }
         public ICommand AddClassCommand { get; set; }
-        public static List<IElement> CimClasses { get; set; }
+        public static List<ElementViewModel> CimClasses { get; set; }
         public static StackPanel CimClassesStackPanel { get; set; }
         private static TextBlock XMLPreviewTextBlock;
         public MainWindow()
         {
             InitializeComponent();
-            CimClasses = new List<IElement>();
+            CimClasses = new List<ElementViewModel>();
             AddClassCommand = new RelayCommand(ExecuteAddNewCimClassCommand);
             this.DataContext = this;
             CimClassesStackPanel = (StackPanel)this.FindName("Stack");
             XMLPreviewTextBlock = (TextBlock)this.FindName("XMLPreview");
             IsProviderReaderImported = false;
             BlueprintsProvider.LoadModel();
-            IElement element = ElementFactory.CreateElementFromBlueprint(BlueprintsProvider.GetBlueprint("Addition"));
-            IElement element2 = element.ChildElements[1];
-            List<ElementBlueprint> bp = BlueprintsProvider.GetReplacementBlueprintsForElement(element2);
-            bp.Clear();
+            //IElement element = ElementFactory.CreateElementFromBlueprint(BlueprintsProvider.GetBlueprint("IfBlock"));
+            //ElementViewModel elemVM = new ElementViewModel(element);
+            //List<ElementBlueprint> bp = BlueprintsProvider.GetBlueprintsForNewChildElement(element);
+            //IElement newElement = ElementFactory.CreateElementFromBlueprint(bp[2]);
+            //elemVM.AddNewChildElement(newElement);
+            //elemVM.AddNewChildElement(newElement);
+            //bp.Clear();
         }
 
-        public static void BindElementToXMLPreview(IElement element)
+        public static void BindElementToXMLPreview(ElementViewModel element)
         {
             XMLPreviewTextBlock.Inlines.Clear();
-            XMLPreviewTextBlock.Inlines.AddRange(ParseAndStylizeText(XMLElementConverter.ConvertElementToXML(element)));
+            XMLPreviewTextBlock.Inlines.AddRange(ParseAndStylizeText(XMLElementConverter.ConvertElementToXML(element.Element)));
         }
         private static Inline[] ParseAndStylizeText(string text)
         {
@@ -109,7 +112,7 @@ namespace XMLCodeGenerator
         private void AddNewCimClass()
         {
             ElementBlueprint bp = BlueprintsProvider.GetBlueprint("CimClass");
-            IElement element = ElementFactory.CreateElementFromBlueprint(bp);
+            ElementViewModel element = new ElementViewModel(ElementFactory.CreateElementFromBlueprint(bp));
             CimClasses.Add(element);
             StackPanel stackPanel = (StackPanel)this.FindName("Stack");
             stackPanel.Children.Add(new ElementUserControl(element));
@@ -118,7 +121,7 @@ namespace XMLCodeGenerator
 
         public static void RemoveCimClass(ElementUserControl uc)
         {
-            CimClass class1 = uc.Element as CimClass;
+            ElementViewModel class1 = uc.Element as ElementViewModel;
             if (class1 == null)
                 return;
             CimClasses.Remove(class1);
@@ -253,7 +256,6 @@ namespace XMLCodeGenerator
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
 
     public record ClassInfo

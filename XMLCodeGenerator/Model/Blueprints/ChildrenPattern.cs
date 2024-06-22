@@ -17,5 +17,9 @@ namespace XMLCodeGenerator.Model.Blueprints
             MinSize = minSize;
             MaxSize = maxSize;
         }
+        public override string ToString()
+        {
+            return Interface.Name+"{"+MinSize+","+MaxSize+"}";
+        }
     }
 }
