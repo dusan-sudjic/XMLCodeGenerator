@@ -19,6 +19,7 @@ namespace XMLCodeGenerator.Model.BuildingBlocks.Abstractions
     }
     public interface ICimClass : IElement { }
     public interface IIf : IElement { }
+    public interface IElseIf : IElement { }
     public interface IElse : IElement { }
     public interface ICimProperty : IElement { }
     public interface IExpression : IElement { }

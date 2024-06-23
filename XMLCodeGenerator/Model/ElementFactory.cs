@@ -42,6 +42,7 @@ namespace XMLCodeGenerator.Model
                 case "ICondition": return new Condition(blueprint);
                 case "IBooleanOperator": return new BooleanOperator(blueprint);
                 case "IIf": return new If(blueprint);
+                case "IElseIf": return new ElseIf(blueprint);
                 case "IElse": return new Else(blueprint);
                 case "IExpression": return new Expression(blueprint);
                 case "ICimProperty": return new CimProperty(blueprint);
