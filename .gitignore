@@ -43,3 +43,5 @@
 /XMLCodeGenerator/obj/XMLCodeGenerator_br4ak4ye_wpftmp.csproj.nuget.g.props
 /XMLCodeGenerator/obj/XMLCodeGenerator_br4ak4ye_wpftmp.csproj.nuget.g.targets
 /XMLCodeGenerator/obj
+/XMLCodeGenerator/obj/Debug/net8.0-windows/View/AddChildElementWindow.baml
+/XMLCodeGenerator/obj/Debug/net8.0-windows/View/AddChildElementWindow.g.cs
