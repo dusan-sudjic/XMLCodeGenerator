@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using XMLCodeGenerator.Model.Blueprints;
 using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
-namespace XMLCodeGenerator.Model.BuildingBlocks
+namespace XMLCodeGenerator.Model.BuildingBlocks.Implementations
 {
-    public sealed class InputParameter: Element, IInputParameter
+    public sealed class InputParameter : Element, IInputParameter
     {
         public InputParameter(ElementBlueprint blueprint) : base(blueprint) { }
     }

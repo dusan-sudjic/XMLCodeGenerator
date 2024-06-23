@@ -157,17 +157,24 @@ namespace XMLCodeGenerator.View
             }
             else
             {
-                StackPanel parentStack = this.Parent as StackPanel;
-                Grid parentDock = parentStack.Parent as Grid;
-                Grid parentDock2 = parentDock.Parent as Grid;
-                Border parentBorder = parentDock2.Parent as Border;
-                ElementUserControl parent = parentBorder.Parent as ElementUserControl;
+                ElementUserControl parent = GetParentElementUserControl();
                 if (Element.IsRemovable)
                     parent.DeleteChildElement(Element);
                 else
                     parent.ReplaceChildElement(Element);
             }
         }
+
+        private ElementUserControl GetParentElementUserControl()
+        {
+            StackPanel parentStack = this.Parent as StackPanel;
+            Grid parentDock = parentStack.Parent as Grid;
+            Grid parentDock2 = parentDock.Parent as Grid;
+            Border parentBorder = parentDock2.Parent as Border;
+            ElementUserControl parent = parentBorder.Parent as ElementUserControl;
+            return parent;
+        }
+
         public void XMLPreview_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.BindElementToXMLPreview(Element);

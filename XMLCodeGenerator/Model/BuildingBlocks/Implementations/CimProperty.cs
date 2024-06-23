@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using XMLCodeGenerator.Model.Blueprints;
 using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
-namespace XMLCodeGenerator.Model.BuildingBlocks
+namespace XMLCodeGenerator.Model.BuildingBlocks.Implementations
 {
-    public sealed class NumberExpression : Element, INumberExpression
+    public sealed class CimProperty : Element, ICimProperty
     {
-        public NumberExpression(ElementBlueprint blueprint) : base(blueprint) { }
+        public CimProperty(ElementBlueprint blueprint) : base(blueprint) { }
     }
 }

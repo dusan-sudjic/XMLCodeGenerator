@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using XMLCodeGenerator.Model.Blueprints;
 using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
-namespace XMLCodeGenerator.Model.BuildingBlocks
+namespace XMLCodeGenerator.Model.BuildingBlocks.Implementations
 {
-    public sealed class Else: Element, IElse
+    public sealed class NumberExpression : Element, INumberExpression
     {
-        public Else(ElementBlueprint blueprint) : base(blueprint) { }
+        public NumberExpression(ElementBlueprint blueprint) : base(blueprint) { }
     }
 }

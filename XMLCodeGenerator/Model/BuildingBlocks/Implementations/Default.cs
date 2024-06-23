@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using XMLCodeGenerator.Model.Blueprints;
 using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
-namespace XMLCodeGenerator.Model.BuildingBlocks
+namespace XMLCodeGenerator.Model.BuildingBlocks.Implementations
 {
-    public sealed class Condition: Element, ICondition
+    public sealed class Default : Element, IDefault
     {
-        public Condition(ElementBlueprint blueprint) : base(blueprint) { }
+        public Default(ElementBlueprint blueprint) : base(blueprint) { }
     }
 }

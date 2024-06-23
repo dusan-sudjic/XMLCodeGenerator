@@ -30,9 +30,11 @@ namespace XMLCodeGenerator.Model
                     {
                         string name = elementNode.Attributes["Name"]?.InnerText;
                         string contentPattern = elementNode.Attributes["ContentPattern"]?.InnerText;
+                        string translateText = elementNode.Attributes["Translate"]?.InnerText;
+                        bool translate = translateText != null ? translateText.Equals("true") : true;
                         string _interface = elementNode.Attributes["Interface"]?.InnerText;
                         string pattern = contentPattern == null ? "" : contentPattern; 
-                        ElementBlueprint blueprint = new ElementBlueprint(name, pattern, getInterface(_interface));
+                        ElementBlueprint blueprint = new ElementBlueprint(name, pattern, getInterface(_interface), translate);
                         foreach (XmlNode attributeNode in elementNode.SelectNodes("Attribute"))
                         {
                             string aname = attributeNode.Attributes["Name"]?.InnerText;

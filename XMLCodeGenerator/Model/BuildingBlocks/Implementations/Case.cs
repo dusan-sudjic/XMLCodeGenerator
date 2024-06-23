@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using XMLCodeGenerator.Model.Blueprints;
 using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
-namespace XMLCodeGenerator.Model.BuildingBlocks
+namespace XMLCodeGenerator.Model.BuildingBlocks.Implementations
 {
-    public sealed class BooleanOperator: Element, IBooleanOperator
+    public sealed class Case : Element, ICase
     {
-        public BooleanOperator(ElementBlueprint blueprint): base(blueprint) { }
+        public Case(ElementBlueprint blueprint) : base(blueprint) { }
     }
 }

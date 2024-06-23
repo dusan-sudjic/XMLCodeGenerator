@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using XMLCodeGenerator.Model.Blueprints;
 using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
-namespace XMLCodeGenerator.Model.BuildingBlocks
+namespace XMLCodeGenerator.Model.BuildingBlocks.Implementations
 {
-    public sealed class CimProperty: Element, ICimProperty
+    public sealed class If : Element, IIf
     {
-        public CimProperty(ElementBlueprint blueprint) : base(blueprint) { }
+        public If(ElementBlueprint blueprint) : base(blueprint) { }
     }
 }

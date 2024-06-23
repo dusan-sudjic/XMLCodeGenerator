@@ -83,7 +83,7 @@ namespace XMLCodeGenerator
         public static void BindElementToXMLPreview(ElementViewModel element)
         {
             XMLPreviewTextBlock.Inlines.Clear();
-            XMLPreviewTextBlock.Inlines.AddRange(ParseAndStylizeText(XMLElementConverter.ConvertElementToXML(element.Element)));
+            XMLPreviewTextBlock.Inlines.AddRange(ParseAndStylizeText(element.Element.ToXML(0)));
         }
         private static Inline[] ParseAndStylizeText(string text)
         {

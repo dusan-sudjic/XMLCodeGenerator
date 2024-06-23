@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Xml.Linq;
 using XMLCodeGenerator.Model.Blueprints;
-using XMLCodeGenerator.Model.BuildingBlocks;
+using XMLCodeGenerator.Model.BuildingBlocks.Implementations;
 using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
 namespace XMLCodeGenerator.Model

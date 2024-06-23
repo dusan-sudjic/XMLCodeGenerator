@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using XMLCodeGenerator.Model.Blueprints;
 using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
-namespace XMLCodeGenerator.Model.BuildingBlocks
+namespace XMLCodeGenerator.Model.BuildingBlocks.Implementations
 {
-    public sealed class ElseIf : Element, IElseIf
+    public sealed class BooleanOperator : Element, IBooleanOperator
     {
-        public ElseIf(ElementBlueprint blueprint) : base(blueprint) { }
+        public BooleanOperator(ElementBlueprint blueprint) : base(blueprint) { }
     }
 }

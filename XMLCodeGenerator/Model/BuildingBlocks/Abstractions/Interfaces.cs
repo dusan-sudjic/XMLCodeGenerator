@@ -16,6 +16,8 @@ namespace XMLCodeGenerator.Model.BuildingBlocks.Abstractions
         List<IElement> ChildElements { get; set; }
         abstract string XML_Name { get; init; }
         HashSet<Attribute> Attributes { get; set; }
+        string ToXML(int depth);
+        bool Translate { get; set; }
     }
     public interface ICimClass : IElement { }
     public interface IIf : IElement { }
