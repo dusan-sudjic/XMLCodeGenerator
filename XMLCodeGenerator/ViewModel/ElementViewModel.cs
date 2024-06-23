@@ -90,6 +90,7 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
+        public string DefaultNewChild { get; set; }
 
         private string _additionalInfo;
         public string AdditionalInfo
@@ -116,6 +117,7 @@ namespace XMLCodeGenerator.ViewModel
             IsRemovable = XML_Name.Equals("CimClass");
             IsReplacable = BlueprintsProvider.GetReplacementBlueprintsForElement(Element).Count > 0;
             Attributes = new();
+            DefaultNewChild = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count == 1 ? BlueprintsProvider.GetBlueprintsForNewChildElement(Element)[0].XML_Name : null;
             IsExtended = true;
             Attributes.CollectionChanged += Attributes_CollectionChanged;
             foreach (var child in element.ChildElements)
@@ -146,6 +148,7 @@ namespace XMLCodeGenerator.ViewModel
                 }
                 HasRoomForNewChildElement = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count > 0;
                 setRemovableForChildren();
+                DefaultNewChild = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count == 1 ? BlueprintsProvider.GetBlueprintsForNewChildElement(Element)[0].XML_Name : null;
                 return;
             }
         }
@@ -154,12 +157,14 @@ namespace XMLCodeGenerator.ViewModel
             ChildViewModels.Remove(element);
             Element.ChildElements.Remove(element.Element);
             setRemovableForChildren();
+            DefaultNewChild = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count == 1 ? BlueprintsProvider.GetBlueprintsForNewChildElement(Element)[0].XML_Name : null;
         }
         public void ReplaceChild(ElementViewModel oldElement, string newElement)
         {
             int index = ChildViewModels.IndexOf(oldElement);
             ChildViewModels[index] = new ElementViewModel(ElementFactory.CreateElementFromBlueprint(BlueprintsProvider.GetBlueprint(newElement)));
             Element.ChildElements[index] = ChildViewModels[index].Element;
+            DefaultNewChild = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count == 1 ? BlueprintsProvider.GetBlueprintsForNewChildElement(Element)[0].XML_Name : null;
         }
         private void setRemovableForChildren()
         {

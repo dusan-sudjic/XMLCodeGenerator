@@ -68,7 +68,10 @@ namespace XMLCodeGenerator.View
         public void SetButtons()
         {
             var addButton = (Button)this.FindName("AddButton");
-            addButton.ToolTip = "Add new child element to " + Element.ToString();
+            if (Element.DefaultNewChild != null)
+                addButton.ToolTip = "Add " + Element.DefaultNewChild;
+            else
+                addButton.ToolTip = "Add new element to " + Element.XML_Name;
             var deleteButton = (Button)this.FindName("DeleteButton");
             deleteButton.ToolTip = "Delete " + Element.ToString();
             var replaceButton = (Button)this.FindName("ReplaceButton");
@@ -171,9 +174,16 @@ namespace XMLCodeGenerator.View
         }
         private void AddChildElement_Click(object sender, RoutedEventArgs e)
         {
-            AddChildElementWindow window = new AddChildElementWindow(Element);
-            if (window.ShowDialog() == true)
-                AddChildElement(window.SelectedOption);
+            if (Element.DefaultNewChild == null)
+            {
+                AddChildElementWindow window = new AddChildElementWindow(Element);
+                if (window.ShowDialog() == true)
+                    AddChildElement(window.SelectedOption);
+            }
+            else
+            {
+                AddChildElement(Element.DefaultNewChild);
+            }
         }
 
         public void AddChildElement(string elementName)
