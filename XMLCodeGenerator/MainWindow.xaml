@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:XMLCodeGenerator" xmlns:local1="clr-namespace:XMLCodeGenerator.View"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:behaviors="clr-namespace:XMLCodeGenerator.Behaviors"
         mc:Ignorable="d"
+        xmlns:view="clr-namespace:XMLCodeGenerator.View"
         Title="MainWindow"
         xmlns:converters="clr-namespace:XMLCodeGenerator.Converters"
         WindowStartupLocation="CenterScreen"
@@ -137,9 +138,7 @@
                 <TabControl>
                     <TabItem Header="XML Element Preview">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" Padding="6" MaxHeight="540">
-                            <TextBlock x:Name="XMLPreview" Width="Auto" MinWidth="150" TextWrapping="Wrap" VerticalAlignment="Top">
-
-                            </TextBlock>
+                            <view:XmlPreviewUserControl x:Name="xmlPreview"/>
                         </ScrollViewer>
                     </TabItem>
                 </TabControl>

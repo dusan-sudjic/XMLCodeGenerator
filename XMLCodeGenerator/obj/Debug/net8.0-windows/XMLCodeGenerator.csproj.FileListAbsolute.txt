@@ -114,3 +114,5 @@ C:\Users\Dušan\Desktop\diplomski\XMLCodeGenerator\XMLCodeGenerator\obj\Debug\ne
 C:\Users\Dušan\Desktop\diplomski\XMLCodeGenerator\XMLCodeGenerator\obj\Debug\net8.0-windows\XMLCodeGenerator.pdb
 C:\Users\Dušan\Desktop\diplomski\XMLCodeGenerator\XMLCodeGenerator\obj\Debug\net8.0-windows\XMLCodeGenerator.genruntimeconfig.cache
 C:\Users\Dušan\Desktop\diplomski\XMLCodeGenerator\XMLCodeGenerator\obj\Debug\net8.0-windows\ref\XMLCodeGenerator.dll
+C:\Users\Dušan\Desktop\diplomski\XMLCodeGenerator\XMLCodeGenerator\obj\Debug\net8.0-windows\View\XmlPreviewUserControl.g.cs
+C:\Users\Dušan\Desktop\diplomski\XMLCodeGenerator\XMLCodeGenerator\obj\Debug\net8.0-windows\View\XmlPreviewUserControl.baml

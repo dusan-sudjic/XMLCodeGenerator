@@ -21,9 +21,6 @@ using System.Windows.Shapes;
 using System.Xml;
 using XMLCodeGenerator.Commands;
 using XMLCodeGenerator.Model;
-using XMLCodeGenerator.Model.Blueprints;
-using XMLCodeGenerator.Model.BuildingBlocks;
-using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 using XMLCodeGenerator.View;
 using XMLCodeGenerator.ViewModel;
 
@@ -57,6 +54,7 @@ namespace XMLCodeGenerator
                 }
             }
         }
+        public static XmlPreviewUserControl xmlPreviewControl { get; set; }
         public ICommand AddClassCommand { get; set; }
         public static List<ElementViewModel> CimClasses { get; set; }
         public static StackPanel CimClassesStackPanel { get; set; }
@@ -70,20 +68,15 @@ namespace XMLCodeGenerator
             CimClassesStackPanel = (StackPanel)this.FindName("Stack");
             XMLPreviewTextBlock = (TextBlock)this.FindName("XMLPreview");
             IsProviderReaderImported = false;
-            BlueprintsProvider.LoadModel();
-            //IElement element = ElementFactory.CreateElementFromBlueprint(BlueprintsProvider.GetBlueprint("IfBlock"));
-            //ElementViewModel elemVM = new ElementViewModel(element);
-            //List<ElementBlueprint> bp = BlueprintsProvider.GetBlueprintsForNewChildElement(element);
-            //IElement newElement = ElementFactory.CreateElementFromBlueprint(bp[2]);
-            //elemVM.AddNewChildElement(newElement);
-            //elemVM.AddNewChildElement(newElement);
-            //bp.Clear();
+            xmlPreviewControl = (XmlPreviewUserControl)this.FindName("xmlPreview");
+            ModelProvider.LoadModel();
         }
 
         public static void BindElementToXMLPreview(ElementViewModel element)
         {
-            XMLPreviewTextBlock.Inlines.Clear();
-            XMLPreviewTextBlock.Inlines.AddRange(ParseAndStylizeText(element.Element.ToXML(0)));
+            xmlPreviewControl.XmlElements = new List<XmlElement> { element.Element.ToXmlNode() };
+            //XMLPreviewTextBlock.Inlines.Clear();
+            //XMLPreviewTextBlock.Inlines.AddRange(ParseAndStylizeText(element.Element.ToXML(0)));
         }
         private static Inline[] ParseAndStylizeText(string text)
         {
@@ -111,8 +104,8 @@ namespace XMLCodeGenerator
 
         private void AddNewCimClass()
         {
-            ElementBlueprint bp = BlueprintsProvider.GetBlueprint("CimClass");
-            ElementViewModel element = new ElementViewModel(ElementFactory.CreateElementFromBlueprint(bp));
+            ElementModel bp = ModelProvider.GetElementModel("CimClass");
+            ElementViewModel element = new ElementViewModel(new Element(bp));
             CimClasses.Add(element);
             StackPanel stackPanel = (StackPanel)this.FindName("Stack");
             stackPanel.Children.Add(new ElementUserControl(element));

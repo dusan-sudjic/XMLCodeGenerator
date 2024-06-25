@@ -1,8 +1,6 @@
-﻿using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
-using ValueType = XMLCodeGenerator.Model.BuildingBlocks.Abstractions.ValueType;
-using Attribute = XMLCodeGenerator.Model.BuildingBlocks.Abstractions.Attribute;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.ComponentModel;
+using XMLCodeGenerator.Model;
 
 namespace XMLCodeGenerator.ViewModel
 {
@@ -19,18 +17,19 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
+        private string _value;
         public string Value { 
-            get => Attribute.Value;
+            get => _value;
             set
             {
-                if(value!= Attribute.Value)
+                if(value!= _value)
                 {
-                    Attribute.Value = value;
+                    _value = value;
                     OnPropertyChanged();
                 }
             }
         }
-        public ValueType ValueType
+        public Model.ValueType ValueType
         { 
             get => Attribute.ValueType;
             set
@@ -53,10 +52,11 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
-        public Attribute Attribute { get; set; }
-        public AttributeViewModel(Attribute attribute)
+        public AttributeModel Attribute { get; set; }
+        public AttributeViewModel(AttributeModel attribute, string value)
         {
             Attribute = attribute;
+            Value = value;
         }
         public event PropertyChangedEventHandler PropertyChanged;
 

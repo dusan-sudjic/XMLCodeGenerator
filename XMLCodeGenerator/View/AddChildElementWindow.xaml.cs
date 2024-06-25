@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Xceed.Wpf.Toolkit;
 using XMLCodeGenerator.Model;
-using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 using XMLCodeGenerator.ViewModel;
 
 namespace XMLCodeGenerator.View
@@ -25,9 +24,9 @@ namespace XMLCodeGenerator.View
     {
         public ElementViewModel Element { get; set; }
         public ListBox lb {  get; set; }
-        public string SelectedOption { get; set; }
+        public ElementModel SelectedOption { get; set; }
         WatermarkTextBox textBox { get; set; }
-        List<string> SupportedChildElements { get; set; }
+        List<ElementModel> SupportedChildElements { get; set; }
         public AddChildElementWindow(ElementViewModel element, bool replacement = false)
         {
             InitializeComponent();
@@ -35,9 +34,9 @@ namespace XMLCodeGenerator.View
             DataContext = this;
             lb = (ListBox)this.FindName("listBox");
             if (!replacement)
-                SupportedChildElements = BlueprintsProvider.GetBlueprintsForNewChildElement(element.Element).Select(e => e.XML_Name).ToList();
+                SupportedChildElements = ModelProvider.GetModelsForNewChildElement(element.Element);
             else
-                SupportedChildElements = BlueprintsProvider.GetReplacementBlueprintsForElement(element.Element).Select(e => e.XML_Name).ToList();
+                SupportedChildElements = ModelProvider.GetReplacableModelsForElement(element.Element);
             lb.ItemsSource = SupportedChildElements;
             lb.SelectedIndex = 0;
             this.Title = "Add child element to " + Element.XML_Name;
@@ -100,7 +99,7 @@ namespace XMLCodeGenerator.View
         {
             if (lb.SelectedItem != null)
             {
-                SelectedOption = lb.SelectedItem as string;
+                SelectedOption = lb.SelectedItem as ElementModel;
                 this.DialogResult = true;
             }
             else
@@ -111,10 +110,10 @@ namespace XMLCodeGenerator.View
 
         public void TextChanged(object sender, TextChangedEventArgs e)
         {
-            List<string> newList = new();
+            List<ElementModel> newList = new();
             foreach(var s in SupportedChildElements)
             {
-                if (s.ToLower().Contains(textBox.Text.ToLower()))
+                if (s.Name.ToLower().Contains(textBox.Text.ToLower()))
                     newList.Add(s);
             }
             lb.ItemsSource = newList;

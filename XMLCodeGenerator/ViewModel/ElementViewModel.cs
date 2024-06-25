@@ -9,16 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using XMLCodeGenerator.Model;
-using XMLCodeGenerator.Model.Blueprints;
-using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 
 namespace XMLCodeGenerator.ViewModel
 {
     public class ElementViewModel: INotifyPropertyChanged
     {
-        public string XML_Name { get => Element.XML_Name; set { } }
-        public bool HasAttributes { get => Element.Attributes.Count > 0; }
-        public bool IsExtendable { get => Element.ContentPattern.Length > 0; set { } }
+        public string XML_Name { get => Element.Model.XMLName; set { } }
+        public string Name { get => Element.Model.Name; set { } }
+        public bool HasAttributes { get => Element.Model.Attributes.Count > 0; }
+        public bool IsExtendable { get => Element.Model.ContentBlocks.Count > 0; set { } }
         public bool IsExtendedAndHasAttributes { get => IsExtended && HasAttributes; set { } }
         private bool _isExtended;
         public bool IsExtended
@@ -90,14 +89,14 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
-        public string DefaultNewChild { get; set; }
+        public ElementModel DefaultNewChild { get; set; }
 
         private string _additionalInfo;
         public string AdditionalInfo
         {
             get
             {
-                if (Element is ICimClass || Element is ICimProperty)
+                if (Element.Model.Name.Equals("CimClass") || Element.Model.Name.Equals("CimProperty"))
                     return "[" + Attributes.FirstOrDefault(a => a.Name == "name")?.Value + "]";
                 else return "";
             }
@@ -108,80 +107,92 @@ namespace XMLCodeGenerator.ViewModel
             }
         }
         public ObservableCollection<ElementViewModel> ChildViewModels = new();
-        public IElement Element { get; set; }
+        public Element Element { get; set; }
         
-        public ElementViewModel(IElement element)
+        public ElementViewModel(Element element)
         {
             Element = element;
-            HasRoomForNewChildElement = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count > 0;
+            HasRoomForNewChildElement = ModelProvider.GetModelsForNewChildElement(Element).Count > 0;
             IsRemovable = XML_Name.Equals("CimClass");
-            IsReplacable = BlueprintsProvider.GetReplacementBlueprintsForElement(Element).Count > 0;
+            IsReplacable = ModelProvider.GetReplacableModelsForElement(Element) != null;
             Attributes = new();
-            DefaultNewChild = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count == 1 ? BlueprintsProvider.GetBlueprintsForNewChildElement(Element)[0].XML_Name : null;
+            var list = ModelProvider.GetModelsForNewChildElement(Element);
+            DefaultNewChild = list.Count == 1 ? list[0] : null;
             IsExtended = true;
             Attributes.CollectionChanged += Attributes_CollectionChanged;
             foreach (var child in element.ChildElements)
                 ChildViewModels.Add(new ElementViewModel(child));
-            foreach(var attribute in element.Attributes)
-                Attributes.Add(new AttributeViewModel(attribute));
+            foreach(var attribute in element.Model.Attributes)
+                Attributes.Add(new AttributeViewModel(attribute, element.AttributeValues[element.Model.Attributes.IndexOf(attribute)]));
+            setRemovableForChildren();
         }
-        public void AddNewChildElement(IElement e)
+        public void AddNewChildElement(ElementModel model)
         {
-            var newViewModel = new ElementViewModel(e);
-            for(int i=ChildViewModels.Count; i>= 0; i--)
+            List<ElementModel> list = null;
+            Element newElement = null;
+            for(int i = Element.Model.ContentBlocks.Count-1; i>=0; i--)
             {
-                if (i < ChildViewModels.Count)
+                if (Element.Model.ContentBlocks[i].ElementModels.Contains(model))
                 {
-                    Element.ChildElements.Insert(i, e);
-                    ChildViewModels.Insert(i, newViewModel);
+                    newElement = new Element(model, Element.Model.ContentBlocks[i]);
+                    break;
                 }
-                else if (i == Element.ChildElements.Count)
-                {
-                    Element.ChildElements.Add(e);
-                    ChildViewModels.Add(newViewModel);
-                }
-                if (!BlueprintsProvider.ElementMatchesPattern(Element))
-                {
-                    Element.ChildElements.RemoveAt(i);
-                    ChildViewModels.RemoveAt(i);
-                    continue;
-                }
-                HasRoomForNewChildElement = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count > 0;
-                setRemovableForChildren();
-                DefaultNewChild = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count == 1 ? BlueprintsProvider.GetBlueprintsForNewChildElement(Element)[0].XML_Name : null;
-                return;
             }
+            for(int i = 0; i<Element.ChildElements.Count; i++)
+            {
+                if (Element.ChildElements[i].ParentContentBlock == newElement.ParentContentBlock)
+                {
+                    while (Element.ChildElements.Count>i && Element.ChildElements[i].ParentContentBlock == newElement.ParentContentBlock) i++;
+                    if (i == Element.ChildElements.Count)
+                    {
+                        Element.ChildElements.Add(newElement);
+                        ChildViewModels.Add(new ElementViewModel(newElement));
+                    }
+                    else
+                    {
+                        Element.ChildElements.Insert(i, newElement);
+                        ChildViewModels.Insert(i, new ElementViewModel(newElement));
+                    }
+                    setRemovableForChildren();
+                    list = ModelProvider.GetModelsForNewChildElement(Element);
+                    DefaultNewChild = list.Count == 1 ? list[0] : null;
+                    return;
+                }
+            }
+            Element.ChildElements.Add(newElement);
+            ChildViewModels.Add(new ElementViewModel(newElement));
+            setRemovableForChildren();
+            list = ModelProvider.GetModelsForNewChildElement(Element);
+            DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
         public void DeleteChildElement(ElementViewModel element)
         {
             ChildViewModels.Remove(element);
             Element.ChildElements.Remove(element.Element);
             setRemovableForChildren();
-            DefaultNewChild = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count == 1 ? BlueprintsProvider.GetBlueprintsForNewChildElement(Element)[0].XML_Name : null;
+            var list = ModelProvider.GetModelsForNewChildElement(Element);
+            DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
-        public void ReplaceChild(ElementViewModel oldElement, string newElement)
+        public void ReplaceChild(ElementViewModel oldElement, ElementModel newElementModel)
         {
             int index = ChildViewModels.IndexOf(oldElement);
-            ChildViewModels[index] = new ElementViewModel(ElementFactory.CreateElementFromBlueprint(BlueprintsProvider.GetBlueprint(newElement)));
+            ChildViewModels[index] = new ElementViewModel(new Element(newElementModel, oldElement.Element.ParentContentBlock));
             Element.ChildElements[index] = ChildViewModels[index].Element;
-            DefaultNewChild = BlueprintsProvider.GetBlueprintsForNewChildElement(Element).Count == 1 ? BlueprintsProvider.GetBlueprintsForNewChildElement(Element)[0].XML_Name : null;
+            var list = ModelProvider.GetModelsForNewChildElement(Element);
+            DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
         private void setRemovableForChildren()
         {
-            List<ChildrenPattern> children = BlueprintsProvider.GetChildrenPatternsOfContentPattern(Element.ContentPattern);
-            foreach(var pattern in children)
-            {
-                List<ElementViewModel> viewModels = ChildViewModels.Where(e => pattern.Interface.IsAssignableFrom(BlueprintsProvider.GetBlueprint(e.XML_Name).Interface)).ToList();
-                foreach(var a in viewModels)
-                    a.IsRemovable = viewModels.Count > pattern.MinSize;
-                viewModels.Clear();
-            }
+            foreach(var child in ChildViewModels)
+                child.IsRemovable = Element.ChildElements.Where(c=>c.ParentContentBlock==child.Element.ParentContentBlock).ToList().Count > child.Element.ParentContentBlock.MinSize;
         }
         private void Attributes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
                 foreach (AttributeViewModel newItem in e.NewItems)
+                {
                     newItem.PropertyChanged += Attribute_PropertyChanged;
+                }
             if (e.OldItems != null)
                 foreach (AttributeViewModel oldItem in e.OldItems)
                     oldItem.PropertyChanged -= Attribute_PropertyChanged;
@@ -190,7 +201,11 @@ namespace XMLCodeGenerator.ViewModel
         private void Attribute_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "Value")
+            {
+                foreach (var attr in Attributes)
+                    Element.AttributeValues[Element.Model.Attributes.IndexOf(attr.Attribute)] = attr.Value;
                 OnPropertyChanged(nameof(AdditionalInfo));
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
 

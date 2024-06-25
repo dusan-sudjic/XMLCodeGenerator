@@ -18,8 +18,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using XMLCodeGenerator.Behaviors;
 using XMLCodeGenerator.Model;
-using XMLCodeGenerator.Model.BuildingBlocks;
-using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 using XMLCodeGenerator.View.Attributes;
 using XMLCodeGenerator.ViewModel;
 
@@ -193,11 +191,9 @@ namespace XMLCodeGenerator.View
             }
         }
 
-        public void AddChildElement(string elementName)
+        public void AddChildElement(ElementModel model)
         {
-            string selectedElement = elementName;
-            IElement newElem = ElementFactory.CreateElementFromBlueprint(BlueprintsProvider.GetBlueprint(selectedElement));
-            Element.AddNewChildElement(newElem);
+            Element.AddNewChildElement(model);
             SetUpUI();
             SetButtons();
         }

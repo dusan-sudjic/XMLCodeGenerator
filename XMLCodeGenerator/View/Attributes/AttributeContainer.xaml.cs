@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using Xceed.Wpf.Toolkit;
-using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 using XMLCodeGenerator.ViewModel;
 namespace XMLCodeGenerator.View.Attributes
 {
@@ -45,7 +44,7 @@ namespace XMLCodeGenerator.View.Attributes
         {
             switch (Attribute.ValueType)
             {
-                case Model.BuildingBlocks.Abstractions.ValueType.BOOLEAN:
+                case Model.ValueType.BOOLEAN:
                     {
                         var stringVal = (TextBox)this.FindName("StringValue");
                         stringVal.Visibility = System.Windows.Visibility.Collapsed;
@@ -53,7 +52,7 @@ namespace XMLCodeGenerator.View.Attributes
                         intVal.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     }
-                case Model.BuildingBlocks.Abstractions.ValueType.STRING:
+                case Model.ValueType.STRING:
                     {
                         var boolVal = (CheckBox)this.FindName("BoolValue");
                         boolVal.Visibility = System.Windows.Visibility.Collapsed;
@@ -61,7 +60,7 @@ namespace XMLCodeGenerator.View.Attributes
                         intVal.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     }
-                case Model.BuildingBlocks.Abstractions.ValueType.INTEGER:
+                case Model.ValueType.INTEGER:
                     {
                         var boolVal = (CheckBox)this.FindName("BoolValue");
                         boolVal.Visibility = System.Windows.Visibility.Collapsed;

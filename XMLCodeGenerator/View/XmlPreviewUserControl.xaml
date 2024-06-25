@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="XMLCodeGenerator.View.XmlPreviewUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XMLCodeGenerator.View" 
+             xmlns:xmlstack="clr-namespace:System.Xml;assembly=netstandard"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="xmlValueBrush" Color="DarkOrange"/>
+        <SolidColorBrush x:Key="xmAttributeBrush" Color="Black"/>
+        <SolidColorBrush x:Key="xmlTagBrush" Color="Black"/>
+        <SolidColorBrush x:Key="xmlMarkBrush" Color="Blue"/>
+
+        <DataTemplate x:Key="attributeTemplate">
+            <StackPanel Orientation="Horizontal" Margin="3,0,0,0" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding Name}" Foreground="{StaticResource xmAttributeBrush}"/>
+                <TextBlock Text="=" Foreground="{StaticResource xmAttributeBrush}"/>
+                <TextBlock Text="&quot;" FontWeight="SemiBold" Foreground="{StaticResource xmlValueBrush}"/>
+                <TextBlock Text="{Binding Value}" FontWeight="SemiBold" Foreground="{StaticResource xmlValueBrush}"/>
+                <TextBlock Text="&quot;" FontWeight="SemiBold" Foreground="{StaticResource xmlValueBrush}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <HierarchicalDataTemplate x:Key="treeViewTemplate" ItemsSource="{Binding ChildNodes}">
+            <StackPanel Orientation="Horizontal" Margin="3,0,0,0" HorizontalAlignment="Center">
+                <TextBlock Text="&lt;" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource xmlTagBrush}" x:Name="startTag"/>
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="0" HorizontalAlignment="Center" x:Name="xmlTag" Foreground="{StaticResource xmlTagBrush}"/>
+                <ItemsControl ItemTemplate="{StaticResource attributeTemplate}" ItemsSource="{Binding Attributes}" HorizontalAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <TextBlock Text="&gt;" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource xmlTagBrush}" x:Name="endTag"/>
+            </StackPanel>
+
+            <HierarchicalDataTemplate.Triggers>
+                <DataTrigger Binding="{Binding NodeType}">
+                    <DataTrigger.Value>
+                        <xmlstack:XmlNodeType>Text</xmlstack:XmlNodeType>
+                    </DataTrigger.Value>
+                    <Setter Property="Text" Value="{Binding InnerText}" TargetName="xmlTag"/>
+                    <Setter Property="Foreground" Value="Black" TargetName="xmlTag"/>
+                    <Setter Property="Visibility" Value="Collapsed" TargetName="startTag"/>
+                    <Setter Property="Visibility" Value="Collapsed" TargetName="endTag"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding HasChildNodes}" Value="False">
+                    <Setter Property="Text" Value="/&gt;" TargetName="endTag"/>
+                </DataTrigger>
+            </HierarchicalDataTemplate.Triggers>
+        </HierarchicalDataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <TreeView Name="xmlTree" ItemTemplate="{StaticResource treeViewTemplate}" ItemsSource="{Binding XmlElements}">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="True"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
+    </Grid>
+</UserControl>
