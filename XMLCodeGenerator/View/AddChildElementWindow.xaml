@@ -7,7 +7,8 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="AddChildElementWindow" Height="400" Width="360"
-        PreviewKeyDown="Window_KeyDown">
+        PreviewKeyDown="Window_KeyDown"
+        WindowStartupLocation="CenterScreen">
     <StackPanel>
         <Label Width="100">Search elements</Label>
         <xctk:WatermarkTextBox Width="160" x:Name="search" Watermark="Search" Margin="10 0 10 10" TextChanged="TextChanged"></xctk:WatermarkTextBox>

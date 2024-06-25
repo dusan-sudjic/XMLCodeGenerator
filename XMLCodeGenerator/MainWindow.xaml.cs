@@ -21,14 +21,11 @@ using System.Windows.Shapes;
 using System.Xml;
 using XMLCodeGenerator.Commands;
 using XMLCodeGenerator.Model;
+using XMLCodeGenerator.Model.Blueprints;
 using XMLCodeGenerator.Model.BuildingBlocks;
-using XMLCodeGenerator.Model.Elements;
-using XMLCodeGenerator.Model.Elements.BooleanOperators;
-using XMLCodeGenerator.Model.Elements.Conditions;
-using XMLCodeGenerator.Model.Elements.GetOperators;
-using XMLCodeGenerator.Model.Elements.MathOperators;
+using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
 using XMLCodeGenerator.View;
-using static System.Net.Mime.MediaTypeNames;
+using XMLCodeGenerator.ViewModel;
 
 namespace XMLCodeGenerator
 {
@@ -61,66 +58,32 @@ namespace XMLCodeGenerator
             }
         }
         public ICommand AddClassCommand { get; set; }
-        public static List<ICim> CimClasses { get; set; }
+        public static List<ElementViewModel> CimClasses { get; set; }
         public static StackPanel CimClassesStackPanel { get; set; }
         private static TextBlock XMLPreviewTextBlock;
         public MainWindow()
         {
             InitializeComponent();
-            CimClasses = new List<ICim>();
+            CimClasses = new List<ElementViewModel>();
             AddClassCommand = new RelayCommand(ExecuteAddNewCimClassCommand);
             this.DataContext = this;
             CimClassesStackPanel = (StackPanel)this.FindName("Stack");
             XMLPreviewTextBlock = (TextBlock)this.FindName("XMLPreview");
             IsProviderReaderImported = false;
-            MockData();
+            BlueprintsProvider.LoadModel();
+            //IElement element = ElementFactory.CreateElementFromBlueprint(BlueprintsProvider.GetBlueprint("IfBlock"));
+            //ElementViewModel elemVM = new ElementViewModel(element);
+            //List<ElementBlueprint> bp = BlueprintsProvider.GetBlueprintsForNewChildElement(element);
+            //IElement newElement = ElementFactory.CreateElementFromBlueprint(bp[2]);
+            //elemVM.AddNewChildElement(newElement);
+            //elemVM.AddNewChildElement(newElement);
+            //bp.Clear();
         }
 
-        private void MockData()
-        {
-            var class1 = new CimClassElement();
-            class1.Attributes.Where(a => a.Name == "name").ToList()[0].Value = "ACLineSegment";
-            var property1 = new CimPropertyElement();
-            property1.Attributes.Where(a => a.Name == "name").ToList()[0].Value = "ConnectedCircuit";
-            var property2 = new CimPropertyElement();
-            property2.Attributes.Where(a => a.Name == "name").ToList()[0].Value = "SequenceNumber";
-            var property3 = new CimPropertyElement();
-            property3.Attributes.Where(a => a.Name == "name").ToList()[0].Value = "Circuit";
-            class1.AddChildElementToContent(property1);
-            //RootElement.AddChildElementToContent(new CimPropertyElement());
-            class1.AddChildElementToContent(property2);
-            //RootElement.AddChildElementToContent(new CimPropertyElement());
-            class1.AddChildElementToContent(property3);
-            var if1 = new IfElement();
-            property1.AddChildElementToContent(if1);
-            var cond1 = new ConditionElement();
-            var less1 = new NumericComparator("LessThan");
-            cond1.AddChildElementToContent(less1);
-            if1.AddChildElementToContent(cond1);
-            var getVal1 = new GetValueElement();
-            var getVal12 = new GetValueElement();
-            less1.AddChildElementToContent(getVal1);
-            less1.AddChildElementToContent(getVal12);
-            var abs = new UnaryMathOperation("AbsoluteValue");
-            abs.AddChildElementToContent(new ConstantElement());
-            if1.AddChildElementToContent(abs);
-            property2.AddChildElementToContent(new GetValueElement());
-            property3.AddChildElementToContent(new ConstantElement());
-            
-            CimClasses.Add(class1);
-            CimClassesStackPanel.Children.Add(new ElementUserControl(class1));
-            CimClasses.Add(class1);
-            CimClassesStackPanel.Children.Add(new ElementUserControl(class1));
-            CimClasses.Add(class1);
-            CimClassesStackPanel.Children.Add(new ElementUserControl(class1));
-            CimClasses.Add(class1);
-            CimClassesStackPanel.Children.Add(new ElementUserControl(class1));
-        }
-
-        public static void BindElementToXMLPreview(IElement element)
+        public static void BindElementToXMLPreview(ElementViewModel element)
         {
             XMLPreviewTextBlock.Inlines.Clear();
-            XMLPreviewTextBlock.Inlines.AddRange(ParseAndStylizeText(XMLElementConverter.ConvertElementToXML(element)));
+            XMLPreviewTextBlock.Inlines.AddRange(ParseAndStylizeText(element.Element.ToXML(0)));
         }
         private static Inline[] ParseAndStylizeText(string text)
         {
@@ -148,16 +111,17 @@ namespace XMLCodeGenerator
 
         private void AddNewCimClass()
         {
-            CimClassElement class1 = new CimClassElement();
-            CimClasses.Add(class1);
+            ElementBlueprint bp = BlueprintsProvider.GetBlueprint("CimClass");
+            ElementViewModel element = new ElementViewModel(ElementFactory.CreateElementFromBlueprint(bp));
+            CimClasses.Add(element);
             StackPanel stackPanel = (StackPanel)this.FindName("Stack");
-            stackPanel.Children.Add(new ElementUserControl(class1));
+            stackPanel.Children.Add(new ElementUserControl(element));
             ScrollToBottomSmoothlyAsync();
         }
 
         public static void RemoveCimClass(ElementUserControl uc)
         {
-            CimClassElement class1 = uc.Element as CimClassElement;
+            ElementViewModel class1 = uc.Element as ElementViewModel;
             if (class1 == null)
                 return;
             CimClasses.Remove(class1);
@@ -292,7 +256,6 @@ namespace XMLCodeGenerator
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
 
     public record ClassInfo

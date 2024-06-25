@@ -13,7 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Xceed.Wpf.Toolkit;
 using XMLCodeGenerator.Model;
-using XMLCodeGenerator.Model.BuildingBlocks;
+using XMLCodeGenerator.Model.BuildingBlocks.Abstractions;
+using XMLCodeGenerator.ViewModel;
 
 namespace XMLCodeGenerator.View
 {
@@ -22,18 +23,21 @@ namespace XMLCodeGenerator.View
     /// </summary>
     public partial class AddChildElementWindow : Window
     {
-        public IElement Element { get; set; }
+        public ElementViewModel Element { get; set; }
         public ListBox lb {  get; set; }
         public string SelectedOption { get; set; }
         WatermarkTextBox textBox { get; set; }
         List<string> SupportedChildElements { get; set; }
-        public AddChildElementWindow(IElement element)
+        public AddChildElementWindow(ElementViewModel element, bool replacement = false)
         {
             InitializeComponent();
             Element = element;
             DataContext = this;
             lb = (ListBox)this.FindName("listBox");
-            SupportedChildElements= ElementProviderReflection.GetSupportedChildElements(Element);
+            if (!replacement)
+                SupportedChildElements = BlueprintsProvider.GetBlueprintsForNewChildElement(element.Element).Select(e => e.XML_Name).ToList();
+            else
+                SupportedChildElements = BlueprintsProvider.GetReplacementBlueprintsForElement(element.Element).Select(e => e.XML_Name).ToList();
             lb.ItemsSource = SupportedChildElements;
             lb.SelectedIndex = 0;
             this.Title = "Add child element to " + Element.XML_Name;
