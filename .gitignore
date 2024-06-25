@@ -39,3 +39,5 @@
 /XMLCodeGenerator/obj/Debug/net8.0-windows/XMLCodeGenerator_MarkupCompile.i.cache
 /XMLCodeGenerator/obj/Debug/net8.0-windows/XMLCodeGenerator_MarkupCompile.i.lref
 *.v2
+/.vs/ProjectEvaluation
+/XMLCodeGenerator/obj
