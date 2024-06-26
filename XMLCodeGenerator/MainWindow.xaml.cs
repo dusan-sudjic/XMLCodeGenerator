@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+using System.Xml.Linq;
 using XMLCodeGenerator.Commands;
 using XMLCodeGenerator.Model;
 using XMLCodeGenerator.View;
@@ -31,6 +32,7 @@ namespace XMLCodeGenerator
         public List<ClassInfo> ProviderReaderClasses = new();
         public List<EntityInfo> SourceProviderEntities = new();
         private bool _isProviderReaderImported;
+        public static string OutputPath { get; private set; }
         public bool IsProviderReaderImported { 
             get => _isProviderReaderImported; 
             set { 
@@ -56,16 +58,24 @@ namespace XMLCodeGenerator
         }
         public static XmlPreviewUserControl xmlPreviewControl { get; set; }
         public ICommand AddClassCommand { get; set; }
+        public ICommand ExportToXmlCommand { get; set; }
+        public ICommand OpenExistingFileCommand { get; set; }
         public static List<ElementViewModel> CimClasses { get; set; }
+        public static List<ElementViewModel> FunctionDefinitions { get; set; }
         public static StackPanel CimClassesStackPanel { get; set; }
+        public static StackPanel FunctionDefinitionsStackPanel { get; set; }
         private static TextBlock XMLPreviewTextBlock;
         public MainWindow()
         {
             InitializeComponent();
             CimClasses = new List<ElementViewModel>();
+            FunctionDefinitions = new List<ElementViewModel>();
             AddClassCommand = new RelayCommand(ExecuteAddNewCimClassCommand);
+            ExportToXmlCommand = new RelayCommand(ExecuteExportToXmlCommand);
+            OpenExistingFileCommand = new RelayCommand(ExecuteOpenExistingFileCommand);
             this.DataContext = this;
             CimClassesStackPanel = (StackPanel)this.FindName("Stack");
+            FunctionDefinitionsStackPanel = (StackPanel)this.FindName("FunctionsStack");
             XMLPreviewTextBlock = (TextBlock)this.FindName("XMLPreview");
             IsProviderReaderImported = false;
             xmlPreviewControl = (XmlPreviewUserControl)this.FindName("xmlPreview");
@@ -99,7 +109,11 @@ namespace XMLCodeGenerator
 
         public void AddNewCimClass_Click(object sender, RoutedEventArgs e)
         {
-            AddNewCimClass();
+            TabControl tab = (TabControl)FindName("TabControl");
+            if (tab.SelectedIndex == 0)
+                AddNewCimClass();
+            else
+                AddNewCimFunction();
         }
 
         private void AddNewCimClass()
@@ -109,7 +123,16 @@ namespace XMLCodeGenerator
             CimClasses.Add(element);
             StackPanel stackPanel = (StackPanel)this.FindName("Stack");
             stackPanel.Children.Add(new ElementUserControl(element));
-            ScrollToBottomSmoothlyAsync();
+            ScrollToBottomSmoothlyAsync("CimClassesScroll");
+        }
+        private void AddNewCimFunction()
+        {
+            ElementModel bp = ModelProvider.GetElementModel("FunctionDefinition");
+            ElementViewModel element = new ElementViewModel(new Element(bp));
+            FunctionDefinitions.Add(element);
+            StackPanel stackPanel = (StackPanel)this.FindName("FunctionsStack");
+            stackPanel.Children.Add(new ElementUserControl(element));
+            ScrollToBottomSmoothlyAsync("CimFunctionsScroll");
         }
 
         public static void RemoveCimClass(ElementUserControl uc)
@@ -120,10 +143,109 @@ namespace XMLCodeGenerator
             CimClasses.Remove(class1);
             CimClassesStackPanel.Children.Remove(uc);
         }
+        public static void RemoveFunctionDefinition(ElementUserControl uc)
+        {
+            ElementViewModel function = uc.Element as ElementViewModel;
+            if (function == null)
+                return;
+            FunctionDefinitions.Remove(function);
+            FunctionDefinitionsStackPanel.Children.Remove(uc);
+        }
         public void ExecuteAddNewCimClassCommand(object parameter)
         {
-            AddNewCimClass();
+            TabControl tab = (TabControl)FindName("TabControl");
+            if (tab.SelectedIndex == 0)
+                AddNewCimClass();
+            else
+                AddNewCimFunction();
         }
+        public void ExecuteOpenExistingFileCommand(object parameter)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "XML Files (*.xml)|*.xml";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string filePath = openFileDialog.FileName;
+                try
+                {
+                    XmlDocument xmlDoc = new XmlDocument();
+                    xmlDoc.Load(filePath);
+                    OutputPath = filePath;
+                    CimClasses = new();
+                    StackPanel cimClassesStackPanel = (StackPanel)this.FindName("Stack");
+                    cimClassesStackPanel.Children.Clear();
+                    StackPanel functionDefinitionsStackPanel = (StackPanel)this.FindName("FunctionsStack");
+                    functionDefinitionsStackPanel.Children.Clear();
+                    XmlNodeList cimClassNodes = xmlDoc.SelectNodes("//CimClass");
+                    if (cimClassNodes != null)
+                    {
+                        foreach (XmlElement cimClassNode in cimClassNodes)
+                        {
+                            ElementViewModel elemVM = new ElementViewModel(Element.FromXmlElement(cimClassNode));
+                            CimClasses.Add(elemVM);
+                            cimClassesStackPanel.Children.Add(new ElementUserControl(elemVM));
+                        }
+                    }
+                    FunctionDefinitions = new();
+                    XmlNodeList functionDefinitionNodes = xmlDoc.SelectNodes("//FunctionDefinition");
+                    if (functionDefinitionNodes != null)
+                    {
+                        foreach (XmlElement functionDefinitionNode in functionDefinitionNodes)
+                        {
+                            ElementViewModel elemVM = new ElementViewModel(Element.FromXmlElement(functionDefinitionNode));
+                            FunctionDefinitions.Add(elemVM);
+                            functionDefinitionsStackPanel.Children.Add(new ElementUserControl(elemVM));
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading or processing XML file: {ex.Message}");
+                }
+            }
+        }
+        public void ExecuteExportToXmlCommand(object parameter)
+        {
+            if (OutputPath == null)
+            {
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+                saveFileDialog.Filter = "XML Files (*.xml)|*.xml";
+                saveFileDialog.OverwritePrompt = false;
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    OutputPath = saveFileDialog.FileName;
+                }
+            }
+            try
+            {
+                XmlDocument xmlDoc = new XmlDocument();
+                XmlElement rootElement = xmlDoc.CreateElement("Root");
+                var functionDefinitions = xmlDoc.CreateElement("FunctionDefinitions");
+                foreach (var functionDefinition in FunctionDefinitions)
+                    functionDefinitions.AppendChild(functionDefinition.Element.ToXmlNode(xmlDoc));
+                rootElement.AppendChild(functionDefinitions);
+                xmlDoc.AppendChild(rootElement);
+                var cimClasses = xmlDoc.CreateElement("CimClasses");
+                foreach (var cimClass in CimClasses)
+                    cimClasses.AppendChild(cimClass.Element.ToXmlNode(xmlDoc));
+                rootElement.AppendChild(cimClasses);
+
+                xmlDoc.Save(OutputPath);
+
+                MessageBox.Show("XML saved successfully.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving XML file: {ex.Message}");
+            }
+        }
+        public void ExportToXml(object sender, RoutedEventArgs e)
+        {
+            ExecuteExportToXmlCommand(null);
+        }
+        
+
         public void ImportProviderReader(object sender, RoutedEventArgs e)
         {
             ProviderReaderClasses.Clear();
@@ -188,6 +310,11 @@ namespace XMLCodeGenerator
                 }
             }
         }
+
+        public void OpenExistingFile(object sender, RoutedEventArgs e)
+        {
+            ExecuteOpenExistingFileCommand(null);
+        }
         private List<string> GetClassProperties(Type type)
         {
             List<string> properties = new List<string>();
@@ -206,9 +333,9 @@ namespace XMLCodeGenerator
             border.Width = Math.Max(border.Width + deltaX, thumb.DesiredSize.Width);
             border.Height = Math.Max(border.Height + deltaY, thumb.DesiredSize.Height);
         }
-        private async void ScrollToBottomSmoothlyAsync()
+        private async void ScrollToBottomSmoothlyAsync(string name)
         {
-            ScrollViewer scrollViewer = (ScrollViewer)this.FindName("CimClassesScroll");
+            ScrollViewer scrollViewer = (ScrollViewer)this.FindName(name);
             double scrollHeight = scrollViewer.ScrollableHeight;
             double currentOffset = scrollViewer.VerticalOffset;
             double targetOffset = scrollHeight;

@@ -12,11 +12,15 @@ namespace XMLCodeGenerator.Model
 {
     public sealed class Element
     {
-        protected static string tab = "    ";
         public List<Element> ChildElements { get; set; }
         public List<string> AttributeValues { get; set; }
         public ElementModel Model { get; set; }
         public ContentBlockModel ParentContentBlock { get; set; }
+        public Element() 
+        {
+            ChildElements = new List<Element>();
+            AttributeValues = new List<string>();
+        }
         public Element(ElementModel model, ContentBlockModel parentContentBlock = null)
         {
             Model = model;
@@ -49,6 +53,21 @@ namespace XMLCodeGenerator.Model
                 else
                     appendChildNodes(child, node, doc);
             }
+        }
+        public static Element FromXmlElement(XmlElement xmlElement, ContentBlockModel parentBlock = null)
+        {
+            Element element = new Element();
+            element.Model = ModelProvider.GetElementModelByXMLName(xmlElement.Name);
+            element.ParentContentBlock = parentBlock;
+            foreach(XmlAttribute attr in xmlElement.Attributes)
+                element.AttributeValues.Add(attr.Value);
+            foreach (XmlElement childXmlElement in xmlElement.ChildNodes)
+            {
+                ElementModel childModel = ModelProvider.GetElementModelByXMLName(childXmlElement.Name);
+                Element childElement = FromXmlElement(childXmlElement, element.Model.SupportsChildModel(childModel));
+                element.ChildElements.Add(childElement);
+            }
+            return element;
         }
         public override string ToString() { return Model.Name; }
     }

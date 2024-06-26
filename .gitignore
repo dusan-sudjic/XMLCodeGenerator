@@ -48,3 +48,5 @@
 /.vs/ProjectEvaluation
 /.vs/ProjectEvaluation
 /XMLCodeGenerator/obj
+/XMLCodeGenerator/obj/Debug/net8.0-windows/View/Attributes/AttributeContainer.baml
+/XMLCodeGenerator/obj/Debug/net8.0-windows/View/Attributes/AttributeContainer.g.cs

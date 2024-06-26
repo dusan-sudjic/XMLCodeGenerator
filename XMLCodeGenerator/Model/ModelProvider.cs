@@ -11,6 +11,7 @@ namespace XMLCodeGenerator.Model
     {
         private static string path = "../../../Input/model.xml";
         public static List<ElementModel> ElementModels = new();
+        public static List<ElementModel> SupportingElementModels = new();
         public static List<ElementType> ElementTypes = new();
 
         public static void LoadModel()
@@ -32,7 +33,7 @@ namespace XMLCodeGenerator.Model
 
                 foreach(var element in ElementModels)
                     element.SetContent();
-                Console.WriteLine("e");
+                SupportingElementModels = ElementModels.Where(x => x.XMLName.Length==0).ToList();
             }
             catch (Exception ex)
             {
@@ -42,6 +43,10 @@ namespace XMLCodeGenerator.Model
         public static ElementModel GetElementModel(string name)
         {
             return ElementModels.First(x=>x.Name.Equals(name));
+        }
+        public static ElementModel GetElementModelByXMLName(string name)
+        {
+            return ElementModels.First(x => x.XMLName.Equals(name));
         }
         public static List<ElementModel> GetReplacableModelsForElement(Element element)
         {

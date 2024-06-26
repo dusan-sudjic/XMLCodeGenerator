@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Model>
     <Types>
+		<Type Name="Element">
+			CimProperty,Constant,SetDefault,GetSourceValue,GetEntityValue,BreakInstanceCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,IfBlock,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,IsNull,StringContains,StringEndsWith,StringStartsWith,IsInConcreteModel,ContainsProperty,StringIsNullOrEmpty,StringIsNullOrWhiteSpace,AreEqual,IsSourceElement,IsFalse,IsTrue,GreaterThan,GreaterThanOrEqual,LessThan,LessThanOrEqual,Condition,AndConditions,OrConditions
+		</Type>
         <Type Name="Expression">
             Constant,SetDefault,GetSourceValue,GetEntityValue,BreakInstanceCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,IfBlock,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable
         </Type>
@@ -22,6 +25,12 @@
                 CimProperty
             </ContentBlock>
         </Element>
+		<Element Name="FunctionDefinition" XMLName="FunctionDefinition">
+			<Attribute Name="Name" IsRequired="true" ValueType="STRING"/>
+			<ContentBlock MinSize="0" MaxSize="-1">
+				*Element
+			</ContentBlock>
+		</Element>
         <Element Name="CimProperty" XMLName="CimProperty">
             <Attribute Name="name" IsRequired="true" ValueType="STRING"/>
             <Attribute Name="mandatory" IsRequired="false" ValueType="BOOLEAN"/>

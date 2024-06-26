@@ -37,6 +37,8 @@
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="A" Modifiers="Control" Command="{Binding AddClassCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding ExportToXmlCommand}"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenExistingFileCommand}"/>
     </Window.InputBindings>
     <Grid HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -48,8 +50,8 @@
                 <Menu Height="25" VerticalAlignment="Top">
                     <MenuItem Height="25" Header="File">
                         <MenuItem Header="New File" />
-                        <MenuItem Header="Open File" />
-                        <MenuItem Header="Export to XML" />
+                        <MenuItem Header="Open File" Click="OpenExistingFile"/>
+                        <MenuItem Header="Export to XML" Click="ExportToXml"/>
                         <Separator />
                         <MenuItem Header="Recent Files">
                             <MenuItem Header="File 1" />
@@ -109,7 +111,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Border Background="LightCyan" Grid.Column="0" Height="580" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="1 5 0 10" BorderThickness="2" BorderBrush="Black">
-                <TabControl>
+                <TabControl x:Name="TabControl">
                     <TabItem Header="Cim Classes">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" x:Name="CimClassesScroll" Padding="6">
                             <i:Interaction.Behaviors>
@@ -123,7 +125,18 @@
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
-                    <TabItem Header="Cim Functions">
+                    <TabItem Header="Function Definitions">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" x:Name="CimFunctionsScroll" Padding="6">
+                            <i:Interaction.Behaviors>
+                                <behaviors:ScrollViewStickyBehavior/>
+                            </i:Interaction.Behaviors>
+                            <StackPanel>
+                                <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new CIM function element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="140" Click="AddNewCimClass_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add CIM Function</Button>
+                                <StackPanel x:Name="FunctionsStack" Margin="0 0 0 60">
+
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
                     </TabItem>
                 </TabControl>
             </Border>

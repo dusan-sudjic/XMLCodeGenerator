@@ -104,17 +104,7 @@ namespace XMLCodeGenerator.View
             if (!Element.IsExtendable)
             {
                 foreach (var attr in Element.Attributes)
-                {
-                    if (Element.XML_Name.Equals("GetValue"))
-                    {
-                        _unexpandableAttributesContainer.Children.Add(new AttributeContainer(attr, true));
-                        break;
-                    }
-                    else
-                    {
-                        _unexpandableAttributesContainer.Children.Add(new AttributeContainer(attr));
-                    }
-                }
+                    _unexpandableAttributesContainer.Children.Add(new AttributeContainer(attr));
             }
             else
             {
@@ -152,6 +142,10 @@ namespace XMLCodeGenerator.View
             if(Element.XML_Name.Equals("CimClass"))
             {
                 MainWindow.RemoveCimClass(this);
+            }
+            else if (Element.XML_Name.Equals("FunctionDefinition"))
+            {
+                MainWindow.RemoveFunctionDefinition(this);
             }
             else
             {

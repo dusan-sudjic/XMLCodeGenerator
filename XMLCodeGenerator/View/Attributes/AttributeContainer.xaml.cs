@@ -22,7 +22,7 @@ namespace XMLCodeGenerator.View.Attributes
         {
             InitializeComponent();
         }
-        public AttributeContainer(AttributeViewModel attribute, bool getValueAttribute = false):this()
+        public AttributeContainer(AttributeViewModel attribute):this()
         {
             DataContext = this;
             Attribute = attribute;
@@ -30,15 +30,6 @@ namespace XMLCodeGenerator.View.Attributes
             //Border border = (Border)this.FindName("Border");
             //border.BorderBrush = Attribute.IsRequiredValueSet ? new SolidColorBrush(Colors.LightGray) : new SolidColorBrush(Colors.Red);
             //border.BorderThickness = Attribute.IsRequiredValueSet ? new Thickness(0) : new Thickness(1);
-            if (getValueAttribute)
-            {
-                var combo = (ComboBox)this.FindName("ComboBox");
-                combo.ItemsSource = new string[] { "SourceName", "EntityName" };
-                combo.SelectedIndex = 0;
-                combo.Visibility = System.Windows.Visibility.Visible;
-                var name = (TextBlock)this.FindName("AttributeName");
-                name.Visibility = System.Windows.Visibility.Collapsed;
-            }
         }
         private void HandleValueType()
         {

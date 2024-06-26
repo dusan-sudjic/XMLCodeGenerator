@@ -26,6 +26,10 @@ namespace XMLCodeGenerator.Model
             foreach (XmlNode contentBlock in node.SelectNodes("ContentBlock"))
                 ContentBlocks.Add(new ContentBlockModel(contentBlock));
         }
+        public ContentBlockModel SupportsChildModel(ElementModel model)
+        {
+            return ContentBlocks.Where(x=>x.ElementModels.Contains(model)).ToList()[0];
+        }
         public void SetContent()
         {
             foreach(ContentBlockModel contentBlock in ContentBlocks)

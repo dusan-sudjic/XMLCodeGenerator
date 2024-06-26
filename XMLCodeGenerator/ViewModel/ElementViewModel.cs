@@ -96,8 +96,8 @@ namespace XMLCodeGenerator.ViewModel
         {
             get
             {
-                if (Element.Model.Name.Equals("CimClass") || Element.Model.Name.Equals("CimProperty"))
-                    return "[" + Attributes.FirstOrDefault(a => a.Name == "name")?.Value + "]";
+                if (Element.Model.Name.Equals("CimClass") || Element.Model.Name.Equals("CimProperty") || Element.Model.Name.Equals("FunctionDefinition"))
+                    return "[" + Attributes.FirstOrDefault(a => a.Name.Equals("name", StringComparison.OrdinalIgnoreCase))?.Value + "]";
                 else return "";
             }
             set
@@ -113,7 +113,7 @@ namespace XMLCodeGenerator.ViewModel
         {
             Element = element;
             HasRoomForNewChildElement = ModelProvider.GetModelsForNewChildElement(Element).Count > 0;
-            IsRemovable = XML_Name.Equals("CimClass");
+            IsRemovable = XML_Name.Equals("CimClass") || XML_Name.Equals("FunctionDefinition");
             IsReplacable = ModelProvider.GetReplacableModelsForElement(Element) != null;
             Attributes = new();
             var list = ModelProvider.GetModelsForNewChildElement(Element);

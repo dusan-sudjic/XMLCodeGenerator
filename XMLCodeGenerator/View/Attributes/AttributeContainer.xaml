@@ -9,7 +9,6 @@
              Margin="0 0 10 0">
     <Border x:Name="Border" BorderBrush="Black" CornerRadius="5" Background="LightGray" Padding="5 0 3 0" MaxWidth="223">
             <StackPanel Orientation="Horizontal">
-            <ComboBox x:Name="ComboBox" FontSize="9" Width="80" VerticalContentAlignment="Center" Margin="0 2 -6 2" Visibility="Collapsed" Foreground="DimGray"/>
             <TextBlock x:Name="AttributeName" Background="LightGray" Foreground="DimGray" FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center"  MaxWidth="80">
                 <Run Text="{Binding Attribute.Name}"/>
                 <Run Text="{Binding Required}" Foreground="Red"/>
