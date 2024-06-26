@@ -276,6 +276,7 @@
             </ContentBlock>
         </Element>  
         <Element Name="Case" XMLName="Case">
+			<Attribute Name="Name" IsRequired="true" ValueType="STRING"/>
             <ContentBlock MinSize="1" MaxSize="1">
                 *Expression
             </ContentBlock>

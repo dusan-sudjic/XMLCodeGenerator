@@ -59,16 +59,36 @@ namespace XMLCodeGenerator.Model
             Element element = new Element();
             element.Model = ModelProvider.GetElementModelByXMLName(xmlElement.Name);
             element.ParentContentBlock = parentBlock;
-            foreach(XmlAttribute attr in xmlElement.Attributes)
+            foreach (XmlAttribute attr in xmlElement.Attributes)
                 element.AttributeValues.Add(attr.Value);
+            AddChildren(xmlElement, element);
+            return element;
+        }
+
+        private static void AddChildren(XmlElement xmlElement, Element element)
+        {
             foreach (XmlElement childXmlElement in xmlElement.ChildNodes)
             {
                 ElementModel childModel = ModelProvider.GetElementModelByXMLName(childXmlElement.Name);
-                Element childElement = FromXmlElement(childXmlElement, element.Model.SupportsChildModel(childModel));
-                element.ChildElements.Add(childElement);
+                ContentBlockModel parentContentBlock = element.Model.SupportsChildModel(childModel);
+                if (parentContentBlock == null)
+                {
+                    ElementModel supportingModel = ModelProvider.SupportingElementModels.First(x => x.SupportsChildModel(childModel) != null);
+                    Element supportingElement = new Element();
+                    supportingElement.Model = supportingModel;
+                    supportingElement.ParentContentBlock = element.Model.SupportsChildModel(supportingModel);
+                    AddChildren(xmlElement, supportingElement);
+                    element.ChildElements.Add(supportingElement);
+                    break;
+                }
+                else
+                {
+                    Element childElement = FromXmlElement(childXmlElement, parentContentBlock);
+                    element.ChildElements.Add(childElement);
+                }
             }
-            return element;
         }
+
         public override string ToString() { return Model.Name; }
     }
 

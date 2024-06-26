@@ -31,8 +31,8 @@ namespace XMLCodeGenerator
     {
         public List<ClassInfo> ProviderReaderClasses = new();
         public List<EntityInfo> SourceProviderEntities = new();
-        private bool _isProviderReaderImported;
         public static string OutputPath { get; private set; }
+        private bool _isProviderReaderImported;
         public bool IsProviderReaderImported { 
             get => _isProviderReaderImported; 
             set { 
@@ -42,6 +42,20 @@ namespace XMLCodeGenerator
                     OnPropertyChanged();
                 }
             } 
+        }
+        private static bool _hasUnsavedChages;
+        public static bool HasUnsavedChanges
+        {
+            get => _hasUnsavedChages;
+            set
+            {
+                if (value != _hasUnsavedChages)
+                {
+                    _hasUnsavedChages = value;
+                    UnsavedButton.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+                    SavedButton.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
+                }
+            }
         }
         private bool _isSourceProviderImported;
         public bool isSourceProviderImported
@@ -65,6 +79,8 @@ namespace XMLCodeGenerator
         public static StackPanel CimClassesStackPanel { get; set; }
         public static StackPanel FunctionDefinitionsStackPanel { get; set; }
         private static TextBlock XMLPreviewTextBlock;
+        private static Button UnsavedButton;
+        private static Button SavedButton;
         public MainWindow()
         {
             InitializeComponent();
@@ -75,9 +91,12 @@ namespace XMLCodeGenerator
             OpenExistingFileCommand = new RelayCommand(ExecuteOpenExistingFileCommand);
             this.DataContext = this;
             CimClassesStackPanel = (StackPanel)this.FindName("Stack");
+            SavedButton = (Button)this.FindName("Saved");
+            UnsavedButton = (Button)this.FindName("Unsaved");
             FunctionDefinitionsStackPanel = (StackPanel)this.FindName("FunctionsStack");
             XMLPreviewTextBlock = (TextBlock)this.FindName("XMLPreview");
             IsProviderReaderImported = false;
+            HasUnsavedChanges = false;
             xmlPreviewControl = (XmlPreviewUserControl)this.FindName("xmlPreview");
             ModelProvider.LoadModel();
         }
@@ -198,6 +217,7 @@ namespace XMLCodeGenerator
                             functionDefinitionsStackPanel.Children.Add(new ElementUserControl(elemVM));
                         }
                     }
+                    HasUnsavedChanges = false;
                 }
                 catch (Exception ex)
                 {
@@ -234,6 +254,7 @@ namespace XMLCodeGenerator
                 xmlDoc.Save(OutputPath);
 
                 MessageBox.Show("XML saved successfully.");
+                HasUnsavedChanges = false;
             }
             catch (Exception ex)
             {

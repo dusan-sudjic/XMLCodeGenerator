@@ -28,7 +28,7 @@ namespace XMLCodeGenerator.Model
         }
         public ContentBlockModel SupportsChildModel(ElementModel model)
         {
-            return ContentBlocks.Where(x=>x.ElementModels.Contains(model)).ToList()[0];
+            return ContentBlocks.Where(x=>x.ElementModels.Contains(model)).ToList().FirstOrDefault();
         }
         public void SetContent()
         {

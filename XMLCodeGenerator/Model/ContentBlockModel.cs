@@ -33,5 +33,9 @@ namespace XMLCodeGenerator.Model
         {
             return ElementModels[0];
         }
+        public override string ToString()
+        {
+            return ElementsString;
+        }
     }
 }

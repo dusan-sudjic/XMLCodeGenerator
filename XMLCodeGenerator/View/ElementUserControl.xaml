@@ -53,7 +53,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel ToolTip="{Binding Name}" x:Name="SidePanel" Visibility="{Binding Element.IsExtendable, Converter={StaticResource BooleanToVisibilityConverter}}" Width="20" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel ToolTip="{Binding Element.Name}" x:Name="SidePanel" Visibility="{Binding Element.IsExtendable, Converter={StaticResource BooleanToVisibilityConverter}}" Width="20" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <ToggleButton x:Name="ToggleButton" Cursor="Hand" Content="-" Visibility="{Binding Element.IsExtendable, Converter={StaticResource BooleanToVisibilityConverter}}" FontWeight="Bold" Width="20" Height="20" Margin="0 5 0 0" Click="ToggleButton_Click" FontSize="10" Padding="0"/>
                 <!--<TextBlock Text="{Binding XML_Name}" x:Name="StickyTextBlock" Background="Red" Height="Auto" Width="Auto"> --><!--Visibility="{Binding IsMainLabelWithinViewport, Converter={StaticResource InverseBooleanToVisibilityConverter}}"--><!--
                     <TextBlock.RenderTransform>
@@ -61,7 +61,7 @@
                     </TextBlock.RenderTransform>
                 </TextBlock>-->
             </StackPanel>
-            <Grid ToolTip="{Binding Name}" Grid.Column="1" HorizontalAlignment="Stretch">
+            <Grid ToolTip="{Binding Element.Name}" Grid.Column="1" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -101,7 +101,7 @@
                 <StackPanel Grid.Row="2" x:Name="ChildrenContainer" Visibility="{Binding Element.IsExtended, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 5 2" AllowDrop="True">
                     <!-- Child elements go here -->
                 </StackPanel>
-                <Label x:Name="EndLabel" Visibility="{Binding Element.IsExtended, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Grid.Row="3" Content="{Binding Name}" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Bottom"></Label>
+                <Label x:Name="EndLabel" Visibility="{Binding Element.IsExtended, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Grid.Row="3" Content="{Binding Element.Name}" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Bottom"></Label>
             </Grid>
         </Grid>
     </Border>

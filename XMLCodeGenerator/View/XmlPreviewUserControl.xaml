@@ -11,7 +11,6 @@
         <SolidColorBrush x:Key="xmlValueBrush" Color="DarkOrange"/>
         <SolidColorBrush x:Key="xmAttributeBrush" Color="Black"/>
         <SolidColorBrush x:Key="xmlTagBrush" Color="Black"/>
-        <SolidColorBrush x:Key="xmlMarkBrush" Color="Blue"/>
 
         <DataTemplate x:Key="attributeTemplate">
             <StackPanel Orientation="Horizontal" Margin="3,0,0,0" HorizontalAlignment="Center">

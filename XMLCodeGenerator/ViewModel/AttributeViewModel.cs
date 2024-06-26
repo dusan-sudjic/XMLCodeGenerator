@@ -62,6 +62,7 @@ namespace XMLCodeGenerator.ViewModel
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            MainWindow.HasUnsavedChanges = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

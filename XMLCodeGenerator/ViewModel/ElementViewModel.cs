@@ -140,9 +140,21 @@ namespace XMLCodeGenerator.ViewModel
             }
             for(int i = 0; i<Element.ChildElements.Count; i++)
             {
-                if (Element.ChildElements[i].ParentContentBlock == newElement.ParentContentBlock)
+                if (Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) < Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
+                    continue;
+                else if(Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) > Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
                 {
-                    while (Element.ChildElements.Count>i && Element.ChildElements[i].ParentContentBlock == newElement.ParentContentBlock) i++;
+                    Element.ChildElements.Insert(i, newElement);
+                    ChildViewModels.Insert(i, new ElementViewModel(newElement));
+                    setRemovableForChildren();
+                    list = ModelProvider.GetModelsForNewChildElement(Element);
+                    DefaultNewChild = list.Count == 1 ? list[0] : null;
+                    return;
+                }
+                else
+                { 
+                    while (Element.ChildElements.Count>i && Element.ChildElements[i].ParentContentBlock == newElement.ParentContentBlock) 
+                        i++;
                     if (i == Element.ChildElements.Count)
                     {
                         Element.ChildElements.Add(newElement);
@@ -211,6 +223,7 @@ namespace XMLCodeGenerator.ViewModel
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            MainWindow.HasUnsavedChanges = true;
             if (propertyName == "IsExtended")
                 OnPropertyChanged(nameof(IsExtendedAndHasAttributes));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
