@@ -103,28 +103,26 @@ namespace XMLCodeGenerator
 
         public static void BindElementToXMLPreview(ElementViewModel element)
         {
-            xmlPreviewControl.XmlElements = new List<XmlElement> { element.Element.ToXmlNode() };
-            //XMLPreviewTextBlock.Inlines.Clear();
-            //XMLPreviewTextBlock.Inlines.AddRange(ParseAndStylizeText(element.Element.ToXML(0)));
+            xmlPreviewControl.XmlElements = new List<XmlElement> { XmlElementFactory.GetXmlElement(element.Element) };
         }
-        private static Inline[] ParseAndStylizeText(string text)
-        {
-            var inlines = new List<Inline>();
+        //private static Inline[] ParseAndStylizeText(string text)
+        //{
+        //    var inlines = new List<Inline>();
 
-            var regex = new Regex(@"\[b\](?<boldText>.*?)\[\/b\]|\[r\](?<redText>.*?)\[\/r\]|(?<normalText>[^[]+)");
-            var matches = regex.Matches(text);
+        //    var regex = new Regex(@"\[b\](?<boldText>.*?)\[\/b\]|\[r\](?<redText>.*?)\[\/r\]|(?<normalText>[^[]+)");
+        //    var matches = regex.Matches(text);
 
-            foreach (Match match in matches)
-            {
-                if (match.Groups["boldText"].Success)
-                    inlines.Add(new Run(match.Groups["boldText"].Value) { FontWeight = FontWeights.Bold });
-                else if (match.Groups["redText"].Success)
-                    inlines.Add(new Run(match.Groups["redText"].Value) { Foreground = Brushes.DarkOrange, FontWeight=FontWeights.DemiBold });
-                else if (match.Groups["normalText"].Success)
-                    inlines.Add(new Run(match.Groups["normalText"].Value));
-            }
-            return inlines.ToArray();
-        }
+        //    foreach (Match match in matches)
+        //    {
+        //        if (match.Groups["boldText"].Success)
+        //            inlines.Add(new Run(match.Groups["boldText"].Value) { FontWeight = FontWeights.Bold });
+        //        else if (match.Groups["redText"].Success)
+        //            inlines.Add(new Run(match.Groups["redText"].Value) { Foreground = Brushes.DarkOrange, FontWeight=FontWeights.DemiBold });
+        //        else if (match.Groups["normalText"].Success)
+        //            inlines.Add(new Run(match.Groups["normalText"].Value));
+        //    }
+        //    return inlines.ToArray();
+        //}
 
         public void AddNewCimClass_Click(object sender, RoutedEventArgs e)
         {
@@ -201,7 +199,7 @@ namespace XMLCodeGenerator
                     {
                         foreach (XmlElement cimClassNode in cimClassNodes)
                         {
-                            ElementViewModel elemVM = new ElementViewModel(Element.FromXmlElement(cimClassNode));
+                            ElementViewModel elemVM = new ElementViewModel(XmlElementFactory.GetElement(cimClassNode));
                             CimClasses.Add(elemVM);
                             cimClassesStackPanel.Children.Add(new ElementUserControl(elemVM));
                         }
@@ -212,7 +210,7 @@ namespace XMLCodeGenerator
                     {
                         foreach (XmlElement functionDefinitionNode in functionDefinitionNodes)
                         {
-                            ElementViewModel elemVM = new ElementViewModel(Element.FromXmlElement(functionDefinitionNode));
+                            ElementViewModel elemVM = new ElementViewModel(XmlElementFactory.GetElement(functionDefinitionNode));
                             FunctionDefinitions.Add(elemVM);
                             functionDefinitionsStackPanel.Children.Add(new ElementUserControl(elemVM));
                         }
@@ -243,12 +241,12 @@ namespace XMLCodeGenerator
                 XmlElement rootElement = xmlDoc.CreateElement("Root");
                 var functionDefinitions = xmlDoc.CreateElement("FunctionDefinitions");
                 foreach (var functionDefinition in FunctionDefinitions)
-                    functionDefinitions.AppendChild(functionDefinition.Element.ToXmlNode(xmlDoc));
+                    functionDefinitions.AppendChild(XmlElementFactory.GetXmlElement(functionDefinition.Element,xmlDoc));
                 rootElement.AppendChild(functionDefinitions);
                 xmlDoc.AppendChild(rootElement);
                 var cimClasses = xmlDoc.CreateElement("CimClasses");
                 foreach (var cimClass in CimClasses)
-                    cimClasses.AppendChild(cimClass.Element.ToXmlNode(xmlDoc));
+                    cimClasses.AppendChild(XmlElementFactory.GetXmlElement(cimClass.Element,xmlDoc));
                 rootElement.AppendChild(cimClasses);
 
                 xmlDoc.Save(OutputPath);

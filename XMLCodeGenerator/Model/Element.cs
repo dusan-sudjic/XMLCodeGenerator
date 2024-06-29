@@ -35,60 +35,6 @@ namespace XMLCodeGenerator.Model
                     ChildElements.Add(new Element(block.GetDefaultElement(), block));
             ParentContentBlock = parentContentBlock;
         }
-        public XmlElement ToXmlNode(XmlDocument doc = null)
-        {
-            if (doc == null) doc = new XmlDocument();
-            XmlElement node = doc.CreateElement(Model.XMLName);
-            foreach (var attr in Model.Attributes)
-                node.SetAttribute(attr.Name, AttributeValues[Model.Attributes.IndexOf(attr)]);
-            appendChildNodes(this, node, doc);
-            return node;
-        }
-        private void appendChildNodes(Element element, XmlNode node, XmlDocument doc)
-        {
-            foreach (var child in element.ChildElements)
-            {
-                if (child.Model.XMLName.Length > 0)
-                    node.AppendChild(child.ToXmlNode(doc));
-                else
-                    appendChildNodes(child, node, doc);
-            }
-        }
-        public static Element FromXmlElement(XmlElement xmlElement, ContentBlockModel parentBlock = null)
-        {
-            Element element = new Element();
-            element.Model = ModelProvider.GetElementModelByXMLName(xmlElement.Name);
-            element.ParentContentBlock = parentBlock;
-            foreach (XmlAttribute attr in xmlElement.Attributes)
-                element.AttributeValues.Add(attr.Value);
-            AddChildren(xmlElement, element);
-            return element;
-        }
-
-        private static void AddChildren(XmlElement xmlElement, Element element)
-        {
-            foreach (XmlElement childXmlElement in xmlElement.ChildNodes)
-            {
-                ElementModel childModel = ModelProvider.GetElementModelByXMLName(childXmlElement.Name);
-                ContentBlockModel parentContentBlock = element.Model.SupportsChildModel(childModel);
-                if (parentContentBlock == null)
-                {
-                    ElementModel supportingModel = ModelProvider.SupportingElementModels.First(x => x.SupportsChildModel(childModel) != null);
-                    Element supportingElement = new Element();
-                    supportingElement.Model = supportingModel;
-                    supportingElement.ParentContentBlock = element.Model.SupportsChildModel(supportingModel);
-                    AddChildren(xmlElement, supportingElement);
-                    element.ChildElements.Add(supportingElement);
-                    break;
-                }
-                else
-                {
-                    Element childElement = FromXmlElement(childXmlElement, parentContentBlock);
-                    element.ChildElements.Add(childElement);
-                }
-            }
-        }
-
         public override string ToString() { return Model.Name; }
     }
 
