@@ -25,11 +25,14 @@
                 CimProperty
             </ContentBlock>
         </Element>
-		<Element Name="FunctionDefinition" XMLName="FunctionDefinition">
-			<Attribute Name="Name" IsRequired="true" ValueType="STRING"/>
-			<ContentBlock MinSize="0" MaxSize="-1">
+		<Element Name="FunctionDefinition" XMLName="Function">
+			<Attribute Name="Name" IsRequired="true" ValueType="STRING"  Editable="false"/>
+			<ContentBlock MinSize="1" MaxSize="1">
 				*Element
 			</ContentBlock>
+		</Element>
+		<Element Name="Function" XMLName="Function">
+			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Editable="false"/>
 		</Element>
         <Element Name="CimProperty" XMLName="CimProperty">
             <Attribute Name="name" IsRequired="true" ValueType="STRING"/>

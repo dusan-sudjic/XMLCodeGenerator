@@ -27,7 +27,7 @@ namespace XMLCodeGenerator.Model
                 ElementModels = ModelProvider.ElementTypes.First(x => x.Name.Equals(ElementsString.Substring(1))).ElementModels;
             else
                 foreach(var el in ElementsString.Split(','))
-                    ElementModels.Add(ModelProvider.GetElementModel(el));
+                    ElementModels.Add(ModelProvider.GetElementModelByName(el));
         }
         public ElementModel GetDefaultElement()
         {

@@ -24,22 +24,33 @@ namespace XMLCodeGenerator.View
     {
         public ElementViewModel Element { get; set; }
         public ListBox lb {  get; set; }
-        public ElementModel SelectedOption { get; set; }
+        public ListBox lbFunctions {  get; set; }
+        public ElementModel SelectedElement { get; set; }
         WatermarkTextBox textBox { get; set; }
         List<ElementModel> SupportedChildElements { get; set; }
+        List<ElementModel> SupportedFunctionCalls { get; set; }
         public AddChildElementWindow(ElementViewModel element, bool replacement = false)
         {
             InitializeComponent();
             Element = element;
             DataContext = this;
             lb = (ListBox)this.FindName("listBox");
+            lbFunctions = (ListBox)this.FindName("functionsListBox");
             if (!replacement)
-                SupportedChildElements = ModelProvider.GetModelsForNewChildElement(element.Element);
+                SupportedChildElements = ModelProvider.GetModelsForNewChildElement(element.Element).Where(e=>e.FunctionDefinition==null).ToList();
             else
-                SupportedChildElements = ModelProvider.GetReplacableModelsForElement(element.Element);
+                SupportedChildElements = ModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e.FunctionDefinition == null).ToList();
+            if (!replacement)
+                SupportedFunctionCalls = ModelProvider.GetModelsForNewChildElement(element.Element).Where(e => e.FunctionDefinition != null).ToList();
+            else
+                SupportedFunctionCalls = ModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e.FunctionDefinition != null).ToList();
+            if (SupportedChildElements == null)
+                tab.SelectedIndex = 1;
             lb.ItemsSource = SupportedChildElements;
+            lbFunctions.ItemsSource = SupportedFunctionCalls;
             lb.SelectedIndex = 0;
-            this.Title = "Add child element to " + Element.XML_Name;
+            lbFunctions.SelectedIndex = 0;
+            this.Title = replacement ? "Replace " + Element.XML_Name: "Add child element to " + Element.XML_Name;
             textBox = (WatermarkTextBox)this.FindName("search");
             textBox.Focus();
         }
@@ -64,31 +75,65 @@ namespace XMLCodeGenerator.View
 
         private void OnDownArrowPressed()
         {
-            if (lb.SelectedIndex == -1)
+            if (tab.SelectedIndex == 0)
             {
-                lb.SelectedIndex = 0;
-                return;
+                if (lb.SelectedIndex == -1)
+                {
+                    lb.SelectedIndex = 0;
+                    return;
+                }
+                if (lb.SelectedIndex == lb.Items.Count - 1)
+                {
+                    lb.SelectedIndex = 0;
+                    return;
+                }
+                lb.SelectedIndex++;
             }
-            if(lb.SelectedIndex == lb.Items.Count - 1)
+            else
             {
-                lb.SelectedIndex = 0;
-                return;
+                if (lbFunctions.SelectedIndex == -1)
+                {
+                    lbFunctions.SelectedIndex = 0;
+                    return;
+                }
+                if (lbFunctions.SelectedIndex == lb.Items.Count - 1)
+                {
+                    lbFunctions.SelectedIndex = 0;
+                    return;
+                }
+                lbFunctions.SelectedIndex++;
             }
-            lb.SelectedIndex++;
         }
         private void OnUpArrowPressed()
         {
-            if (lb.SelectedIndex == -1)
+            if (tab.SelectedIndex == 1)
             {
-                lb.SelectedIndex = lb.Items.Count - 1;
-                return;
+                if (lbFunctions.SelectedIndex == -1)
+                {
+                    lbFunctions.SelectedIndex = lb.Items.Count - 1;
+                    return;
+                }
+                if (lbFunctions.SelectedIndex == 0)
+                {
+                    lbFunctions.SelectedIndex = lb.Items.Count - 1;
+                    return;
+                }
+                lbFunctions.SelectedIndex--;
             }
-            if (lb.SelectedIndex == 0)
+            else
             {
-                lb.SelectedIndex = lb.Items.Count - 1;
-                return;
+                if (lb.SelectedIndex == -1)
+                {
+                    lb.SelectedIndex = lb.Items.Count - 1;
+                    return;
+                }
+                if (lb.SelectedIndex == 0)
+                {
+                    lb.SelectedIndex = lb.Items.Count - 1;
+                    return;
+                }
+                lb.SelectedIndex--;
             }
-            lb.SelectedIndex--;
         }
         public void OKButton_Click(object sender, RoutedEventArgs e)
         {
@@ -97,14 +142,29 @@ namespace XMLCodeGenerator.View
 
         private void Select()
         {
-            if (lb.SelectedItem != null)
+            if (tab.SelectedIndex == 0)
             {
-                SelectedOption = lb.SelectedItem as ElementModel;
-                this.DialogResult = true;
+                if (lb.SelectedItem != null)
+                {
+                    SelectedElement = lb.SelectedItem as ElementModel;
+                    this.DialogResult = true;
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("Please select an option.");
+                }
             }
             else
             {
-                System.Windows.MessageBox.Show("Please select an option.");
+                if (lbFunctions.SelectedItem != null)
+                {
+                    SelectedElement = lbFunctions.SelectedItem as ElementModel;
+                    this.DialogResult = true;
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("Please select an option.");
+                }
             }
         }
 
@@ -118,6 +178,15 @@ namespace XMLCodeGenerator.View
             }
             lb.ItemsSource = newList;
             if (lb.SelectedIndex == -1) lb.SelectedIndex = 0;
+
+            List<ElementModel> newListFunctions = new();
+            foreach (var s in SupportedFunctionCalls)
+            {
+                if (s.ToString().ToLower().Contains(textBox.Text.ToLower()))
+                    newListFunctions.Add(s);
+            }
+            lbFunctions.ItemsSource = newListFunctions;
+            if (lbFunctions.SelectedIndex == -1) lbFunctions.SelectedIndex = 0;
         }
     }
 }

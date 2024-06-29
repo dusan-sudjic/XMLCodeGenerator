@@ -105,24 +105,6 @@ namespace XMLCodeGenerator
         {
             xmlPreviewControl.XmlElements = new List<XmlElement> { XmlElementFactory.GetXmlElement(element.Element) };
         }
-        //private static Inline[] ParseAndStylizeText(string text)
-        //{
-        //    var inlines = new List<Inline>();
-
-        //    var regex = new Regex(@"\[b\](?<boldText>.*?)\[\/b\]|\[r\](?<redText>.*?)\[\/r\]|(?<normalText>[^[]+)");
-        //    var matches = regex.Matches(text);
-
-        //    foreach (Match match in matches)
-        //    {
-        //        if (match.Groups["boldText"].Success)
-        //            inlines.Add(new Run(match.Groups["boldText"].Value) { FontWeight = FontWeights.Bold });
-        //        else if (match.Groups["redText"].Success)
-        //            inlines.Add(new Run(match.Groups["redText"].Value) { Foreground = Brushes.DarkOrange, FontWeight=FontWeights.DemiBold });
-        //        else if (match.Groups["normalText"].Success)
-        //            inlines.Add(new Run(match.Groups["normalText"].Value));
-        //    }
-        //    return inlines.ToArray();
-        //}
 
         public void AddNewCimClass_Click(object sender, RoutedEventArgs e)
         {
@@ -135,7 +117,7 @@ namespace XMLCodeGenerator
 
         private void AddNewCimClass()
         {
-            ElementModel bp = ModelProvider.GetElementModel("CimClass");
+            ElementModel bp = ModelProvider.GetElementModelByName("CimClass");
             ElementViewModel element = new ElementViewModel(new Element(bp));
             CimClasses.Add(element);
             StackPanel stackPanel = (StackPanel)this.FindName("Stack");
@@ -144,12 +126,29 @@ namespace XMLCodeGenerator
         }
         private void AddNewCimFunction()
         {
-            ElementModel bp = ModelProvider.GetElementModel("FunctionDefinition");
-            ElementViewModel element = new ElementViewModel(new Element(bp));
-            FunctionDefinitions.Add(element);
-            StackPanel stackPanel = (StackPanel)this.FindName("FunctionsStack");
-            stackPanel.Children.Add(new ElementUserControl(element));
-            ScrollToBottomSmoothlyAsync("CimFunctionsScroll");
+            CreateNewFunctionWindow window = new CreateNewFunctionWindow();
+            if (window.ShowDialog() == true)
+            {
+                if (ModelProvider.GetElementModelByName("FunctionCall [" + window.Name + "]") != null) 
+                { 
+                    MessageBox.Show("Function with name " + window.Name + " already exists.");
+                    return;
+                }
+                else
+                {
+                    ElementModel model = ModelProvider.GetElementModelByName("FunctionDefinition");
+                    Element element = new Element(model);
+                    element.AttributeValues[0] = window.Name;
+                    ModelProvider.AddNewFunctionDefinition(element);
+                    ElementViewModel elementVM = new ElementViewModel(element);
+                    FunctionDefinitions.Add(elementVM);
+                    StackPanel stackPanel = (StackPanel)this.FindName("FunctionsStack");
+                    stackPanel.Children.Add(new ElementUserControl(elementVM));
+                    foreach (var c in CimClasses)
+                        c.SetReplacable();
+                    ScrollToBottomSmoothlyAsync("CimFunctionsScroll");
+                }
+            }
         }
 
         public static void RemoveCimClass(ElementUserControl uc)
@@ -166,7 +165,10 @@ namespace XMLCodeGenerator
             if (function == null)
                 return;
             FunctionDefinitions.Remove(function);
+            ModelProvider.RemoveFunctionDefinition(function.Element);
             FunctionDefinitionsStackPanel.Children.Remove(uc);
+            foreach (var c in CimClasses)
+                c.SetReplacable();
         }
         public void ExecuteAddNewCimClassCommand(object parameter)
         {
@@ -194,6 +196,20 @@ namespace XMLCodeGenerator
                     cimClassesStackPanel.Children.Clear();
                     StackPanel functionDefinitionsStackPanel = (StackPanel)this.FindName("FunctionsStack");
                     functionDefinitionsStackPanel.Children.Clear();
+                    FunctionDefinitions = new();
+                    XmlNodeList functionDefinitionNodes = xmlDoc.SelectNodes("//FunctionDefinitions/Function");
+                    if (functionDefinitionNodes != null)
+                    {
+                        foreach (XmlElement functionDefinitionNode in functionDefinitionNodes)
+                        {
+                            Element el = XmlElementFactory.GetElement(functionDefinitionNode);
+                            ModelProvider.AddNewFunctionDefinition(el);
+                            ElementViewModel elemVM = new ElementViewModel(el);
+                            FunctionDefinitions.Add(elemVM);
+                            functionDefinitionsStackPanel.Children.Add(new ElementUserControl(elemVM));
+                        }
+                    }
+                    
                     XmlNodeList cimClassNodes = xmlDoc.SelectNodes("//CimClass");
                     if (cimClassNodes != null)
                     {
@@ -204,17 +220,7 @@ namespace XMLCodeGenerator
                             cimClassesStackPanel.Children.Add(new ElementUserControl(elemVM));
                         }
                     }
-                    FunctionDefinitions = new();
-                    XmlNodeList functionDefinitionNodes = xmlDoc.SelectNodes("//FunctionDefinition");
-                    if (functionDefinitionNodes != null)
-                    {
-                        foreach (XmlElement functionDefinitionNode in functionDefinitionNodes)
-                        {
-                            ElementViewModel elemVM = new ElementViewModel(XmlElementFactory.GetElement(functionDefinitionNode));
-                            FunctionDefinitions.Add(elemVM);
-                            functionDefinitionsStackPanel.Children.Add(new ElementUserControl(elemVM));
-                        }
-                    }
+                    
                     HasUnsavedChanges = false;
                 }
                 catch (Exception ex)

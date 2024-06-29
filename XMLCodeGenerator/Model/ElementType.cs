@@ -17,7 +17,7 @@ namespace XMLCodeGenerator.Model
             ElementModels = new List<ElementModel>();
             string[] elementNames = node.InnerText.Trim().Split(',');
             foreach(string elementName in elementNames)
-                ElementModels.Add(ModelProvider.GetElementModel(elementName));
+                ElementModels.Add(ModelProvider.GetElementModelByName(elementName));
         }
     }
 }

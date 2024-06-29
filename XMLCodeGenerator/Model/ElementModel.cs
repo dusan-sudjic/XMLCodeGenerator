@@ -13,6 +13,18 @@ namespace XMLCodeGenerator.Model
         public string XMLName { get; set; }
         public List<ContentBlockModel> ContentBlocks { get; set; }
         public List<AttributeModel> Attributes { get; set; }
+        public Element FunctionDefinition { get; set; }
+        private ElementModel() { }
+        public static ElementModel CreateFunctionCallModel(Element function) 
+        {
+            ElementModel newELement = new ElementModel();
+            newELement.Name = "FunctionCall [" + function.AttributeValues[0] + "]";
+            newELement.XMLName = "Function";
+            newELement.Attributes = [new AttributeModel()];
+            newELement.ContentBlocks = new();
+            newELement.FunctionDefinition = function;
+            return newELement;
+        }
         public ElementModel(XmlNode node) 
         {
             ContentBlocks = new();
@@ -26,6 +38,11 @@ namespace XMLCodeGenerator.Model
             foreach (XmlNode contentBlock in node.SelectNodes("ContentBlock"))
                 ContentBlocks.Add(new ContentBlockModel(contentBlock));
         }
+        public ElementModel GetModel()
+        {
+            return FunctionDefinition != null ? FunctionDefinition.ChildElements[0].Model : this;
+        }
+
         public ContentBlockModel SupportsChildModel(ElementModel model)
         {
             return ContentBlocks.Where(x=>x.ElementModels.Contains(model)).ToList().FirstOrDefault();

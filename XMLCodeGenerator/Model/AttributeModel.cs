@@ -12,11 +12,20 @@ namespace XMLCodeGenerator.Model
         public string Name { get; set; }
         public ValueType ValueType { get; set; }
         public bool IsRequired { get; set; }
+        public bool Editable {  get; set; }
         public AttributeModel(XmlNode node)
         {
             Name = node.Attributes["Name"]?.InnerText;
             IsRequired = bool.Parse(node.Attributes["IsRequired"]?.InnerText);
             ValueType = (ValueType)Enum.Parse(typeof(ValueType), node.Attributes["ValueType"]?.InnerText);
+            var editableText = node.Attributes["Editable"]?.InnerText;
+            Editable = editableText != null ? bool.Parse(editableText) : true;
+        }
+        public AttributeModel()
+        {
+            Name = "Name";
+            ValueType = ValueType.STRING;
+            IsRequired = true;
         }
         public override string ToString()
         {

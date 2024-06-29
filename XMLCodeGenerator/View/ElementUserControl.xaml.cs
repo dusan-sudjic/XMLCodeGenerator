@@ -92,7 +92,7 @@ namespace XMLCodeGenerator.View
             AddChildElementWindow window = new AddChildElementWindow(element, true);
             if (window.ShowDialog() == true)
             {
-                Element.ReplaceChild(element, window.SelectedOption);
+                Element.ReplaceChild(element, window.SelectedElement);
                 SetButtons();
                 SetUpUI();
             }
@@ -104,13 +104,15 @@ namespace XMLCodeGenerator.View
             if (!Element.IsExtendable)
             {
                 foreach (var attr in Element.Attributes)
-                    _unexpandableAttributesContainer.Children.Add(new AttributeContainer(attr));
+                    if(attr.Attribute.Editable)
+                        _unexpandableAttributesContainer.Children.Add(new AttributeContainer(attr));
             }
             else
             {
                 _attributesContainer.Children.Clear();
                 foreach (var attr in Element.Attributes)
-                    _attributesContainer.Children.Add(new AttributeContainer(attr));
+                    if(attr.Attribute.Editable)
+                        _attributesContainer.Children.Add(new AttributeContainer(attr));
 
                 _childrenContainer.Children.Clear();
                 foreach (var child in Element.ChildViewModels)
@@ -143,7 +145,7 @@ namespace XMLCodeGenerator.View
             {
                 MainWindow.RemoveCimClass(this);
             }
-            else if (Element.XML_Name.Equals("FunctionDefinition"))
+            else if (Element.Element.Model.Name.Equals("FunctionDefinition"))
             {
                 MainWindow.RemoveFunctionDefinition(this);
             }
@@ -177,7 +179,7 @@ namespace XMLCodeGenerator.View
             {
                 AddChildElementWindow window = new AddChildElementWindow(Element);
                 if (window.ShowDialog() == true)
-                    AddChildElement(window.SelectedOption);
+                    AddChildElement(window.SelectedElement);
             }
             else
             {

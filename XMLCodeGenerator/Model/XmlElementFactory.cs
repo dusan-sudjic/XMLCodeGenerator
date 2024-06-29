@@ -31,7 +31,7 @@ namespace XMLCodeGenerator.Model
         public static Element GetElement(XmlElement xmlElement, ContentBlockModel parentBlock = null)
         {
             Element element = new Element();
-            element.Model = ModelProvider.GetElementModelByXMLName(xmlElement.Name);
+            element.Model = ModelProvider.GetElementModelByXMLElement(xmlElement);
             element.ParentContentBlock = parentBlock;
             foreach (XmlAttribute attr in xmlElement.Attributes)
                 element.AttributeValues.Add(attr.Value);
@@ -43,8 +43,9 @@ namespace XMLCodeGenerator.Model
         {
             foreach (XmlElement childXmlElement in xmlElement.ChildNodes)
             {
-                ElementModel childModel = ModelProvider.GetElementModelByXMLName(childXmlElement.Name);
-                ContentBlockModel parentContentBlock = element.Model.SupportsChildModel(childModel);
+                ElementModel childModel = ModelProvider.GetElementModelByXMLElement(childXmlElement);
+                ContentBlockModel parentContentBlock = null;
+                parentContentBlock = element.Model.SupportsChildModel(childModel.GetModel());
                 if (parentContentBlock == null)
                 {
                     ElementModel supportingModel = ModelProvider.SupportingElementModels.First(x => x.SupportsChildModel(childModel) != null);

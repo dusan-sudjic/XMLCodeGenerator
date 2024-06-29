@@ -94,7 +94,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Header=" Attributes " Margin="0 10 0 0" BorderBrush="CornflowerBlue" x:Name="AttributesGroupBox" Visibility="{Binding Element.IsExtendedAndHasAttributes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <GroupBox Header=" Attributes " Margin="0 10 0 0" BorderBrush="CornflowerBlue" x:Name="AttributesGroupBox" Visibility="{Binding Element.IsExtendedAndHasEditableAttributes, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel x:Name="AttributesStackPanel" Orientation="Horizontal" Height="25"></StackPanel>
                     </GroupBox>
                 </Grid>
