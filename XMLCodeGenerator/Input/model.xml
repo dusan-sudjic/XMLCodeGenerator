@@ -68,7 +68,7 @@
                 *Expression
             </ContentBlock>
         </Element>
-        <Element Name="Substring" XMLName="Sustring">
+        <Element Name="Substring" XMLName="Substring">
             <Attribute Name="StartIndex" IsRequired="true" ValueType="INTEGER"/>
             <ContentBlock MinSize="1" MaxSize="1">
                 *Expression
