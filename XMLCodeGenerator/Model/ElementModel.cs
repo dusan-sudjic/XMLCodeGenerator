@@ -20,7 +20,7 @@ namespace XMLCodeGenerator.Model
             ElementModel newELement = new ElementModel();
             newELement.Name = "FunctionCall [" + function.AttributeValues[0] + "]";
             newELement.XMLName = "Function";
-            newELement.Attributes = [new AttributeModel()];
+            newELement.Attributes = [AttributeModel.CreateAttributeModelForFunctionCall()];
             newELement.ContentBlocks = new();
             newELement.FunctionDefinition = function;
             return newELement;
@@ -42,8 +42,7 @@ namespace XMLCodeGenerator.Model
         {
             return FunctionDefinition != null ? FunctionDefinition.ChildElements[0].Model : this;
         }
-
-        public ContentBlockModel SupportsChildModel(ElementModel model)
+        public ContentBlockModel GetSuitableContentBlockForChildModel(ElementModel model)
         {
             return ContentBlocks.Where(x=>x.ElementModels.Contains(model)).ToList().FirstOrDefault();
         }

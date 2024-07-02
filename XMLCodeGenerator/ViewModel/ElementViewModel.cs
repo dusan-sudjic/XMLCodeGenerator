@@ -142,8 +142,7 @@ namespace XMLCodeGenerator.ViewModel
         }
         public void AddNewChildElement(ElementModel model)
         {
-
-            List<ElementModel> list = null;
+            List<ElementModel> list;
             Element newElement = null;
             for (int i = Element.Model.ContentBlocks.Count - 1; i >= 0; i--)
             {
@@ -161,30 +160,18 @@ namespace XMLCodeGenerator.ViewModel
                 {
                     Element.ChildElements.Insert(i, newElement);
                     ChildViewModels.Insert(i, new ElementViewModel(newElement));
-                    setRemovableForChildren();
-                    list = ModelProvider.GetModelsForNewChildElement(Element);
-                    DefaultNewChild = list.Count == 1 ? list[0] : null;
-                    return;
                 }
                 else
                 { 
                     while (Element.ChildElements.Count>i && Element.ChildElements[i].ParentContentBlock == newElement.ParentContentBlock) 
                         i++;
-                    if (i == Element.ChildElements.Count)
-                    {
-                        Element.ChildElements.Add(newElement);
-                        ChildViewModels.Add(new ElementViewModel(newElement));
-                    }
-                    else
-                    {
-                        Element.ChildElements.Insert(i, newElement);
-                        ChildViewModels.Insert(i, new ElementViewModel(newElement));
-                    }
-                    setRemovableForChildren();
-                    list = ModelProvider.GetModelsForNewChildElement(Element);
-                    DefaultNewChild = list.Count == 1 ? list[0] : null;
-                    return;
+                    Element.ChildElements.Insert(i, newElement);
+                    ChildViewModels.Insert(i, new ElementViewModel(newElement));
                 }
+                setRemovableForChildren();
+                list = ModelProvider.GetModelsForNewChildElement(Element);
+                DefaultNewChild = list.Count == 1 ? list[0] : null;
+                return;
             }
             Element.ChildElements.Add(newElement);
             ChildViewModels.Add(new ElementViewModel(newElement));
@@ -218,9 +205,7 @@ namespace XMLCodeGenerator.ViewModel
         {
             if (e.NewItems != null)
                 foreach (AttributeViewModel newItem in e.NewItems)
-                {
                     newItem.PropertyChanged += Attribute_PropertyChanged;
-                }
             if (e.OldItems != null)
                 foreach (AttributeViewModel oldItem in e.OldItems)
                     oldItem.PropertyChanged -= Attribute_PropertyChanged;

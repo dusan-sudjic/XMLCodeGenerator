@@ -23,10 +23,14 @@ namespace XMLCodeGenerator.View
             DataContext = this;
             textBox.Focus();
         }
-
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                SubmitClick(sender, e);
+        }
         private void SubmitClick(object sender, RoutedEventArgs e)
         {
-            if(textBox.Text.Length > 0)
+            if(textBox.Text.Length > 0 && !textBox.Text.Contains(" "))
             {
                 Name = textBox.Text;
                 this.DialogResult = true;

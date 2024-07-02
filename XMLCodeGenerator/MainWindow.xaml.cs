@@ -129,7 +129,7 @@ namespace XMLCodeGenerator
             CreateNewFunctionWindow window = new CreateNewFunctionWindow();
             if (window.ShowDialog() == true)
             {
-                if (ModelProvider.GetElementModelByName("FunctionCall [" + window.Name + "]") != null) 
+                if (ModelProvider.GetElementModelByName(ModelProvider.GetFunctionCallModelName(window.Name)) != null) 
                 { 
                     MessageBox.Show("Function with name " + window.Name + " already exists.");
                     return;

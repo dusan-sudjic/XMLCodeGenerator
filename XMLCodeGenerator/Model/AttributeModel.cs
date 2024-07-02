@@ -21,11 +21,14 @@ namespace XMLCodeGenerator.Model
             var editableText = node.Attributes["Editable"]?.InnerText;
             Editable = editableText != null ? bool.Parse(editableText) : true;
         }
-        public AttributeModel()
+        private AttributeModel() { }
+        public static AttributeModel CreateAttributeModelForFunctionCall()
         {
-            Name = "Name";
-            ValueType = ValueType.STRING;
-            IsRequired = true;
+            AttributeModel am = new AttributeModel();
+            am.Name = "Name";
+            am.ValueType = ValueType.STRING;
+            am.IsRequired = true;
+            return am;
         }
         public override string ToString()
         {

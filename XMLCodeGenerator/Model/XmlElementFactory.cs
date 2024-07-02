@@ -11,21 +11,26 @@ namespace XMLCodeGenerator.Model
     {
         public static XmlElement GetXmlElement(Element element, XmlDocument doc = null)
         {
-            if (doc == null) doc = new XmlDocument();
+            if (doc == null)
+            {
+                doc = new XmlDocument();
+                if (element.Model.XMLName.Length == 0)
+                    return null;
+            }
             XmlElement node = doc.CreateElement(element.Model.XMLName);
             foreach (var attr in element.Model.Attributes)
                 node.SetAttribute(attr.Name, element.AttributeValues[element.Model.Attributes.IndexOf(attr)]);
-            appendChildNodes(element, node, doc);
+            appendChildNodes(element, doc, node);
             return node;
         }
-        private static void appendChildNodes(Element element, XmlNode node, XmlDocument doc)
+        private static void appendChildNodes(Element element, XmlDocument doc, XmlNode node)
         {
             foreach (var child in element.ChildElements)
             {
                 if (child.Model.XMLName.Length > 0)
                     node.AppendChild(GetXmlElement(child, doc));
                 else
-                    appendChildNodes(child, node, doc);
+                    appendChildNodes(child, doc, node);
             }
         }
         public static Element GetElement(XmlElement xmlElement, ContentBlockModel parentBlock = null)
@@ -35,24 +40,24 @@ namespace XMLCodeGenerator.Model
             element.ParentContentBlock = parentBlock;
             foreach (XmlAttribute attr in xmlElement.Attributes)
                 element.AttributeValues.Add(attr.Value);
-            AddChildren(xmlElement, element);
+            addChildren(xmlElement, element);
             return element;
         }
 
-        private static void AddChildren(XmlElement xmlElement, Element element)
+        private static void addChildren(XmlElement xmlElement, Element element)
         {
             foreach (XmlElement childXmlElement in xmlElement.ChildNodes)
             {
                 ElementModel childModel = ModelProvider.GetElementModelByXMLElement(childXmlElement);
                 ContentBlockModel parentContentBlock = null;
-                parentContentBlock = element.Model.SupportsChildModel(childModel.GetModel());
+                parentContentBlock = element.Model.GetSuitableContentBlockForChildModel(childModel.GetModel());
                 if (parentContentBlock == null)
                 {
-                    ElementModel supportingModel = ModelProvider.SupportingElementModels.First(x => x.SupportsChildModel(childModel) != null);
+                    ElementModel supportingModel = ModelProvider.NoXmlElementModels.First(x => x.GetSuitableContentBlockForChildModel(childModel) != null);
                     Element supportingElement = new Element();
                     supportingElement.Model = supportingModel;
-                    supportingElement.ParentContentBlock = element.Model.SupportsChildModel(supportingModel);
-                    AddChildren(xmlElement, supportingElement);
+                    supportingElement.ParentContentBlock = element.Model.GetSuitableContentBlockForChildModel(supportingModel);
+                    addChildren(xmlElement, supportingElement);
                     element.ChildElements.Add(supportingElement);
                     break;
                 }
