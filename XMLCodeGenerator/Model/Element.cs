@@ -34,9 +34,6 @@ namespace XMLCodeGenerator.Model
                 for (int i = 0; i < block.MinSize; i++)
                     ChildElements.Add(new Element(block.GetDefaultElement(), block));
             ParentContentBlock = parentContentBlock;
-
-            if (model.FunctionDefinition != null)
-                AttributeValues[0] = model.Name.Split('[')[1].Split(']')[0];
         }
         public override string ToString() 
         {

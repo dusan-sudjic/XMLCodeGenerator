@@ -21,10 +21,16 @@ namespace XMLCodeGenerator.Model
             ElementsString = node.InnerText.Trim();
             ElementModels = new List<ElementModel>();
         }
-        public void SetContent()
+        public bool SupportsElementModel(ElementModel model)
         {
-            if (ElementsString.StartsWith('*'))
-                ElementModels = ModelProvider.ElementTypes.First(x => x.Name.Equals(ElementsString.Substring(1))).ElementModels;
+            if (model is FunctionModel)
+                return ElementModels.Contains(ModelProvider.GetElementModelByName("Function"));
+            return ElementModels.Contains(model);
+        }
+        public void SetContent(Dictionary<string, List<ElementModel>> elementTypes)
+        {
+            if (elementTypes.ContainsKey(ElementsString))
+                ElementModels = elementTypes[ElementsString];
             else
                 foreach(var el in ElementsString.Split(','))
                     ElementModels.Add(ModelProvider.GetElementModelByName(el));

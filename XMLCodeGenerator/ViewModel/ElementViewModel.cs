@@ -15,13 +15,7 @@ namespace XMLCodeGenerator.ViewModel
     public class ElementViewModel: INotifyPropertyChanged
     {
         public string XML_Name { get => Element.Model.XMLName; set { } }
-        public string Name { get
-            {
-                if (Element.Model.Name.Contains('['))
-                    return Element.Model.Name.Split(' ')[0];
-                return Element.Model.Name;
-            }
-            set { } }
+        public string Name { get=> Element.Model.Name; set { } }
         public bool HasAttributes { get => Element.Model.Attributes.Count > 0; }
         public bool HasEditableAttributes { get => Element.Model.Attributes.Where(a=>a.Editable).ToList().Count > 0; }
         public bool IsExtendable { get => Element.Model.ContentBlocks.Count > 0; set { } }
@@ -104,8 +98,10 @@ namespace XMLCodeGenerator.ViewModel
         {
             get
             {
-                if (Element.Model.Name.Equals("CimClass") || Element.Model.Name.Equals("CimProperty") || Element.Model.Name.Equals("FunctionDefinition") || Element.Model.Name.Contains("FunctionCall"))
+                if (Element.Model.Name.Equals("CimClass") || Element.Model.Name.Equals("CimProperty") || Element.Model.Name.Equals("FunctionDefinition"))
                     return "[" + Attributes.FirstOrDefault(a => a.Name.Equals("name", StringComparison.OrdinalIgnoreCase))?.Value + "]";
+                if(Element.Model is FunctionModel functionModel)
+                    return "[" + functionModel.FunctionName + "]";
                 else return "";
             }
             set
@@ -146,7 +142,7 @@ namespace XMLCodeGenerator.ViewModel
             Element newElement = null;
             for (int i = Element.Model.ContentBlocks.Count - 1; i >= 0; i--)
             {
-                if (Element.Model.ContentBlocks[i].ElementModels.Contains(model.GetModel()))
+                if (Element.Model.ContentBlocks[i].SupportsElementModel(model))
                 {
                     newElement = new Element(model, Element.Model.ContentBlocks[i]);
                     break;

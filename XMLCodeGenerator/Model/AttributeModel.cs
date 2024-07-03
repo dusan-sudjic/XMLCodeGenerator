@@ -13,6 +13,7 @@ namespace XMLCodeGenerator.Model
         public ValueType ValueType { get; set; }
         public bool IsRequired { get; set; }
         public bool Editable {  get; set; }
+        private string defaultValue = null;
         public AttributeModel(XmlNode node)
         {
             Name = node.Attributes["Name"]?.InnerText;
@@ -22,12 +23,13 @@ namespace XMLCodeGenerator.Model
             Editable = editableText != null ? bool.Parse(editableText) : true;
         }
         private AttributeModel() { }
-        public static AttributeModel CreateAttributeModelForFunctionCall()
+        public static AttributeModel CreateAttributeModelForFunctionCall(string functionName)
         {
             AttributeModel am = new AttributeModel();
             am.Name = "Name";
             am.ValueType = ValueType.STRING;
             am.IsRequired = true;
+            am.DefaultValue = functionName;
             return am;
         }
         public override string ToString()
@@ -38,6 +40,8 @@ namespace XMLCodeGenerator.Model
         {
             get
             {
+                if(defaultValue!=null)
+                    return defaultValue;
                 switch (ValueType)
                 {
                     case ValueType.STRING: return "null";
@@ -45,6 +49,10 @@ namespace XMLCodeGenerator.Model
                     case ValueType.BOOLEAN: return "false";
                     default: return "unexpected value";
                 }
+            }
+            set
+            {
+                defaultValue = value;
             }
         }
     }

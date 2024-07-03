@@ -51,7 +51,7 @@
                     <MenuItem Height="25" Header="File">
                         <MenuItem Header="New File" />
                         <MenuItem Header="Open File" Click="OpenExistingFile"/>
-                        <MenuItem Header="Export to XML" Click="ExportToXml"/>
+                        <MenuItem Header="Save" Click="ExportToXml"/>
                         <Separator />
                         <MenuItem Header="Recent Files">
                             <MenuItem Header="File 1" />

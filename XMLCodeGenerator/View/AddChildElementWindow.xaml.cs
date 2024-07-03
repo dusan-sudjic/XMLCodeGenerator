@@ -37,13 +37,13 @@ namespace XMLCodeGenerator.View
             lb = (ListBox)this.FindName("listBox");
             lbFunctions = (ListBox)this.FindName("functionsListBox");
             if (!replacement)
-                SupportedChildElements = ModelProvider.GetModelsForNewChildElement(element.Element).Where(e=>e.FunctionDefinition==null).ToList();
+                SupportedChildElements = ModelProvider.GetModelsForNewChildElement(element.Element).Where(e=>e is not FunctionModel).ToList();
             else
-                SupportedChildElements = ModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e.FunctionDefinition == null).ToList();
+                SupportedChildElements = ModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e is not FunctionModel).ToList();
             if (!replacement)
-                SupportedFunctionCalls = ModelProvider.GetModelsForNewChildElement(element.Element).Where(e => e.FunctionDefinition != null).ToList();
+                SupportedFunctionCalls = ModelProvider.GetModelsForNewChildElement(element.Element).Where(e => e is FunctionModel).ToList();
             else
-                SupportedFunctionCalls = ModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e.FunctionDefinition != null).ToList();
+                SupportedFunctionCalls = ModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e is FunctionModel).ToList();
             if (SupportedChildElements == null)
                 tab.SelectedIndex = 1;
             lb.ItemsSource = SupportedChildElements;

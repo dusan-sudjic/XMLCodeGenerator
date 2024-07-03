@@ -7,24 +7,13 @@ using System.Xml;
 
 namespace XMLCodeGenerator.Model
 {
-    public sealed class ElementModel
+    public class ElementModel
     {
         public string Name { get; set; }
         public string XMLName { get; set; }
         public List<ContentBlockModel> ContentBlocks { get; set; }
         public List<AttributeModel> Attributes { get; set; }
-        public Element FunctionDefinition { get; set; }
-        private ElementModel() { }
-        public static ElementModel CreateFunctionCallModel(Element function) 
-        {
-            ElementModel newELement = new ElementModel();
-            newELement.Name = "FunctionCall [" + function.AttributeValues[0] + "]";
-            newELement.XMLName = "Function";
-            newELement.Attributes = [AttributeModel.CreateAttributeModelForFunctionCall()];
-            newELement.ContentBlocks = new();
-            newELement.FunctionDefinition = function;
-            return newELement;
-        }
+        protected ElementModel() { }
         public ElementModel(XmlNode node) 
         {
             ContentBlocks = new();
@@ -38,18 +27,16 @@ namespace XMLCodeGenerator.Model
             foreach (XmlNode contentBlock in node.SelectNodes("ContentBlock"))
                 ContentBlocks.Add(new ContentBlockModel(contentBlock));
         }
-        public ElementModel GetModel()
+        public virtual ContentBlockModel GetSuitableContentBlockForChildModel(ElementModel model)
         {
-            return FunctionDefinition != null ? FunctionDefinition.ChildElements[0].Model : this;
-        }
-        public ContentBlockModel GetSuitableContentBlockForChildModel(ElementModel model)
-        {
+            if (model is FunctionModel functionModel)
+                return ContentBlocks.Where(x => x.ElementModels.Contains(ModelProvider.GetElementModelByName("Function"))).ToList().FirstOrDefault();
             return ContentBlocks.Where(x=>x.ElementModels.Contains(model)).ToList().FirstOrDefault();
         }
-        public void SetContent()
+        public void SetContent(Dictionary<string, List<ElementModel>> elementTypes)
         {
             foreach(ContentBlockModel contentBlock in ContentBlocks)
-                contentBlock.SetContent();
+                contentBlock.SetContent(elementTypes);
         }
         public override string ToString()
         {

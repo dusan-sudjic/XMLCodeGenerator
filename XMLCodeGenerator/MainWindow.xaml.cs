@@ -129,7 +129,7 @@ namespace XMLCodeGenerator
             CreateNewFunctionWindow window = new CreateNewFunctionWindow();
             if (window.ShowDialog() == true)
             {
-                if (ModelProvider.GetElementModelByName(ModelProvider.GetFunctionCallModelName(window.Name)) != null) 
+                if (ModelProvider.FunctionNameAlreadyInUse(window.Name))
                 { 
                     MessageBox.Show("Function with name " + window.Name + " already exists.");
                     return;
@@ -139,7 +139,7 @@ namespace XMLCodeGenerator
                     ElementModel model = ModelProvider.GetElementModelByName("FunctionDefinition");
                     Element element = new Element(model);
                     element.AttributeValues[0] = window.Name;
-                    ModelProvider.AddNewFunctionDefinition(element);
+                    ModelProvider.AddNewFunctionDefinition(window.Name);
                     ElementViewModel elementVM = new ElementViewModel(element);
                     FunctionDefinitions.Add(elementVM);
                     StackPanel stackPanel = (StackPanel)this.FindName("FunctionsStack");
@@ -153,7 +153,7 @@ namespace XMLCodeGenerator
 
         public static void RemoveCimClass(ElementUserControl uc)
         {
-            ElementViewModel class1 = uc.Element as ElementViewModel;
+            ElementViewModel class1 = uc.Element;
             if (class1 == null)
                 return;
             CimClasses.Remove(class1);
@@ -161,11 +161,11 @@ namespace XMLCodeGenerator
         }
         public static void RemoveFunctionDefinition(ElementUserControl uc)
         {
-            ElementViewModel function = uc.Element as ElementViewModel;
+            ElementViewModel function = uc.Element;
             if (function == null)
                 return;
             FunctionDefinitions.Remove(function);
-            ModelProvider.RemoveFunctionDefinition(function.Element);
+            ModelProvider.RemoveFunctionDefinition(function.Element.AttributeValues[0]);
             FunctionDefinitionsStackPanel.Children.Remove(uc);
             foreach (var c in CimClasses)
                 c.SetReplacable();
@@ -203,7 +203,7 @@ namespace XMLCodeGenerator
                         foreach (XmlElement functionDefinitionNode in functionDefinitionNodes)
                         {
                             Element el = XmlElementFactory.GetElement(functionDefinitionNode);
-                            ModelProvider.AddNewFunctionDefinition(el);
+                            ModelProvider.AddNewFunctionDefinition(el.AttributeValues[0]);
                             ElementViewModel elemVM = new ElementViewModel(el);
                             FunctionDefinitions.Add(elemVM);
                             functionDefinitionsStackPanel.Children.Add(new ElementUserControl(elemVM));

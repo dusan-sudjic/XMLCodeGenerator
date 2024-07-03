@@ -49,11 +49,10 @@ namespace XMLCodeGenerator.Model
             foreach (XmlElement childXmlElement in xmlElement.ChildNodes)
             {
                 ElementModel childModel = ModelProvider.GetElementModelByXMLElement(childXmlElement);
-                ContentBlockModel parentContentBlock = null;
-                parentContentBlock = element.Model.GetSuitableContentBlockForChildModel(childModel.GetModel());
+                ContentBlockModel parentContentBlock = element.Model.GetSuitableContentBlockForChildModel(childModel);
                 if (parentContentBlock == null)
                 {
-                    ElementModel supportingModel = ModelProvider.NoXmlElementModels.First(x => x.GetSuitableContentBlockForChildModel(childModel) != null);
+                    ElementModel supportingModel = ModelProvider.GetWrapperModel(childModel);
                     Element supportingElement = new Element();
                     supportingElement.Model = supportingModel;
                     supportingElement.ParentContentBlock = element.Model.GetSuitableContentBlockForChildModel(supportingModel);

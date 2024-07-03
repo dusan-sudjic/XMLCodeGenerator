@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Xml;
 using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -12,13 +13,13 @@ namespace XMLCodeGenerator.Model
     public static class ModelProvider
     {
         private static string path = "../../../Input/model.xml";
-        public static List<ElementModel> ElementModels = new();
-        public static List<ElementModel> NoXmlElementModels { get { return ElementModels.Where(x => x.XMLName.Length == 0).ToList(); } }
-        public static List<ElementType> ElementTypes = new();
+        private static List<ElementModel> ElementModels = new();
+        private static Dictionary<string,FunctionModel> FunctionModels = new();
         public static void LoadModel()
         {
             try
             {
+                Dictionary<string, List<ElementModel>> elementTypes = new();
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(path);
 
@@ -30,26 +31,40 @@ namespace XMLCodeGenerator.Model
                 XmlNodeList typeNodes = xmlDoc.SelectNodes("//Type");
                 if(typeNodes != null)
                     foreach (XmlNode typeNode in typeNodes)
-                        ElementTypes.Add(new ElementType(typeNode));
+                    {
+                        var name = typeNode.Attributes["Name"]?.InnerText;
+                        var elementModels = new List<ElementModel>();
+                        string[] elementNames = typeNode.InnerText.Trim().Split(',');
+                        foreach (string elementName in elementNames)
+                            elementModels.Add(GetElementModelByName(elementName));
+                        elementTypes.Add(name, elementModels);
+                    }
 
                 foreach(var element in ElementModels)
-                    element.SetContent();
+                    element.SetContent(elementTypes);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
         }
+        public static List<FunctionModel> GetFunctions()
+        {
+            return FunctionModels.Values.ToList();
+        }
+        public static FunctionModel GetFunctionModelByName(string functionName)
+        {
+            return FunctionModels[functionName];
+        }
         public static ElementModel GetElementModelByName(string name)
         {
             return ElementModels.FirstOrDefault(x=>x.Name.Equals(name));
         }
-        public static string GetFunctionCallModelName(string functionName)
-        {
-            return "FunctionCall [" + functionName + "]";
-        }
         public static ElementModel GetElementModelByXMLElement(XmlElement xmlElement)
         {
+            if(xmlElement.Name.Equals("Function"))
+                if(!xmlElement.ParentNode.Name.Equals("FunctionDefinitions"))
+                    return GetFunctionModelByName(xmlElement.GetAttribute("Name"));
             var list = ElementModels.Where(x => x.XMLName.Equals(xmlElement.Name)).ToList();
             if (list.Count == 1)
                 return list[0];
@@ -59,19 +74,26 @@ namespace XMLCodeGenerator.Model
             var list3 = list.Where(x => x.Attributes.All(a=>xmlElement.GetAttributeNode(a.Name) != null)).ToList();
             if(list3.Count == 1)
                 return list3[0];
-            List<ElementModel> list4 = ElementModels.Where(m => m.Name.Equals(GetFunctionCallModelName(xmlElement.GetAttribute("Name")))).ToList();
-            return list4[0];
+            var model = FunctionModels[xmlElement.GetAttribute("Name")];
+            if (model == null)
+                return null;
+            return model;
         }
-        public static void AddNewFunctionDefinition(Element functionDefinition)
+        public static void AddNewFunctionDefinition(string functionName)
         {
-            ElementModel newModel = ElementModel.CreateFunctionCallModel(functionDefinition);
-            ElementModels.Add(newModel);
+            FunctionModels.Add(functionName, new FunctionModel(functionName));
         }
-        public static void RemoveFunctionDefinition(Element functionDefinition)
+        public static bool FunctionNameAlreadyInUse(string functionName)
         {
-            ElementModel model = ElementModels.FirstOrDefault(f => f.Name.Equals(GetFunctionCallModelName(functionDefinition.AttributeValues[0])));
-            if(model!= null)
-                ElementModels.Remove(model);
+            return FunctionModels.ContainsKey(functionName);
+        }
+        public static void RemoveFunctionDefinition(string functionName)
+        {
+            FunctionModels.Remove(functionName);
+        }
+        public static ElementModel GetWrapperModel(ElementModel childModel)
+        {
+            return ElementModels.Where(x => x.XMLName.Length == 0).FirstOrDefault(x => x.GetSuitableContentBlockForChildModel(childModel) != null);
         }
         public static List<ElementModel> GetReplacableModelsForElement(Element element)
         {
@@ -79,8 +101,13 @@ namespace XMLCodeGenerator.Model
                 return null;
             if (element.ParentContentBlock.ElementModels.Count == 1) 
                 return null;
-            var list = element.ParentContentBlock.ElementModels.Where(e => !e.Name.Equals(element.Model.GetModel().Name)).ToList();
-            list.AddRange(ElementModels.Where(m => m.FunctionDefinition != null && element.ParentContentBlock.ElementModels.Contains(m.GetModel())).ToList());
+            var list = element.ParentContentBlock.ElementModels.Where(e => !e.Name.Equals(element.Model.Name)).ToList();
+            var functionCallModel = list.FirstOrDefault(x => x.Name.Equals("Function"));
+            if (functionCallModel != null)
+            {
+                list.Remove(functionCallModel);
+                list.AddRange(GetFunctions());
+            }
             return list;
         }
         public static List<ElementModel> GetModelsForNewChildElement(Element element)
@@ -95,7 +122,7 @@ namespace XMLCodeGenerator.Model
                     int counter = 0;
                     foreach (var elem in element.ChildElements)
                     {
-                        if (block.ElementModels.Contains(elem.Model.GetModel()))
+                        if (block.ElementModels.Contains(elem.Model))
                         {
                             counter++;
                             continue;
@@ -106,8 +133,12 @@ namespace XMLCodeGenerator.Model
                         ret.AddRange(block.ElementModels);
                 }
             }
-            if(ret.Count>0)
-                ret.AddRange(ElementModels.Where(m => m.FunctionDefinition != null && ret.Contains(m.GetModel())).ToList());  //for functions
+            var functionCallModel = ret.FirstOrDefault(x => x.Name.Equals("Function"));
+            if (functionCallModel != null)
+            {
+                ret.Remove(functionCallModel);
+                ret.AddRange(GetFunctions());
+            }
             return ret;
         }
     }
