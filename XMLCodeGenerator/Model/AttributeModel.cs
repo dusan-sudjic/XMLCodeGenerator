@@ -11,6 +11,7 @@ namespace XMLCodeGenerator.Model
     {
         public string Name { get; set; }
         public ValueType ValueType { get; set; }
+        public InputType InputType { get; set; }
         public bool IsRequired { get; set; }
         public bool Editable {  get; set; }
         private string defaultValue = null;
@@ -19,6 +20,7 @@ namespace XMLCodeGenerator.Model
             Name = node.Attributes["Name"]?.InnerText;
             IsRequired = bool.Parse(node.Attributes["IsRequired"]?.InnerText);
             ValueType = (ValueType)Enum.Parse(typeof(ValueType), node.Attributes["ValueType"]?.InnerText);
+            InputType = (InputType)Enum.Parse(typeof(InputType), node.Attributes["Input"]?.InnerText);
             var editableText = node.Attributes["Editable"]?.InnerText;
             Editable = editableText != null ? bool.Parse(editableText) : true;
         }
@@ -29,6 +31,7 @@ namespace XMLCodeGenerator.Model
             am.Name = "Name";
             am.ValueType = ValueType.STRING;
             am.IsRequired = true;
+            am.InputType = InputType.USER_INPUT;
             am.DefaultValue = functionName;
             return am;
         }
@@ -59,5 +62,9 @@ namespace XMLCodeGenerator.Model
     public enum ValueType
     {
         INTEGER, STRING, BOOLEAN
+    }
+    public enum InputType
+    {
+        USER_INPUT, SOURCE_PROVIDER, PROVIDER_READER
     }
 }

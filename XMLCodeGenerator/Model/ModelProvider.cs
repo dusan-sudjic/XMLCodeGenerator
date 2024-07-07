@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Xml;
 using System.Xml.Linq;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace XMLCodeGenerator.Model
@@ -50,7 +51,7 @@ namespace XMLCodeGenerator.Model
         }
         public static List<FunctionModel> GetFunctions()
         {
-            return FunctionModels.Values.ToList();
+            return FunctionModels.Values.OrderBy(x=>x.FunctionName).ToList();
         }
         public static FunctionModel GetFunctionModelByName(string functionName)
         {
@@ -102,12 +103,6 @@ namespace XMLCodeGenerator.Model
             if (element.ParentContentBlock.ElementModels.Count == 1) 
                 return null;
             var list = element.ParentContentBlock.ElementModels.Where(e => !e.Name.Equals(element.Model.Name)).ToList();
-            var functionCallModel = list.FirstOrDefault(x => x.Name.Equals("Function"));
-            if (functionCallModel != null)
-            {
-                list.Remove(functionCallModel);
-                list.AddRange(GetFunctions());
-            }
             return list;
         }
         public static List<ElementModel> GetModelsForNewChildElement(Element element)
@@ -132,12 +127,6 @@ namespace XMLCodeGenerator.Model
                     if (counter < block.MaxSize)
                         ret.AddRange(block.ElementModels);
                 }
-            }
-            var functionCallModel = ret.FirstOrDefault(x => x.Name.Equals("Function"));
-            if (functionCallModel != null)
-            {
-                ret.Remove(functionCallModel);
-                ret.AddRange(GetFunctions());
             }
             return ret;
         }

@@ -78,6 +78,8 @@ namespace XMLCodeGenerator.ViewModel
             get => _isReplacable || _isRemovable;
             set{}
         }
+        public bool IsFunctionDefinition { get=>Name.Contains("FunctionDefinition"); set { } }
+
         private ObservableCollection<AttributeViewModel> _attributes;
         public ObservableCollection<AttributeViewModel> Attributes
         {

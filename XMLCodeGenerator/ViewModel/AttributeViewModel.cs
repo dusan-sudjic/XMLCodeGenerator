@@ -41,6 +41,18 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
+        public Model.InputType InputType
+        { 
+            get => Attribute.InputType;
+            set
+            {
+                if(value!= Attribute.InputType)
+                {
+                    Attribute.InputType = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public bool IsRequired{ 
             get => Attribute.IsRequired;
             set

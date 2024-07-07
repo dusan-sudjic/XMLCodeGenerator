@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,42 +19,42 @@ using XMLCodeGenerator.ViewModel;
 
 namespace XMLCodeGenerator.View
 {
-    /// <summary>
-    /// Interaction logic for AddChildElementWindow.xaml
-    /// </summary>
     public partial class AddChildElementWindow : Window
     {
+        public bool SupportsFunctions { get; set; }
         public ElementViewModel Element { get; set; }
-        public ListBox lb {  get; set; }
-        public ListBox lbFunctions {  get; set; }
+        public ListBox ElementsListBox {  get; set; }
+        public ListBox FunctionsListBox {  get; set; }
         public ElementModel SelectedElement { get; set; }
-        WatermarkTextBox textBox { get; set; }
+        WatermarkTextBox searchTextBox { get; set; }
         List<ElementModel> SupportedChildElements { get; set; }
-        List<ElementModel> SupportedFunctionCalls { get; set; }
+        List<FunctionModel> SupportedFunctionCalls { get; set; }
         public AddChildElementWindow(ElementViewModel element, bool replacement = false)
         {
             InitializeComponent();
             Element = element;
             DataContext = this;
-            lb = (ListBox)this.FindName("listBox");
-            lbFunctions = (ListBox)this.FindName("functionsListBox");
+            ElementsListBox = (ListBox)this.FindName("listBox");
+            FunctionsListBox = (ListBox)this.FindName("functionsListBox");
             if (!replacement)
                 SupportedChildElements = ModelProvider.GetModelsForNewChildElement(element.Element).Where(e=>e is not FunctionModel).ToList();
             else
-                SupportedChildElements = ModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e is not FunctionModel).ToList();
-            if (!replacement)
-                SupportedFunctionCalls = ModelProvider.GetModelsForNewChildElement(element.Element).Where(e => e is FunctionModel).ToList();
-            else
-                SupportedFunctionCalls = ModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e is FunctionModel).ToList();
+                SupportedChildElements = ModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e is not FunctionModel).OrderBy(x=>x.Name).ToList();
+            if (SupportedChildElements.Where(e => e.Name.Equals("Function")).ToList().Count > 0)
+            {
+                SupportsFunctions = true;
+                SupportedFunctionCalls = ModelProvider.GetFunctions();
+                SupportedChildElements.RemoveAll(x => x.Name.Equals("Function"));
+            }
             if (SupportedChildElements == null)
                 tab.SelectedIndex = 1;
-            lb.ItemsSource = SupportedChildElements;
-            lbFunctions.ItemsSource = SupportedFunctionCalls;
-            lb.SelectedIndex = 0;
-            lbFunctions.SelectedIndex = 0;
+            ElementsListBox.ItemsSource = SupportedChildElements;
+            FunctionsListBox.ItemsSource = SupportedFunctionCalls;
+            ElementsListBox.SelectedIndex = 0;
+            FunctionsListBox.SelectedIndex = 0;
             this.Title = replacement ? "Replace " + Element.XML_Name: "Add child element to " + Element.XML_Name;
-            textBox = (WatermarkTextBox)this.FindName("search");
-            textBox.Focus();
+            searchTextBox = (WatermarkTextBox)this.FindName("search");
+            searchTextBox.Focus();
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
@@ -77,62 +79,62 @@ namespace XMLCodeGenerator.View
         {
             if (tab.SelectedIndex == 0)
             {
-                if (lb.SelectedIndex == -1)
+                if (ElementsListBox.SelectedIndex == -1)
                 {
-                    lb.SelectedIndex = 0;
+                    ElementsListBox.SelectedIndex = 0;
                     return;
                 }
-                if (lb.SelectedIndex == lb.Items.Count - 1)
+                if (ElementsListBox.SelectedIndex == ElementsListBox.Items.Count - 1)
                 {
-                    lb.SelectedIndex = 0;
+                    ElementsListBox.SelectedIndex = 0;
                     return;
                 }
-                lb.SelectedIndex++;
+                ElementsListBox.SelectedIndex++;
             }
             else
             {
-                if (lbFunctions.SelectedIndex == -1)
+                if (FunctionsListBox.SelectedIndex == -1)
                 {
-                    lbFunctions.SelectedIndex = 0;
+                    FunctionsListBox.SelectedIndex = 0;
                     return;
                 }
-                if (lbFunctions.SelectedIndex == lb.Items.Count - 1)
+                if (FunctionsListBox.SelectedIndex == ElementsListBox.Items.Count - 1)
                 {
-                    lbFunctions.SelectedIndex = 0;
+                    FunctionsListBox.SelectedIndex = 0;
                     return;
                 }
-                lbFunctions.SelectedIndex++;
+                FunctionsListBox.SelectedIndex++;
             }
         }
         private void OnUpArrowPressed()
         {
             if (tab.SelectedIndex == 1)
             {
-                if (lbFunctions.SelectedIndex == -1)
+                if (FunctionsListBox.SelectedIndex == -1)
                 {
-                    lbFunctions.SelectedIndex = lb.Items.Count - 1;
+                    FunctionsListBox.SelectedIndex = ElementsListBox.Items.Count - 1;
                     return;
                 }
-                if (lbFunctions.SelectedIndex == 0)
+                if (FunctionsListBox.SelectedIndex == 0)
                 {
-                    lbFunctions.SelectedIndex = lb.Items.Count - 1;
+                    FunctionsListBox.SelectedIndex = ElementsListBox.Items.Count - 1;
                     return;
                 }
-                lbFunctions.SelectedIndex--;
+                FunctionsListBox.SelectedIndex--;
             }
             else
             {
-                if (lb.SelectedIndex == -1)
+                if (ElementsListBox.SelectedIndex == -1)
                 {
-                    lb.SelectedIndex = lb.Items.Count - 1;
+                    ElementsListBox.SelectedIndex = ElementsListBox.Items.Count - 1;
                     return;
                 }
-                if (lb.SelectedIndex == 0)
+                if (ElementsListBox.SelectedIndex == 0)
                 {
-                    lb.SelectedIndex = lb.Items.Count - 1;
+                    ElementsListBox.SelectedIndex = ElementsListBox.Items.Count - 1;
                     return;
                 }
-                lb.SelectedIndex--;
+                ElementsListBox.SelectedIndex--;
             }
         }
         public void OKButton_Click(object sender, RoutedEventArgs e)
@@ -144,9 +146,9 @@ namespace XMLCodeGenerator.View
         {
             if (tab.SelectedIndex == 0)
             {
-                if (lb.SelectedItem != null)
+                if (ElementsListBox.SelectedItem != null)
                 {
-                    SelectedElement = lb.SelectedItem as ElementModel;
+                    SelectedElement = ElementsListBox.SelectedItem as ElementModel;
                     this.DialogResult = true;
                 }
                 else
@@ -156,9 +158,9 @@ namespace XMLCodeGenerator.View
             }
             else
             {
-                if (lbFunctions.SelectedItem != null)
+                if (FunctionsListBox.SelectedItem != null)
                 {
-                    SelectedElement = lbFunctions.SelectedItem as ElementModel;
+                    SelectedElement = FunctionsListBox.SelectedItem as ElementModel;
                     this.DialogResult = true;
                 }
                 else
@@ -173,20 +175,20 @@ namespace XMLCodeGenerator.View
             List<ElementModel> newList = new();
             foreach(var s in SupportedChildElements)
             {
-                if (s.Name.ToLower().Contains(textBox.Text.ToLower()))
+                if (s.Name.ToLower().Contains(searchTextBox.Text.ToLower()))
                     newList.Add(s);
             }
-            lb.ItemsSource = newList;
-            if (lb.SelectedIndex == -1) lb.SelectedIndex = 0;
+            ElementsListBox.ItemsSource = newList;
+            if (ElementsListBox.SelectedIndex == -1) ElementsListBox.SelectedIndex = 0;
 
             List<ElementModel> newListFunctions = new();
             foreach (var s in SupportedFunctionCalls)
             {
-                if (s.ToString().ToLower().Contains(textBox.Text.ToLower()))
+                if (s.ToString().ToLower().Contains(searchTextBox.Text.ToLower()))
                     newListFunctions.Add(s);
             }
-            lbFunctions.ItemsSource = newListFunctions;
-            if (lbFunctions.SelectedIndex == -1) lbFunctions.SelectedIndex = 0;
+            FunctionsListBox.ItemsSource = newListFunctions;
+            if (FunctionsListBox.SelectedIndex == -1) FunctionsListBox.SelectedIndex = 0;
         }
     }
 }

@@ -69,7 +69,7 @@ namespace XMLCodeGenerator.View
             if (Element.DefaultNewChild != null)
                 addButton.ToolTip = "Add " + Element.DefaultNewChild;
             else
-                addButton.ToolTip = "Add new element to " + Element.XML_Name;
+                addButton.ToolTip = "Add new element to " + Element.Name;
             var deleteButton = (Button)this.FindName("DeleteButton");
             deleteButton.ToolTip = "Delete " + Element.ToString();
             var replaceButton = (Button)this.FindName("ReplaceButton");

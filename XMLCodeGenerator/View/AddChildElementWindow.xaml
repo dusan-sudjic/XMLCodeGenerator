@@ -5,10 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XMLCodeGenerator.View"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:converters="clr-namespace:XMLCodeGenerator.Converters"
         mc:Ignorable="d"
         Title="AddChildElementWindow" Height="400" Width="360"
         PreviewKeyDown="Window_KeyDown"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
     <StackPanel>
         <Label Width="100">Search elements</Label>
         <xctk:WatermarkTextBox Width="160" x:Name="search" Watermark="Search" Margin="10 0 10 10" TextChanged="TextChanged"></xctk:WatermarkTextBox>
@@ -16,7 +20,7 @@
             <TabItem Header="Elements">
                 <ListBox x:Name="listBox" SelectionMode="Single" Height="240" ></ListBox>
             </TabItem>
-            <TabItem Header="Functions">
+            <TabItem Header="Functions" Visibility="{Binding SupportsFunctions, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ListBox x:Name="functionsListBox" SelectionMode="Single" Height="240"></ListBox>
             </TabItem>
         </TabControl>

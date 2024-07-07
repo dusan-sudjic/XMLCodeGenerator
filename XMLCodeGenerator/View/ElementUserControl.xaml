@@ -46,6 +46,24 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="RoundedButton" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="7">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="BorderBrush" Value="DarkGray"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="5,8"/>
+        </Style>
     </UserControl.Resources>
     <Border x:Name="Border" BorderBrush="Black" BorderThickness="1" Padding="3 0 3 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0 5 0 3" MinWidth="280" MaxWidth="2000">
         <Grid>
@@ -75,6 +93,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Cursor="Hand" Height="24" MouseLeftButtonDown="XMLPreview_Click" Margin="5" VerticalAlignment="Bottom" Padding="0 3 0 0">
                         <Run Text="{Binding Element.Name}"/>
@@ -84,9 +103,10 @@
                         </i:Interaction.Behaviors>-->
                     </TextBlock>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Height="25" x:Name="AttributesContainer"></StackPanel>
-                    <Button Grid.Column="2" Cursor="Hand" x:Name="AddButton" Visibility="{Binding Element.HasRoomForNewChildElement, Converter={StaticResource BooleanToVisibilityConverter}}" Content="➕" FontSize="13" Foreground="CornflowerBlue" BorderThickness="0" Click="AddChildElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                    <Button Grid.Column="3" Cursor="Hand" x:Name="DeleteButton" Visibility="{Binding Element.IsRemovable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⛔" FontSize="13" Foreground="IndianRed" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                    <Button Grid.Column="3" Cursor="Hand" x:Name="ReplaceButton" Visibility="{Binding Element.IsReplacable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⟳" FontSize="18" Padding="0 -2 0 6" Foreground="ForestGreen" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <Button Grid.Column="2" Background="White" Foreground="CornflowerBlue" Height="25" Width="25" VerticalAlignment="Center"  Cursor="Hand" Margin="0 0 5 0"  ToolTip="Rename function" BorderThickness="0" Visibility="{Binding Element.IsFunctionDefinition, Converter={StaticResource BooleanToVisibilityConverter}}">🏷️</Button>
+                    <Button Grid.Column="3" Cursor="Hand" x:Name="AddButton" Visibility="{Binding Element.HasRoomForNewChildElement, Converter={StaticResource BooleanToVisibilityConverter}}" Content="➕" FontSize="13" Foreground="CornflowerBlue" BorderThickness="0" Click="AddChildElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <Button Grid.Column="4" Cursor="Hand" x:Name="DeleteButton" Visibility="{Binding Element.IsRemovable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⛔" FontSize="13" Foreground="IndianRed" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <Button Grid.Column="4" Cursor="Hand" x:Name="ReplaceButton" Visibility="{Binding Element.IsReplacable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⟳" FontSize="18" Padding="0 -2 0 6" Foreground="ForestGreen" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                 </Grid>
 
                 <Grid Grid.Row="1" HorizontalAlignment="Stretch" Margin="0 0 5 0">

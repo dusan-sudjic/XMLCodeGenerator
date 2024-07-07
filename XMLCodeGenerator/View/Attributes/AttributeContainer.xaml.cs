@@ -27,9 +27,7 @@ namespace XMLCodeGenerator.View.Attributes
             DataContext = this;
             Attribute = attribute;
             HandleValueType();
-            //Border border = (Border)this.FindName("Border");
-            //border.BorderBrush = Attribute.IsRequiredValueSet ? new SolidColorBrush(Colors.LightGray) : new SolidColorBrush(Colors.Red);
-            //border.BorderThickness = Attribute.IsRequiredValueSet ? new Thickness(0) : new Thickness(1);
+            ChooseButton.Visibility = attribute.InputType != Model.InputType.USER_INPUT ? Visibility.Visible : Visibility.Collapsed;
         }
         private void HandleValueType()
         {
