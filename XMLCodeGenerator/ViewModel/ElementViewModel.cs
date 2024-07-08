@@ -194,6 +194,20 @@ namespace XMLCodeGenerator.ViewModel
             var list = ModelProvider.GetModelsForNewChildElement(Element);
             DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
+        public void RenameFunction(string oldName, string newName)
+        {
+            if (Element.Model.Name.Equals("FunctionCall"))
+            {
+                if (Attributes[0].Value.Equals(oldName))
+                {
+                    Element.Model = ModelProvider.GetFunctionModelByName(newName);
+                    Attributes[0].Value = newName;
+                }
+            }
+            else
+                foreach (var c in ChildViewModels)
+                    c.RenameFunction(oldName, newName);
+        }
         private void setRemovableForChildren()
         {
             foreach(var child in ChildViewModels)
@@ -214,7 +228,11 @@ namespace XMLCodeGenerator.ViewModel
             if (e.PropertyName == "Value")
             {
                 foreach (var attr in Attributes)
-                    Element.AttributeValues[Element.Model.Attributes.IndexOf(attr.Attribute)] = attr.Value;
+                {
+                    int index = Element.Model.Attributes.IndexOf(attr.Attribute);
+                    index += index >= 0 ? 0 : 1;
+                    Element.AttributeValues[index] = attr.Value;
+                }
                 OnPropertyChanged(nameof(AdditionalInfo));
             }
         }

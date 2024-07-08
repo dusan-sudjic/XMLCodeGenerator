@@ -150,6 +150,13 @@ namespace XMLCodeGenerator
                 }
             }
         }
+        public static void RenameFunction(string oldFunctionName, string newFunctionName)
+        {
+            FunctionDefinitions.First(x => x.Attributes[0].Value.Equals(oldFunctionName)).Attributes[0].Value = newFunctionName;
+            ModelProvider.RenameFunction(oldFunctionName, newFunctionName);
+            foreach (var c in CimClasses)
+                c.RenameFunction(oldFunctionName, newFunctionName);
+        }
 
         public static void RemoveCimClass(ElementUserControl uc)
         {

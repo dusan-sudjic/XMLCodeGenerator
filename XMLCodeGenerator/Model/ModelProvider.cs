@@ -57,6 +57,11 @@ namespace XMLCodeGenerator.Model
         {
             return FunctionModels[functionName];
         }
+        public static void RenameFunction(string functionName, string newName)
+        {
+            FunctionModels.Remove(functionName);
+            FunctionModels.Add(newName, new FunctionModel(newName));
+        }
         public static ElementModel GetElementModelByName(string name)
         {
             return ElementModels.FirstOrDefault(x=>x.Name.Equals(name));

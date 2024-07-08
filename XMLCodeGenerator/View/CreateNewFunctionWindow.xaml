@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterScreen"
         Title="New Function" Height="190" Width="300">
     <StackPanel>
-        <Label HorizontalAlignment="Center" Margin="0 20 0 0">Enter a name for your new function</Label>
+        <Label x:Name="label" HorizontalAlignment="Center" Margin="0 20 0 0">Enter a name for your new function</Label>
         <TextBox Margin="30 10 30 0" Height="30" x:Name="textBox" TextAlignment="Center" KeyUp="TextBox_KeyUp" FontSize="13" VerticalContentAlignment="Center"></TextBox>
         <Button Margin="100 10 100 10" Click="SubmitClick">Submit</Button>
     </StackPanel>

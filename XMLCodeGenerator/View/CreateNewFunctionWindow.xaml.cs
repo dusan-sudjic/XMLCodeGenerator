@@ -16,11 +16,18 @@ namespace XMLCodeGenerator.View
 {
     public partial class CreateNewFunctionWindow : Window
     {
-        public string Name {  get; set; } 
-        public CreateNewFunctionWindow()
+        public string Name {  get; set; }
+        private string oldName;
+        public CreateNewFunctionWindow(string oldName = "")
         {
             InitializeComponent();
             DataContext = this;
+            this.oldName = oldName;
+            if(this.oldName.Length>0)
+            {
+                this.Title = "Rename function";
+                label.Content = "Enter a new name for function " + this.oldName;
+            }
             textBox.Focus();
         }
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
@@ -33,6 +40,11 @@ namespace XMLCodeGenerator.View
             if(textBox.Text.Length > 0 && !textBox.Text.Contains(" "))
             {
                 Name = textBox.Text;
+                if (Name.Equals(oldName))
+                {
+                    MessageBox.Show("New name for the function can't be the same as before.");
+                    return;
+                }
                 this.DialogResult = true;
             }
         }

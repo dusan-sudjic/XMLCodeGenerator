@@ -7,7 +7,8 @@
              xmlns:converters="clr-namespace:XMLCodeGenerator.Converters"
              xmlns:view="clr-namespace:XMLCodeGenerator.View"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             >
     <UserControl.Resources>
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -65,19 +66,15 @@
             <Setter Property="Padding" Value="5,8"/>
         </Style>
     </UserControl.Resources>
+    <!--22ADD8E6-->
     <Border x:Name="Border" BorderBrush="Black" BorderThickness="1" Padding="3 0 3 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0 5 0 3" MinWidth="280" MaxWidth="2000">
-        <Grid>
+        <Grid Opacity="1.0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel ToolTip="{Binding Element.Name}" x:Name="SidePanel" Visibility="{Binding Element.IsExtendable, Converter={StaticResource BooleanToVisibilityConverter}}" Width="20" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <ToggleButton x:Name="ToggleButton" Cursor="Hand" Content="-" Visibility="{Binding Element.IsExtendable, Converter={StaticResource BooleanToVisibilityConverter}}" FontWeight="Bold" Width="20" Height="20" Margin="0 5 0 0" Click="ToggleButton_Click" FontSize="10" Padding="0"/>
-                <!--<TextBlock Text="{Binding XML_Name}" x:Name="StickyTextBlock" Background="Red" Height="Auto" Width="Auto"> --><!--Visibility="{Binding IsMainLabelWithinViewport, Converter={StaticResource InverseBooleanToVisibilityConverter}}"--><!--
-                    <TextBlock.RenderTransform>
-                        <RotateTransform Angle="-90"/>
-                    </TextBlock.RenderTransform>
-                </TextBlock>-->
             </StackPanel>
             <Grid ToolTip="{Binding Element.Name}" Grid.Column="1" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
@@ -98,12 +95,9 @@
                     <TextBlock Grid.Column="0" Cursor="Hand" Height="24" MouseLeftButtonDown="XMLPreview_Click" Margin="5" VerticalAlignment="Bottom" Padding="0 3 0 0">
                         <Run Text="{Binding Element.Name}"/>
                         <Run Text="{Binding Element.AdditionalInfo}" FontWeight="Bold" />
-                        <!--<i:Interaction.Behaviors>
-                            <behaviors:ScrollViewerVisibilityBehavior IsWithinViewport="{Binding IsMainLabelWithinViewport, Mode=TwoWay}"/>
-                        </i:Interaction.Behaviors>-->
                     </TextBlock>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Height="25" x:Name="AttributesContainer"></StackPanel>
-                    <Button Grid.Column="2" Background="White" Foreground="CornflowerBlue" Height="25" Width="25" VerticalAlignment="Center"  Cursor="Hand" Margin="0 0 5 0"  ToolTip="Rename function" BorderThickness="0" Visibility="{Binding Element.IsFunctionDefinition, Converter={StaticResource BooleanToVisibilityConverter}}">🏷️</Button>
+                    <Button Grid.Column="2" Background="White" Foreground="CornflowerBlue" Height="25" Width="25" VerticalAlignment="Center"  Cursor="Hand" Margin="0 0 5 0"  ToolTip="Rename function" BorderThickness="0" Visibility="{Binding Element.IsFunctionDefinition, Converter={StaticResource BooleanToVisibilityConverter}}" Click="RenameFunction_Click">🏷️</Button>
                     <Button Grid.Column="3" Cursor="Hand" x:Name="AddButton" Visibility="{Binding Element.HasRoomForNewChildElement, Converter={StaticResource BooleanToVisibilityConverter}}" Content="➕" FontSize="13" Foreground="CornflowerBlue" BorderThickness="0" Click="AddChildElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                     <Button Grid.Column="4" Cursor="Hand" x:Name="DeleteButton" Visibility="{Binding Element.IsRemovable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⛔" FontSize="13" Foreground="IndianRed" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                     <Button Grid.Column="4" Cursor="Hand" x:Name="ReplaceButton" Visibility="{Binding Element.IsReplacable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⟳" FontSize="18" Padding="0 -2 0 6" Foreground="ForestGreen" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>

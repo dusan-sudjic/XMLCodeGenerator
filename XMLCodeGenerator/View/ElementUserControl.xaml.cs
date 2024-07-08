@@ -247,6 +247,21 @@ namespace XMLCodeGenerator.View
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private void RenameFunction_Click(object sender, RoutedEventArgs e)
+        {
+            CreateNewFunctionWindow functionWindow = new CreateNewFunctionWindow(Element.Attributes[0].Value);
+            if (functionWindow.ShowDialog() == true)
+            {
+                if (ModelProvider.FunctionNameAlreadyInUse(functionWindow.Name))
+                {
+                    MessageBox.Show("Function with name " + functionWindow.Name + " already exists.");
+                    return;
+                }
+                MainWindow.RenameFunction(Element.Attributes[0].Value, functionWindow.Name);
+                //this.Element.Attributes[0].Value = functionWindow.Name;
+            }
+        }
     }
 
 }
