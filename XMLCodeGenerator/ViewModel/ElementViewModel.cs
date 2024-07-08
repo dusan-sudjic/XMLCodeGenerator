@@ -37,7 +37,7 @@ namespace XMLCodeGenerator.ViewModel
         private bool _hasRoomForNewChildElement;
         public bool HasRoomForNewChildElement
         {
-            get => _hasRoomForNewChildElement;
+            get => _hasRoomForNewChildElement && IsExtended;
             set
             {
                 if(value != _hasRoomForNewChildElement)
@@ -242,10 +242,11 @@ namespace XMLCodeGenerator.ViewModel
         {
             if (propertyName == "IsExtended")
             {
+                OnPropertyChanged(nameof(HasRoomForNewChildElement));
                 OnPropertyChanged(nameof(IsExtendedAndHasAttributes));
                 OnPropertyChanged(nameof(IsExtendedAndHasEditableAttributes));
             }
-            if(!propertyName.Contains("IsExtended"))
+            if(!propertyName.Contains("IsExtended") && !propertyName.Contains("Room"))
                 MainWindow.HasUnsavedChanges = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
