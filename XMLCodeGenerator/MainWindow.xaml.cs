@@ -157,6 +157,19 @@ namespace XMLCodeGenerator
             foreach (var c in CimClasses)
                 c.RenameFunction(oldFunctionName, newFunctionName);
         }
+        private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            ScrollBar scrollBar = sender as ScrollBar;
+            if (scrollBar != null)
+            {
+                double newValue = scrollBar.Value - e.VerticalChange;
+                if (newValue < scrollBar.Minimum)
+                    newValue = scrollBar.Minimum;
+                if (newValue > scrollBar.Maximum)
+                    newValue = scrollBar.Maximum;
+                scrollBar.Value = newValue;
+            }
+        }
 
         public static void RemoveCimClass(ElementUserControl uc)
         {

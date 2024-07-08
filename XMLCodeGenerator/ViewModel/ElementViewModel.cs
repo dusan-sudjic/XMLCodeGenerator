@@ -37,7 +37,7 @@ namespace XMLCodeGenerator.ViewModel
         private bool _hasRoomForNewChildElement;
         public bool HasRoomForNewChildElement
         {
-            get => _hasRoomForNewChildElement;
+            get => _hasRoomForNewChildElement && IsExtended;
             set
             {
                 if(value != _hasRoomForNewChildElement)

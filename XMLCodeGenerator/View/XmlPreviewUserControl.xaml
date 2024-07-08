@@ -6,11 +6,12 @@
              xmlns:local="clr-namespace:XMLCodeGenerator.View" 
              xmlns:xmlstack="clr-namespace:System.Xml;assembly=netstandard"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="Black">
     <UserControl.Resources>
         <SolidColorBrush x:Key="xmlValueBrush" Color="DarkOrange"/>
-        <SolidColorBrush x:Key="xmAttributeBrush" Color="Black"/>
-        <SolidColorBrush x:Key="xmlTagBrush" Color="Black"/>
+        <SolidColorBrush x:Key="xmAttributeBrush" Color="CornflowerBlue"/>
+        <SolidColorBrush x:Key="xmlTagBrush" Color="White"/>
 
         <DataTemplate x:Key="attributeTemplate">
             <StackPanel Orientation="Horizontal" Margin="3,0,0,0" HorizontalAlignment="Center">
@@ -53,7 +54,7 @@
         </HierarchicalDataTemplate>
     </UserControl.Resources>
     <Grid>
-        <TreeView Name="xmlTree" ItemTemplate="{StaticResource treeViewTemplate}" ItemsSource="{Binding XmlElements}">
+        <TreeView Name="xmlTree" ItemTemplate="{StaticResource treeViewTemplate}" ItemsSource="{Binding XmlElements}" Background="#222222">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">
                     <Setter Property="IsExpanded" Value="True"/>

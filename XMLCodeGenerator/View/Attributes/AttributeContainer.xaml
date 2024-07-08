@@ -7,16 +7,16 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              Margin="0 0 10 0">
-    <Border x:Name="Border" BorderBrush="Black" CornerRadius="5" Background="LightGray" Padding="5 0 3 0" MaxWidth="223">
+    <Border x:Name="Border" BorderBrush="Black" CornerRadius="5" Background="#33000000" Padding="5 0 3 0" MaxWidth="223">
             <StackPanel Orientation="Horizontal">
-            <TextBlock x:Name="AttributeName" Background="LightGray" Foreground="DimGray" FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center"  MaxWidth="80">
+            <TextBlock x:Name="AttributeName" Background="Transparent" Foreground="White" FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center"  MaxWidth="80">
                 <Run Text="{Binding Attribute.Name}"/>
                 <Run Text="{Binding Required}" Foreground="Red"/>
             </TextBlock>
-            <xctk:IntegerUpDown x:Name="IntegerValue" Value="{Binding Attribute.Value}" Increment="1" Width="80" Margin="5 2 0 2" Foreground="DimGray"/>
-            <TextBox x:Name="StringValue" Text="{Binding Attribute.Value}" Margin="5 1 0 1" Foreground="DimGray" Width="127" VerticalAlignment="Center" VerticalContentAlignment="Center"  TextAlignment="Center" Height="21" FontSize="10" Padding="5 0"/>
-            <CheckBox x:Name="BoolValue" Margin="5 0 0 0" Height="15" Width="15" VerticalAlignment="Center" IsChecked="{Binding IsTrue}"/>
-            <Button x:Name="ChooseButton" Margin="0 0 0 0" Cursor="Hand" ToolTip="Choose value from external files" Height="21" Width="21" Background="CornflowerBlue" BorderBrush="LightGray" Foreground="White" >🔍</Button>
+            <xctk:IntegerUpDown x:Name="IntegerValue" Value="{Binding Attribute.Value}" Increment="1" Width="80" Margin="5 2 0 2" Foreground="White" Background="#33000000" BorderBrush="#33000000"/>
+            <TextBox x:Name="StringValue" Text="{Binding Attribute.Value}" Background="#33000000" Foreground="White" Margin="5 1 0 1" BorderBrush="#33000000" Width="127" VerticalAlignment="Center" VerticalContentAlignment="Center"  TextAlignment="Center" Height="21" FontSize="10" Padding="5 0"/>
+            <CheckBox x:Name="BoolValue" Margin="5 0 0 0" Height="15" Width="15" VerticalAlignment="Center" Background="#33000000" Foreground="Azure" BorderBrush="Transparent" IsChecked="{Binding IsTrue}"/>
+            <Button x:Name="ChooseButton" Margin="0 0 0 0" Cursor="Hand" ToolTip="Choose value from external files" Height="21" Width="21" Background="CornflowerBlue" BorderBrush="Transparent" Foreground="White" >🔍</Button>
             </StackPanel>
         </Border>
 </UserControl>
