@@ -207,10 +207,10 @@
             <Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
         </Element>
         <Element Name="GetSourceValue" XMLName="GetValue">
-            <Attribute Name="SourceName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
+            <Attribute Name="SourceName" IsRequired="true" ValueType="STRING" Input="PROVIDER_READER"/>
         </Element>
         <Element Name="GetEntityValue" XMLName="GetValue">
-            <Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="PROVIDER_READER"/>
+            <Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
         </Element>
         <Element Name="Condition" XMLName="Condition">
             <Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>

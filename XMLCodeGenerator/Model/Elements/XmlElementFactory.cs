@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace XMLCodeGenerator.Model
+namespace XMLCodeGenerator.Model.Elements
 {
     public static class XmlElementFactory
     {
@@ -36,7 +36,7 @@ namespace XMLCodeGenerator.Model
         public static Element GetElement(XmlElement xmlElement, ContentBlockModel parentBlock = null)
         {
             Element element = new Element();
-            element.Model = ModelProvider.GetElementModelByXMLElement(xmlElement);
+            element.Model = ElementModelProvider.GetElementModelByXMLElement(xmlElement);
             element.ParentContentBlock = parentBlock;
             foreach (XmlAttribute attr in xmlElement.Attributes)
                 element.AttributeValues.Add(attr.Value);
@@ -48,11 +48,11 @@ namespace XMLCodeGenerator.Model
         {
             foreach (XmlElement childXmlElement in xmlElement.ChildNodes)
             {
-                ElementModel childModel = ModelProvider.GetElementModelByXMLElement(childXmlElement);
+                ElementModel childModel = ElementModelProvider.GetElementModelByXMLElement(childXmlElement);
                 ContentBlockModel parentContentBlock = element.Model.GetSuitableContentBlockForChildModel(childModel);
                 if (parentContentBlock == null)
                 {
-                    ElementModel supportingModel = ModelProvider.GetWrapperModel(childModel);
+                    ElementModel supportingModel = ElementModelProvider.GetWrapperModel(childModel);
                     Element supportingElement = new Element();
                     supportingElement.Model = supportingModel;
                     supportingElement.ParentContentBlock = element.Model.GetSuitableContentBlockForChildModel(supportingModel);

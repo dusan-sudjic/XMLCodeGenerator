@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace XMLCodeGenerator.Model
+namespace XMLCodeGenerator.Model.Elements
 {
     public class ElementModel
     {
@@ -14,7 +14,7 @@ namespace XMLCodeGenerator.Model
         public List<ContentBlockModel> ContentBlocks { get; set; }
         public List<AttributeModel> Attributes { get; set; }
         protected ElementModel() { }
-        public ElementModel(XmlNode node) 
+        public ElementModel(XmlNode node)
         {
             ContentBlocks = new();
             Attributes = new();
@@ -30,12 +30,12 @@ namespace XMLCodeGenerator.Model
         public virtual ContentBlockModel GetSuitableContentBlockForChildModel(ElementModel model)
         {
             if (model is FunctionModel functionModel)
-                return ContentBlocks.Where(x => x.ElementModels.Contains(ModelProvider.GetElementModelByName("Function"))).ToList().FirstOrDefault();
-            return ContentBlocks.Where(x=>x.ElementModels.Contains(model)).ToList().FirstOrDefault();
+                return ContentBlocks.Where(x => x.ElementModels.Contains(ElementModelProvider.GetElementModelByName("Function"))).ToList().FirstOrDefault();
+            return ContentBlocks.Where(x => x.ElementModels.Contains(model)).ToList().FirstOrDefault();
         }
         public void SetContent(Dictionary<string, List<ElementModel>> elementTypes)
         {
-            foreach(ContentBlockModel contentBlock in ContentBlocks)
+            foreach (ContentBlockModel contentBlock in ContentBlocks)
                 contentBlock.SetContent(elementTypes);
         }
         public override string ToString()

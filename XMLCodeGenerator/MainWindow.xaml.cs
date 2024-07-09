@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -21,7 +22,8 @@ using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Linq;
 using XMLCodeGenerator.Commands;
-using XMLCodeGenerator.Model;
+using XMLCodeGenerator.Model.Elements;
+using XMLCodeGenerator.Model.ProvidersConfig;
 using XMLCodeGenerator.View;
 using XMLCodeGenerator.ViewModel;
 
@@ -29,8 +31,8 @@ namespace XMLCodeGenerator
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public List<ClassInfo> ProviderReaderClasses = new();
-        public List<EntityInfo> SourceProviderEntities = new();
+        public static List<ProviderReaderClass> ProviderReaderClasses = new();
+        public static List<SourceProviderEntity> SourceProviderEntities = new();
         public static string OutputPath { get; private set; }
         private bool _isProviderReaderImported;
         public bool IsProviderReaderImported { 
@@ -98,7 +100,7 @@ namespace XMLCodeGenerator
             IsProviderReaderImported = false;
             HasUnsavedChanges = false;
             xmlPreviewControl = (XmlPreviewUserControl)this.FindName("xmlPreview");
-            ModelProvider.LoadModel();
+            ElementModelProvider.LoadModel();
         }
 
         public static void BindElementToXMLPreview(ElementViewModel element)
@@ -117,7 +119,7 @@ namespace XMLCodeGenerator
 
         private void AddNewCimClass()
         {
-            ElementModel bp = ModelProvider.GetElementModelByName("CimClass");
+            ElementModel bp = ElementModelProvider.GetElementModelByName("CimClass");
             ElementViewModel element = new ElementViewModel(new Element(bp));
             CimClasses.Add(element);
             StackPanel stackPanel = (StackPanel)this.FindName("Stack");
@@ -129,17 +131,17 @@ namespace XMLCodeGenerator
             CreateNewFunctionWindow window = new CreateNewFunctionWindow();
             if (window.ShowDialog() == true)
             {
-                if (ModelProvider.FunctionNameAlreadyInUse(window.Name))
+                if (ElementModelProvider.FunctionNameAlreadyInUse(window.Name))
                 { 
                     MessageBox.Show("Function with name " + window.Name + " already exists.");
                     return;
                 }
                 else
                 {
-                    ElementModel model = ModelProvider.GetElementModelByName("FunctionDefinition");
+                    ElementModel model = ElementModelProvider.GetElementModelByName("FunctionDefinition");
                     Element element = new Element(model);
                     element.AttributeValues[0] = window.Name;
-                    ModelProvider.AddNewFunctionDefinition(window.Name);
+                    ElementModelProvider.AddNewFunctionDefinition(window.Name);
                     ElementViewModel elementVM = new ElementViewModel(element);
                     FunctionDefinitions.Add(elementVM);
                     StackPanel stackPanel = (StackPanel)this.FindName("FunctionsStack");
@@ -153,7 +155,7 @@ namespace XMLCodeGenerator
         public static void RenameFunction(string oldFunctionName, string newFunctionName)
         {
             FunctionDefinitions.First(x => x.Attributes[0].Value.Equals(oldFunctionName)).Attributes[0].Value = newFunctionName;
-            ModelProvider.RenameFunction(oldFunctionName, newFunctionName);
+            ElementModelProvider.RenameFunction(oldFunctionName, newFunctionName);
             foreach (var c in CimClasses)
                 c.RenameFunction(oldFunctionName, newFunctionName);
         }
@@ -172,7 +174,7 @@ namespace XMLCodeGenerator
             if (function == null)
                 return;
             FunctionDefinitions.Remove(function);
-            ModelProvider.RemoveFunctionDefinition(function.Element.AttributeValues[0]);
+            ElementModelProvider.RemoveFunctionDefinition(function.Element.AttributeValues[0]);
             FunctionDefinitionsStackPanel.Children.Remove(uc);
             foreach (var c in CimClasses)
                 c.SetReplacable();
@@ -210,7 +212,7 @@ namespace XMLCodeGenerator
                         foreach (XmlElement functionDefinitionNode in functionDefinitionNodes)
                         {
                             Element el = XmlElementFactory.GetElement(functionDefinitionNode);
-                            ModelProvider.AddNewFunctionDefinition(el.AttributeValues[0]);
+                            ElementModelProvider.AddNewFunctionDefinition(el.AttributeValues[0]);
                             ElementViewModel elemVM = new ElementViewModel(el);
                             FunctionDefinitions.Add(elemVM);
                             functionDefinitionsStackPanel.Children.Add(new ElementUserControl(elemVM));
@@ -293,11 +295,7 @@ namespace XMLCodeGenerator
                     Assembly assembly = Assembly.LoadFrom(filePath);
                     Type[] types = assembly.GetTypes();
                     foreach (Type type in types)
-                    {
-                        string className = type.FullName;
-                        className += type.BaseType.Name!="Object" ? $" (inherits from {type.BaseType.Name})":"";
-                        ProviderReaderClasses.Add(new ClassInfo { ClassName = className, Properties = GetClassProperties(type) });
-                    }
+                        ProviderReaderClasses.Add(new ProviderReaderClass(type));
                     IsProviderReaderImported = true;
                 }
                 catch (Exception ex)
@@ -326,9 +324,9 @@ namespace XMLCodeGenerator
                         foreach (XmlNode personNode in entitityNodes)
                         {
                             string name = personNode.SelectSingleNode("Name")?.InnerText;
-                            EntityInfo entity = new EntityInfo { Name = name.Trim(), Attributes = new() };
+                            SourceProviderEntity entity = new SourceProviderEntity(name);
                             foreach (XmlNode attributeNode in personNode.SelectNodes("EntityAttribute"))
-                                entity.Attributes.Add(attributeNode.Attributes["Name"]?.Value);
+                                entity.Attributes.Add(new SourceProviderAttribute(attributeNode.Attributes["Name"]?.Value));
                             SourceProviderEntities.Add(entity);
                         }
                         isSourceProviderImported = true;
@@ -351,7 +349,7 @@ namespace XMLCodeGenerator
         {
             List<string> properties = new List<string>();
             foreach (var property in type.GetProperties())
-                properties.Add($".\t{property.Name}: {property.PropertyType.Name}\n");
+                properties.Add($"\t{property.Name}: {property.PropertyType.Name}\n");
             return properties;
         }
         public void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -408,16 +406,5 @@ namespace XMLCodeGenerator
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public record ClassInfo
-    {
-        public string ClassName { get; set; }
-        public List<string> Properties { get; set; }
-    }
-    public record EntityInfo
-    {
-        public string Name { get; set; }
-        public List<string> Attributes { get; set; }
     }
 }

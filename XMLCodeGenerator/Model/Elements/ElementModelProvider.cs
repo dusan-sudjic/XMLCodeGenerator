@@ -9,13 +9,13 @@ using System.Xml.Linq;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace XMLCodeGenerator.Model
+namespace XMLCodeGenerator.Model.Elements
 {
-    public static class ModelProvider
+    public static class ElementModelProvider
     {
         private static string path = "../../../Input/model.xml";
         private static List<ElementModel> ElementModels = new();
-        private static Dictionary<string,FunctionModel> FunctionModels = new();
+        private static Dictionary<string, FunctionModel> FunctionModels = new();
         public static void LoadModel()
         {
             try
@@ -30,7 +30,7 @@ namespace XMLCodeGenerator.Model
                         ElementModels.Add(new ElementModel(elementNode));
 
                 XmlNodeList typeNodes = xmlDoc.SelectNodes("//Type");
-                if(typeNodes != null)
+                if (typeNodes != null)
                     foreach (XmlNode typeNode in typeNodes)
                     {
                         var name = typeNode.Attributes["Name"]?.InnerText;
@@ -41,7 +41,7 @@ namespace XMLCodeGenerator.Model
                         elementTypes.Add(name, elementModels);
                     }
 
-                foreach(var element in ElementModels)
+                foreach (var element in ElementModels)
                     element.SetContent(elementTypes);
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace XMLCodeGenerator.Model
         }
         public static List<FunctionModel> GetFunctions()
         {
-            return FunctionModels.Values.OrderBy(x=>x.FunctionName).ToList();
+            return FunctionModels.Values.OrderBy(x => x.FunctionName).ToList();
         }
         public static FunctionModel GetFunctionModelByName(string functionName)
         {
@@ -64,21 +64,21 @@ namespace XMLCodeGenerator.Model
         }
         public static ElementModel GetElementModelByName(string name)
         {
-            return ElementModels.FirstOrDefault(x=>x.Name.Equals(name));
+            return ElementModels.FirstOrDefault(x => x.Name.Equals(name));
         }
         public static ElementModel GetElementModelByXMLElement(XmlElement xmlElement)
         {
-            if(xmlElement.Name.Equals("Function"))
-                if(!xmlElement.ParentNode.Name.Equals("FunctionDefinitions"))
+            if (xmlElement.Name.Equals("Function"))
+                if (!xmlElement.ParentNode.Name.Equals("FunctionDefinitions"))
                     return GetFunctionModelByName(xmlElement.GetAttribute("Name"));
             var list = ElementModels.Where(x => x.XMLName.Equals(xmlElement.Name)).ToList();
             if (list.Count == 1)
                 return list[0];
-            var list2 = list.Where(x=>x.ContentBlocks.Count>0 ? xmlElement.ChildNodes.Count>0 : xmlElement.ChildNodes.Count==0).ToList();
-            if(list2.Count ==1)
+            var list2 = list.Where(x => x.ContentBlocks.Count > 0 ? xmlElement.ChildNodes.Count > 0 : xmlElement.ChildNodes.Count == 0).ToList();
+            if (list2.Count == 1)
                 return list2[0];
-            var list3 = list.Where(x => x.Attributes.All(a=>xmlElement.GetAttributeNode(a.Name) != null)).ToList();
-            if(list3.Count == 1)
+            var list3 = list.Where(x => x.Attributes.All(a => xmlElement.GetAttributeNode(a.Name) != null)).ToList();
+            if (list3.Count == 1)
                 return list3[0];
             var model = FunctionModels[xmlElement.GetAttribute("Name")];
             if (model == null)
@@ -103,9 +103,9 @@ namespace XMLCodeGenerator.Model
         }
         public static List<ElementModel> GetReplacableModelsForElement(Element element)
         {
-            if (element.ParentContentBlock == null) 
+            if (element.ParentContentBlock == null)
                 return null;
-            if (element.ParentContentBlock.ElementModels.Count == 1) 
+            if (element.ParentContentBlock.ElementModels.Count == 1)
                 return null;
             var list = element.ParentContentBlock.ElementModels.Where(e => !e.Name.Equals(element.Model.Name)).ToList();
             return list;

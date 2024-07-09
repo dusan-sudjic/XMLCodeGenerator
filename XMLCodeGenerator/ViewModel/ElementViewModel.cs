@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using XMLCodeGenerator.Model;
+using XMLCodeGenerator.Model.Elements;
 
 namespace XMLCodeGenerator.ViewModel
 {
@@ -118,11 +118,11 @@ namespace XMLCodeGenerator.ViewModel
         public ElementViewModel(Element element)
         {
             Element = element;
-            HasRoomForNewChildElement = ModelProvider.GetModelsForNewChildElement(Element).Count > 0;
+            HasRoomForNewChildElement = ElementModelProvider.GetModelsForNewChildElement(Element).Count > 0;
             IsRemovable = XML_Name.Equals("CimClass") || Element.Model.Name.Equals("FunctionDefinition");
-            IsReplacable = ModelProvider.GetReplacableModelsForElement(Element) != null;
+            IsReplacable = ElementModelProvider.GetReplacableModelsForElement(Element) != null;
             Attributes = new();
-            var list = ModelProvider.GetModelsForNewChildElement(Element);
+            var list = ElementModelProvider.GetModelsForNewChildElement(Element);
             DefaultNewChild = list.Count == 1 ? list[0] : null;
             IsExtended = true;
             Attributes.CollectionChanged += Attributes_CollectionChanged;
@@ -134,7 +134,7 @@ namespace XMLCodeGenerator.ViewModel
         }
         public void SetReplacable()
         {
-            IsReplacable = ModelProvider.GetReplacableModelsForElement(Element) != null;
+            IsReplacable = ElementModelProvider.GetReplacableModelsForElement(Element) != null;
             foreach (var child in ChildViewModels)
                 child.SetReplacable();
         }
@@ -167,14 +167,14 @@ namespace XMLCodeGenerator.ViewModel
                     ChildViewModels.Insert(i, new ElementViewModel(newElement));
                 }
                 setRemovableForChildren();
-                list = ModelProvider.GetModelsForNewChildElement(Element);
+                list = ElementModelProvider.GetModelsForNewChildElement(Element);
                 DefaultNewChild = list.Count == 1 ? list[0] : null;
                 return;
             }
             Element.ChildElements.Add(newElement);
             ChildViewModels.Add(new ElementViewModel(newElement));
             setRemovableForChildren();
-            list = ModelProvider.GetModelsForNewChildElement(Element);
+            list = ElementModelProvider.GetModelsForNewChildElement(Element);
             DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
         public void DeleteChildElement(ElementViewModel element)
@@ -182,7 +182,7 @@ namespace XMLCodeGenerator.ViewModel
             ChildViewModels.Remove(element);
             Element.ChildElements.Remove(element.Element);
             setRemovableForChildren();
-            var list = ModelProvider.GetModelsForNewChildElement(Element);
+            var list = ElementModelProvider.GetModelsForNewChildElement(Element);
             DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
         public void ReplaceChild(ElementViewModel oldElement, ElementModel newElementModel)
@@ -191,7 +191,7 @@ namespace XMLCodeGenerator.ViewModel
             Element newElement = new Element(newElementModel, oldElement.Element.ParentContentBlock);
             ChildViewModels[index] = new ElementViewModel(newElement);
             Element.ChildElements[index] = ChildViewModels[index].Element;
-            var list = ModelProvider.GetModelsForNewChildElement(Element);
+            var list = ElementModelProvider.GetModelsForNewChildElement(Element);
             DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
         public void RenameFunction(string oldName, string newName)
@@ -200,7 +200,7 @@ namespace XMLCodeGenerator.ViewModel
             {
                 if (Attributes[0].Value.Equals(oldName))
                 {
-                    Element.Model = ModelProvider.GetFunctionModelByName(newName);
+                    Element.Model = ElementModelProvider.GetFunctionModelByName(newName);
                     Attributes[0].Value = newName;
                 }
             }

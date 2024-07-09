@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace XMLCodeGenerator.Model
+namespace XMLCodeGenerator.Model.Elements
 {
     public sealed class AttributeModel
     {
@@ -13,7 +13,7 @@ namespace XMLCodeGenerator.Model
         public ValueType ValueType { get; set; }
         public InputType InputType { get; set; }
         public bool IsRequired { get; set; }
-        public bool Editable {  get; set; }
+        public bool Editable { get; set; }
         private string defaultValue = null;
         public AttributeModel(XmlNode node)
         {
@@ -43,7 +43,7 @@ namespace XMLCodeGenerator.Model
         {
             get
             {
-                if(defaultValue!=null)
+                if (defaultValue != null)
                     return defaultValue;
                 switch (ValueType)
                 {

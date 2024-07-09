@@ -8,7 +8,7 @@ using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace XMLCodeGenerator.Model
+namespace XMLCodeGenerator.Model.Elements
 {
     public sealed class Element
     {
@@ -16,7 +16,7 @@ namespace XMLCodeGenerator.Model
         public List<string> AttributeValues { get; set; }
         public ElementModel Model { get; set; }
         public ContentBlockModel ParentContentBlock { get; set; }
-        public Element() 
+        public Element()
         {
             ChildElements = new List<Element>();
             AttributeValues = new List<string>();
@@ -35,11 +35,11 @@ namespace XMLCodeGenerator.Model
                     ChildElements.Add(new Element(block.GetDefaultElement(), block));
             ParentContentBlock = parentContentBlock;
         }
-        public override string ToString() 
+        public override string ToString()
         {
             if (Model.Name == "Function")
                 return AttributeValues[0];
-            return Model.Name; 
+            return Model.Name;
         }
     }
 

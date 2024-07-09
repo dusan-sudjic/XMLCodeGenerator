@@ -1,0 +1,96 @@
+﻿<Window x:Class="XMLCodeGenerator.View.ProviderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:XMLCodeGenerator.View"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="Choose value from providers" Background="CornflowerBlue" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <DataTemplate x:Key="ClassInfoTemplate">
+            <Border BorderBrush="CornflowerBlue" BorderThickness="1" Margin="5" Padding="5">
+                <StackPanel>
+                    <Button Click="Select_Click" Cursor="Hand" Background="Transparent" Height="25" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" FontWeight="Bold" Content="{Binding}" Margin="0,0,0,5"/>
+                    <ItemsControl ItemsSource="{Binding Properties}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Click="Select_Click" Cursor="Hand" Padding="20 0 0 0" HorizontalAlignment="Stretch" Height="25" VerticalAlignment="Top" Width="Auto" Background="Transparent" HorizontalContentAlignment="Left" Content="{Binding}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="EntityInfoTemplate">
+            <Border BorderBrush="CornflowerBlue" BorderThickness="1" Margin="5" Padding="5">
+                <StackPanel>
+                    <Button Click="Select_Click" Cursor="Hand" Background="Transparent" Height="25" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" FontWeight="Bold" Content="{Binding}" Margin="0,0,0,5"/>
+                    <ItemsControl ItemsSource="{Binding Attributes}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Click="Select_Click" Cursor="Hand" Padding="20 0 0 0" HorizontalAlignment="Stretch" Height="25" VerticalAlignment="Top" Width="Auto" Background="Transparent" HorizontalContentAlignment="Left" Content="{Binding}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="ItemTemplate">
+            <Border BorderThickness="0">
+                <StackPanel>
+                    <Button Click="Select_Click" Padding="15 0 0 0" BorderBrush="Transparent" Cursor="Hand" HorizontalAlignment="Stretch" Height="25" VerticalAlignment="Top" Width="Auto" Background="Transparent" HorizontalContentAlignment="Left" Content="{Binding}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <StackPanel Orientation="Horizontal" Height="Auto" Margin="5">
+            <TabControl x:Name="tabControl">
+                <TabItem Header="Provider reader classes">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" Width="400">
+                        <ItemsControl ItemsSource="{Binding Classes}" 
+                             ItemTemplate="{StaticResource ClassInfoTemplate}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Source provider entities">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" Width="400">
+                        <ItemsControl ItemsSource="{Binding Entities}" 
+                             ItemTemplate="{StaticResource EntityInfoTemplate}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+            <Border Margin="5 22 5 0" BorderBrush="LightGray" Background="LightCyan" BorderThickness="1" Width="360" Padding="5">
+                <StackPanel Orientation="Vertical">
+                    <xctk:WatermarkTextBox Watermark="Search" x:Name="search" TextChanged="TextChanged" HorizontalAlignment="Stretch" Width="140"/>
+                    <TabControl x:Name="tabControl2" Margin="0 10 0 0" SelectionChanged="TabControl_SelectionChanged">
+                        <TabItem Header="Classes">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="300" Margin="0 5 0 0">
+                                <ItemsControl Height="Auto" ItemsSource="{Binding SearchResultsClasses}" ItemTemplate="{StaticResource ItemTemplate}"/>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="Properties">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="300" Margin="0 5 0 0">
+                                <ItemsControl Height="Auto" ItemsSource="{Binding SearchResultsProperties}" ItemTemplate="{StaticResource ItemTemplate}"/>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="Entities">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="350" Margin="0 5 0 0">
+                                <ItemsControl Height="Auto" ItemsSource="{Binding SearchResultsEntities}" ItemTemplate="{StaticResource ItemTemplate}"/>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="Attributes">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="350" Margin="0 5 0 0">
+                                <ItemsControl Height="Auto" ItemsSource="{Binding SearchResultsAttributes}" ItemTemplate="{StaticResource ItemTemplate}"/>
+                            </ScrollViewer>
+                        </TabItem>
+                    </TabControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</Window>

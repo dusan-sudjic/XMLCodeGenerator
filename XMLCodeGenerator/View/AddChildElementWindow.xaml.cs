@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Xceed.Wpf.Toolkit;
-using XMLCodeGenerator.Model;
+using XMLCodeGenerator.Model.Elements;
 using XMLCodeGenerator.ViewModel;
 
 namespace XMLCodeGenerator.View
@@ -37,13 +37,13 @@ namespace XMLCodeGenerator.View
             ElementsListBox = (ListBox)this.FindName("listBox");
             FunctionsListBox = (ListBox)this.FindName("functionsListBox");
             if (!replacement)
-                SupportedChildElements = ModelProvider.GetModelsForNewChildElement(element.Element).Where(e=>e is not FunctionModel).ToList();
+                SupportedChildElements = ElementModelProvider.GetModelsForNewChildElement(element.Element).Where(e=>e is not FunctionModel).ToList();
             else
-                SupportedChildElements = ModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e is not FunctionModel).OrderBy(x=>x.Name).ToList();
+                SupportedChildElements = ElementModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e is not FunctionModel).OrderBy(x=>x.Name).ToList();
             if (SupportedChildElements.Where(e => e.Name.Equals("Function")).ToList().Count > 0)
             {
                 SupportsFunctions = true;
-                SupportedFunctionCalls = ModelProvider.GetFunctions();
+                SupportedFunctionCalls = ElementModelProvider.GetFunctions();
                 SupportedChildElements.RemoveAll(x => x.Name.Equals("Function"));
             }
             if (SupportedChildElements == null)
@@ -181,6 +181,7 @@ namespace XMLCodeGenerator.View
             ElementsListBox.ItemsSource = newList;
             if (ElementsListBox.SelectedIndex == -1) ElementsListBox.SelectedIndex = 0;
 
+            if (!SupportsFunctions) return;
             List<ElementModel> newListFunctions = new();
             foreach (var s in SupportedFunctionCalls)
             {

@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using Xceed.Wpf.Toolkit;
+using XMLCodeGenerator.Model.Elements;
 using XMLCodeGenerator.ViewModel;
 namespace XMLCodeGenerator.View.Attributes
 {
@@ -27,13 +28,21 @@ namespace XMLCodeGenerator.View.Attributes
             DataContext = this;
             Attribute = attribute;
             HandleValueType();
-            ChooseButton.Visibility = attribute.InputType != Model.InputType.USER_INPUT ? Visibility.Visible : Visibility.Collapsed;
+            ChooseButton.Visibility = attribute.InputType != InputType.USER_INPUT ? Visibility.Visible : Visibility.Collapsed;
+        }
+        private void OpenProvidersWindow_Click(object sender, RoutedEventArgs e)
+        {
+            ProviderWindow window = new ProviderWindow(Attribute.InputType);
+            if (window.ShowDialog() == true)
+            {
+                Attribute.Value = window.SelectedValue;
+            }
         }
         private void HandleValueType()
         {
             switch (Attribute.ValueType)
             {
-                case Model.ValueType.BOOLEAN:
+                case Model.Elements.ValueType.BOOLEAN:
                     {
                         var stringVal = (TextBox)this.FindName("StringValue");
                         stringVal.Visibility = System.Windows.Visibility.Collapsed;
@@ -41,7 +50,7 @@ namespace XMLCodeGenerator.View.Attributes
                         intVal.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     }
-                case Model.ValueType.STRING:
+                case Model.Elements.ValueType.STRING:
                     {
                         var boolVal = (CheckBox)this.FindName("BoolValue");
                         boolVal.Visibility = System.Windows.Visibility.Collapsed;
@@ -49,7 +58,7 @@ namespace XMLCodeGenerator.View.Attributes
                         intVal.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     }
-                case Model.ValueType.INTEGER:
+                case Model.Elements.ValueType.INTEGER:
                     {
                         var boolVal = (CheckBox)this.FindName("BoolValue");
                         boolVal.Visibility = System.Windows.Visibility.Collapsed;

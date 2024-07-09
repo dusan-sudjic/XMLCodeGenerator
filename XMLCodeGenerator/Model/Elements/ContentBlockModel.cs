@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace XMLCodeGenerator.Model
+namespace XMLCodeGenerator.Model.Elements
 {
     public sealed class ContentBlockModel
     {
@@ -14,7 +14,7 @@ namespace XMLCodeGenerator.Model
         public int MinSize { get; set; }
         public List<ElementModel> ElementModels { get; set; }
         public string ElementsString { get; set; }
-        public ContentBlockModel(XmlNode node) 
+        public ContentBlockModel(XmlNode node)
         {
             MaxSize = int.Parse(node.Attributes["MaxSize"]?.InnerText);
             MinSize = int.Parse(node.Attributes["MinSize"]?.InnerText);
@@ -24,7 +24,7 @@ namespace XMLCodeGenerator.Model
         public bool SupportsElementModel(ElementModel model)
         {
             if (model is FunctionModel)
-                return ElementModels.Contains(ModelProvider.GetElementModelByName("Function"));
+                return ElementModels.Contains(ElementModelProvider.GetElementModelByName("Function"));
             return ElementModels.Contains(model);
         }
         public void SetContent(Dictionary<string, List<ElementModel>> elementTypes)
@@ -32,8 +32,8 @@ namespace XMLCodeGenerator.Model
             if (elementTypes.ContainsKey(ElementsString))
                 ElementModels = elementTypes[ElementsString];
             else
-                foreach(var el in ElementsString.Split(','))
-                    ElementModels.Add(ModelProvider.GetElementModelByName(el));
+                foreach (var el in ElementsString.Split(','))
+                    ElementModels.Add(ElementModelProvider.GetElementModelByName(el));
         }
         public ElementModel GetDefaultElement()
         {

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.ComponentModel;
-using XMLCodeGenerator.Model;
+using XMLCodeGenerator.Model.Elements;
 
 namespace XMLCodeGenerator.ViewModel
 {
@@ -29,7 +29,7 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
-        public Model.ValueType ValueType
+        public Model.Elements.ValueType ValueType
         { 
             get => Attribute.ValueType;
             set
@@ -41,7 +41,7 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
-        public Model.InputType InputType
+        public InputType InputType
         { 
             get => Attribute.InputType;
             set

@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using XMLCodeGenerator.Behaviors;
-using XMLCodeGenerator.Model;
+using XMLCodeGenerator.Model.Elements;
 using XMLCodeGenerator.View.Attributes;
 using XMLCodeGenerator.ViewModel;
 
@@ -253,7 +253,7 @@ namespace XMLCodeGenerator.View
             CreateNewFunctionWindow functionWindow = new CreateNewFunctionWindow(Element.Attributes[0].Value);
             if (functionWindow.ShowDialog() == true)
             {
-                if (ModelProvider.FunctionNameAlreadyInUse(functionWindow.Name))
+                if (ElementModelProvider.FunctionNameAlreadyInUse(functionWindow.Name))
                 {
                     MessageBox.Show("Function with name " + functionWindow.Name + " already exists.");
                     return;

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XMLCodeGenerator.Model
+namespace XMLCodeGenerator.Model.Elements
 {
-    public class FunctionModel: ElementModel
+    public class FunctionModel : ElementModel
     {
-        public string FunctionName {  get; private set; }
+        public string FunctionName { get; private set; }
         public FunctionModel(string functionName) : base()
         {
             FunctionName = functionName;
@@ -23,7 +23,7 @@ namespace XMLCodeGenerator.Model
         }
         public override string ToString()
         {
-            return Name + " ["+FunctionName+"]";
+            return Name + " [" + FunctionName + "]";
         }
     }
 }
