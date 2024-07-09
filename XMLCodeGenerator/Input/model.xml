@@ -201,10 +201,10 @@
         </Element>
         <Element Name="GetPrimarySource"  XMLName="GetPrimarySource"/>
         <Element Name="GetSourceColumn"  XMLName="GetSourceColumn">
-            <Attribute Name="EntityProperty" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+            <Attribute Name="EntityProperty" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
         </Element>
         <Element Name="GetSourceTable"  XMLName="GetSourceTable">
-            <Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+            <Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
         </Element>
         <Element Name="GetSourceValue" XMLName="GetValue">
             <Attribute Name="SourceName" IsRequired="true" ValueType="STRING" Input="PROVIDER_READER"/>

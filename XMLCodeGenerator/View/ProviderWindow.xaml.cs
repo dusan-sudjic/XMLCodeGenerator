@@ -42,7 +42,7 @@ namespace XMLCodeGenerator.View
             foreach (ProviderReaderClass c in Classes)
             {
                 SearchResultsClasses.Add(c);
-                foreach(var property in c.Properties)
+                foreach (var property in c.Properties)
                     SearchResultsProperties.Add(property);
             }
             foreach (SourceProviderEntity c in Entities)

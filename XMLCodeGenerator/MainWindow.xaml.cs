@@ -323,10 +323,10 @@ namespace XMLCodeGenerator
                     {
                         foreach (XmlNode personNode in entitityNodes)
                         {
-                            string name = personNode.SelectSingleNode("Name")?.InnerText;
+                            string name = personNode.SelectSingleNode("Name")?.InnerText.Trim();
                             SourceProviderEntity entity = new SourceProviderEntity(name);
                             foreach (XmlNode attributeNode in personNode.SelectNodes("EntityAttribute"))
-                                entity.Attributes.Add(new SourceProviderAttribute(attributeNode.Attributes["Name"]?.Value));
+                                entity.Attributes.Add(new SourceProviderAttribute(attributeNode.Attributes["Name"]?.Value, name));
                             SourceProviderEntities.Add(entity);
                         }
                         isSourceProviderImported = true;

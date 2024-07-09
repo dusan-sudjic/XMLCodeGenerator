@@ -17,7 +17,8 @@ namespace XMLCodeGenerator.Model.ProvidersConfig
             Namespace = type.Namespace;
             Properties = new();
             foreach (var property in type.GetProperties())
-                Properties.Add(new ProviderReaderProperty(property.Name, property.PropertyType.Name));
+                if(!property.Name.EndsWith("HasValue") && !(property.Name.StartsWith("Is") && property.Name.EndsWith("Mandatory")) && !property.Name.EndsWith("Prefix"))
+                    Properties.Add(new ProviderReaderProperty(property.Name, property.PropertyType.Name, Name));
         }
         public override string ToString()
         {

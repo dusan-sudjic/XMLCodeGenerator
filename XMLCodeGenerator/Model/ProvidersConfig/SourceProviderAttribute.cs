@@ -8,6 +8,10 @@ namespace XMLCodeGenerator.Model.ProvidersConfig
 {
     public class SourceProviderAttribute : ProviderElement
     {
-        public SourceProviderAttribute(string name) : base(name) { }
+        public string EntityName { get; init; }
+        public SourceProviderAttribute(string name, string entityName) : base(name) 
+        {
+            EntityName = entityName;
+        }
     }
 }

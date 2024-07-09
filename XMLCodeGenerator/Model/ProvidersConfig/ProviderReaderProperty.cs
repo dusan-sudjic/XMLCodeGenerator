@@ -8,10 +8,12 @@ namespace XMLCodeGenerator.Model.ProvidersConfig
 {
     public class ProviderReaderProperty : ProviderElement
     {
-        public string Type { get; set; }
-        public ProviderReaderProperty(string name, string type) : base(name)
+        private string ClassName { get; init; }
+        private string Type { get; init; }
+        public ProviderReaderProperty(string name, string type, string className) : base(name)
         {
             Type = type;
+            ClassName = className;
         }
         public override string ToString()
         {
