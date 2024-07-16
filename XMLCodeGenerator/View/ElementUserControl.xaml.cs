@@ -16,50 +16,31 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using XMLCodeGenerator.Behaviors;
 using XMLCodeGenerator.Model.Elements;
-using XMLCodeGenerator.View.Attributes;
 using XMLCodeGenerator.ViewModel;
 
 namespace XMLCodeGenerator.View
 {
     public partial class ElementUserControl : UserControl, INotifyPropertyChanged
     {
-        private bool _isMainLabelWithinViewport;
-        public bool IsMainLabelWithinViewport
-        {
-            get { return _isMainLabelWithinViewport; }
-            set
-            {
-                if (_isMainLabelWithinViewport != value)
-                {
-                    _isMainLabelWithinViewport = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        public StackPanel _childrenContainer;
-        private StackPanel _attributesContainer;
-        private StackPanel _unexpandableAttributesContainer;
         private Point _dragStartPoint;
         private UIElement _draggedElement;
         public string XML_Name { get { return Element.XML_Name; } set { } }
         private int _originalIndex;
-        public ElementViewModel Element { get; set; }
+        public ElementViewModel Element { get => DataContext as ElementViewModel; }
         public ElementUserControl()
         {
             InitializeComponent();
+            this.MouseMove += Element_MouseMove;
+            this.DragOver += Element_DragOver;
+            this.Drop += Element_Drop;
+            DataContextChanged += ElementUserControl_DataContextChanged;
         }
-        public ElementUserControl(ElementViewModel element): this()
+        private void ElementUserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            DataContext = this;
-            Element = element;
-            _childrenContainer = (StackPanel)this.FindName("ChildrenContainer");
-            _attributesContainer = (StackPanel)this.FindName("AttributesStackPanel");
-            _unexpandableAttributesContainer = (StackPanel)this.FindName("AttributesContainer");
-            //StickyTextBlockBehavior.SetIsTopVisible(this, true);
-
-            SetUpUI();
+            itemsControlChildren.ItemsSource = Element.ChildViewModels;
             SetButtons();
         }
 
@@ -80,48 +61,17 @@ namespace XMLCodeGenerator.View
             dock.HorizontalAlignment = Element.IsExtended ? HorizontalAlignment.Stretch: HorizontalAlignment.Left;
             dock.HorizontalAlignment = !Element.IsExtendable ? HorizontalAlignment.Stretch: dock.HorizontalAlignment;
         }
-
-        public void DeleteChildElement(ElementViewModel element)
+        public void ReplaceElement()
         {
-            Element.DeleteChildElement(element);
-            SetButtons();
-            SetUpUI();
-        }
-        public void ReplaceChildElement(ElementViewModel element)
-        {
-            AddChildElementWindow window = new AddChildElementWindow(element, true);
+            AddChildElementWindow window = new AddChildElementWindow(Element, true);
             if (window.ShowDialog() == true)
             {
-                Element.ReplaceChild(element, window.SelectedElement);
+                Element.ReplaceElement(window.SelectedElement);
                 SetButtons();
-                SetUpUI();
-            }
-            
-        }
-        public void SetUpUI()
-        {
-            _unexpandableAttributesContainer.Children.Clear();
-            if (!Element.IsExtendable)
-            {
-                foreach (var attr in Element.Attributes)
-                    if(attr.Attribute.Editable)
-                        _unexpandableAttributesContainer.Children.Add(new AttributeContainer(attr));
-            }
-            else
-            {
-                _attributesContainer.Children.Clear();
-                foreach (var attr in Element.Attributes)
-                    if(attr.Attribute.Editable)
-                        _attributesContainer.Children.Add(new AttributeContainer(attr));
-
-                _childrenContainer.Children.Clear();
-                foreach (var child in Element.ChildViewModels)
-                    _childrenContainer.Children.Add(CreateDraggableElement(child));
             }
         }
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            IsMainLabelWithinViewport = true;
             Border dock = (Border)this.FindName("Border");
             if (!Element.IsExtended)
             {
@@ -143,30 +93,19 @@ namespace XMLCodeGenerator.View
 
             if(Element.XML_Name.Equals("CimClass"))
             {
-                MainWindow.RemoveCimClass(this);
+                MainWindow.RemoveCimClass(Element);
             }
             else if (Element.Element.Model.Name.Equals("FunctionDefinition"))
             {
-                MainWindow.RemoveFunctionDefinition(this);
+                MainWindow.RemoveFunctionDefinition(Element);
             }
             else
             {
-                ElementUserControl parent = GetParentElementUserControl();
                 if (Element.IsRemovable)
-                    parent.DeleteChildElement(Element);
+                    Element.DeleteElement();
                 else
-                    parent.ReplaceChildElement(Element);
+                    ReplaceElement();
             }
-        }
-
-        private ElementUserControl GetParentElementUserControl()
-        {
-            StackPanel parentStack = this.Parent as StackPanel;
-            Grid parentDock = parentStack.Parent as Grid;
-            Grid parentDock2 = parentDock.Parent as Grid;
-            Border parentBorder = parentDock2.Parent as Border;
-            ElementUserControl parent = parentBorder.Parent as ElementUserControl;
-            return parent;
         }
 
         public void XMLPreview_Click(object sender, RoutedEventArgs e)
@@ -179,29 +118,13 @@ namespace XMLCodeGenerator.View
             {
                 AddChildElementWindow window = new AddChildElementWindow(Element);
                 if (window.ShowDialog() == true)
-                    AddChildElement(window.SelectedElement);
+                    Element.AddNewChildElement(window.SelectedElement);
             }
             else
             {
-                AddChildElement(Element.DefaultNewChild);
+                Element.AddNewChildElement(Element.DefaultNewChild);
             }
-        }
-
-        public void AddChildElement(ElementModel model)
-        {
-            Element.AddNewChildElement(model);
-            SetUpUI();
             SetButtons();
-        }
-
-        private ElementUserControl CreateDraggableElement(ElementViewModel e)
-        {
-            var element = new ElementUserControl(e);
-            element.MouseMove += Element_MouseMove;
-            element.DragOver += Element_DragOver;
-            element.Drop += Element_Drop;
-
-            return element;
         }
 
         private void Element_MouseMove(object sender, MouseEventArgs e)
@@ -218,7 +141,7 @@ namespace XMLCodeGenerator.View
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                //MessageBox.Show(ex.ToString());
             }
         }
 
@@ -259,7 +182,6 @@ namespace XMLCodeGenerator.View
                     return;
                 }
                 MainWindow.RenameFunction(Element.Attributes[0].Value, functionWindow.Name);
-                //this.Element.Attributes[0].Value = functionWindow.Name;
             }
         }
     }

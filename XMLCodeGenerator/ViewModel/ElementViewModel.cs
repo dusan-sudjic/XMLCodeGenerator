@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml.Linq;
 using XMLCodeGenerator.Model.Elements;
 
@@ -18,6 +19,7 @@ namespace XMLCodeGenerator.ViewModel
         public string Name { get=> Element.Model.Name; set { } }
         public bool HasAttributes { get => Element.Model.Attributes.Count > 0; }
         public bool HasEditableAttributes { get => Element.Model.Attributes.Where(a=>a.Editable).ToList().Count > 0; }
+        public bool IsUnextendableAndHasEditableAttributes { get=> !IsExtendable && HasEditableAttributes; }
         public bool IsExtendable { get => Element.Model.ContentBlocks.Count > 0; set { } }
         public bool IsExtendedAndHasAttributes { get => IsExtended && HasAttributes; set { } }
         public bool IsExtendedAndHasEditableAttributes { get => IsExtended && HasEditableAttributes; set { } }
@@ -57,6 +59,7 @@ namespace XMLCodeGenerator.ViewModel
                 {
                     _isRemovable = value;
                     OnPropertyChanged();
+                    OnPropertyChanged("IsReplacable");
                 }
             }
         }
@@ -79,6 +82,7 @@ namespace XMLCodeGenerator.ViewModel
             set{}
         }
         public bool IsFunctionDefinition { get=>Name.Contains("FunctionDefinition"); set { } }
+        public ElementViewModel Parent { get; init; }
 
         private ObservableCollection<AttributeViewModel> _attributes;
         public ObservableCollection<AttributeViewModel> Attributes
@@ -115,9 +119,10 @@ namespace XMLCodeGenerator.ViewModel
         public ObservableCollection<ElementViewModel> ChildViewModels = new();
         public Element Element { get; set; }
         
-        public ElementViewModel(Element element)
+        public ElementViewModel(Element element, ElementViewModel parent = null)
         {
             Element = element;
+            Parent = parent;
             HasRoomForNewChildElement = ElementModelProvider.GetModelsForNewChildElement(Element).Count > 0;
             IsRemovable = XML_Name.Equals("CimClass") || Element.Model.Name.Equals("FunctionDefinition");
             IsReplacable = ElementModelProvider.GetReplacableModelsForElement(Element) != null;
@@ -127,7 +132,7 @@ namespace XMLCodeGenerator.ViewModel
             IsExtended = true;
             Attributes.CollectionChanged += Attributes_CollectionChanged;
             foreach (var child in element.ChildElements)
-                ChildViewModels.Add(new ElementViewModel(child));
+                ChildViewModels.Add(new ElementViewModel(child, this));
             foreach(var attribute in element.Model.Attributes)
                 Attributes.Add(new AttributeViewModel(attribute, element.AttributeValues[element.Model.Attributes.IndexOf(attribute)]));
             setRemovableForChildren();
@@ -157,14 +162,14 @@ namespace XMLCodeGenerator.ViewModel
                 else if(Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) > Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
                 {
                     Element.ChildElements.Insert(i, newElement);
-                    ChildViewModels.Insert(i, new ElementViewModel(newElement));
+                    ChildViewModels.Insert(i, new ElementViewModel(newElement, this));
                 }
                 else
                 { 
                     while (Element.ChildElements.Count>i && Element.ChildElements[i].ParentContentBlock == newElement.ParentContentBlock) 
                         i++;
                     Element.ChildElements.Insert(i, newElement);
-                    ChildViewModels.Insert(i, new ElementViewModel(newElement));
+                    ChildViewModels.Insert(i, new ElementViewModel(newElement, this));
                 }
                 setRemovableForChildren();
                 list = ElementModelProvider.GetModelsForNewChildElement(Element);
@@ -172,27 +177,27 @@ namespace XMLCodeGenerator.ViewModel
                 return;
             }
             Element.ChildElements.Add(newElement);
-            ChildViewModels.Add(new ElementViewModel(newElement));
+            ChildViewModels.Add(new ElementViewModel(newElement, this));
             setRemovableForChildren();
             list = ElementModelProvider.GetModelsForNewChildElement(Element);
             DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
-        public void DeleteChildElement(ElementViewModel element)
+        public void DeleteElement()
         {
-            ChildViewModels.Remove(element);
-            Element.ChildElements.Remove(element.Element);
-            setRemovableForChildren();
+            Parent.ChildViewModels.Remove(this);
+            Parent.Element.ChildElements.Remove(this.Element);
+            Parent.setRemovableForChildren();
             var list = ElementModelProvider.GetModelsForNewChildElement(Element);
-            DefaultNewChild = list.Count == 1 ? list[0] : null;
+            Parent.DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
-        public void ReplaceChild(ElementViewModel oldElement, ElementModel newElementModel)
+        public void ReplaceElement(ElementModel newElementModel)
         {
-            int index = ChildViewModels.IndexOf(oldElement);
-            Element newElement = new Element(newElementModel, oldElement.Element.ParentContentBlock);
-            ChildViewModels[index] = new ElementViewModel(newElement);
-            Element.ChildElements[index] = ChildViewModels[index].Element;
+            int index = Parent.ChildViewModels.IndexOf(this);
+            Element newElement = new Element(newElementModel, Element.ParentContentBlock);
+            Parent.ChildViewModels[index] = new ElementViewModel(newElement, Parent);
+            Parent.Element.ChildElements[index] = Parent.ChildViewModels[index].Element;
             var list = ElementModelProvider.GetModelsForNewChildElement(Element);
-            DefaultNewChild = list.Count == 1 ? list[0] : null;
+            Parent.DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
         public void RenameFunction(string oldName, string newName)
         {
@@ -247,7 +252,7 @@ namespace XMLCodeGenerator.ViewModel
                 OnPropertyChanged(nameof(IsExtendedAndHasEditableAttributes));
             }
             if(!propertyName.Contains("IsExtended") && !propertyName.Contains("Room"))
-                MainWindow.HasUnsavedChanges = true;
+                MainWindow.Document.HasUnsavedChanges = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public override string ToString()

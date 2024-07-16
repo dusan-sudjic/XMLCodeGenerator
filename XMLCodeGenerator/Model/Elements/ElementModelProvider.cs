@@ -97,6 +97,10 @@ namespace XMLCodeGenerator.Model.Elements
         {
             FunctionModels.Remove(functionName);
         }
+        public static void ResetFunctionDefinitions()
+        {
+            FunctionModels.Clear();
+        }
         public static ElementModel GetWrapperModel(ElementModel childModel)
         {
             return ElementModels.Where(x => x.XMLName.Length == 0).FirstOrDefault(x => x.GetSuitableContentBlockForChildModel(childModel) != null);
@@ -122,7 +126,8 @@ namespace XMLCodeGenerator.Model.Elements
                     int counter = 0;
                     foreach (var elem in element.ChildElements)
                     {
-                        if (block.ElementModels.Contains(elem.Model))
+                        if (block.ElementModels.Contains(elem.Model)
+                            || (elem.Model is FunctionModel && block.ElementModels.Contains(ElementModelProvider.GetElementModelByName("Function"))))
                         {
                             counter++;
                             continue;

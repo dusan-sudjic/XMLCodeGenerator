@@ -39,6 +39,7 @@
         <KeyBinding Key="A" Modifiers="Control" Command="{Binding AddClassCommand}"/>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding ExportToXmlCommand}"/>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenExistingFileCommand}"/>
+        <KeyBinding Key="N" Modifiers="Control" Command="{Binding OpenNewProjectCommand}"/>
     </Window.InputBindings>
     <Grid HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -49,7 +50,7 @@
             <Grid>
                 <Menu Height="25" VerticalAlignment="Top">
                     <MenuItem Height="25" Header="File">
-                        <MenuItem Header="New File" />
+                        <MenuItem Header="New Project" Click="OpenNewProject"/>
                         <MenuItem Header="Open File" Click="OpenExistingFile"/>
                         <MenuItem Header="Save" Click="ExportToXml"/>
                         <Separator />
@@ -103,16 +104,16 @@
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="Unsaved" Visibility="Collapsed" VerticalAlignment="Bottom" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Foreground="DarkOrange" Width="130" Margin="5 0 0 5">Unsaved changes</Button>
-                    <Button x:Name="Saved" VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Foreground="CornflowerBlue" Width="140" Margin="5 0 0 5">✔️ All changes saved</Button>
+                    <Button x:Name="Unsaved" Visibility="{Binding Document.HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Bottom" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Foreground="DarkOrange" Width="130" Margin="5 0 0 5">Unsaved changes</Button>
+                    <Button x:Name="Saved" VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" Visibility="{Binding Document.HasUnsavedChanges, Converter={StaticResource InverseBooleanToVisibilityConverter}}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Foreground="CornflowerBlue" Width="140" Margin="5 0 0 5">✔️ All changes saved</Button>
                 </StackPanel>
             </Grid>
         </Border>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="6*"/>
                 <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
             <Border Background="LightCyan" Grid.Column="0" Height="610" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="1 5 0 10" BorderThickness="2" BorderBrush="Black">
                 <TabControl x:Name="TabControl">
@@ -124,7 +125,13 @@
                             <StackPanel>
                                 <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new CIM class element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="140" Click="AddNewCimClass_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add CIM Class</Button>
                                 <StackPanel x:Name="Stack" Margin="0 0 0 60">
-
+                                    <ItemsControl x:Name="itemsControlClasses" ItemsSource="{Binding Document.CimClasses}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <local1:ElementUserControl DataContext="{Binding}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
@@ -137,7 +144,13 @@
                             <StackPanel>
                                 <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new CIM function element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="140" Click="AddNewCimClass_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add CIM Function</Button>
                                 <StackPanel x:Name="FunctionsStack" Margin="0 0 0 60">
-
+                                    <ItemsControl x:Name="itemsControlFunctions" ItemsSource="{Binding Document.FunctionDefinitions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <local1:ElementUserControl DataContext="{Binding}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>

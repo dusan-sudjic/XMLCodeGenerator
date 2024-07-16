@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Xceed.Wpf.Toolkit;
@@ -6,29 +7,18 @@ using XMLCodeGenerator.Model.Elements;
 using XMLCodeGenerator.ViewModel;
 namespace XMLCodeGenerator.View.Attributes
 {
-    /// <summary>
-    /// Interaction logic for AttributeContainer.xaml
-    /// </summary>
     public partial class AttributeContainer : UserControl
     {
-        public AttributeViewModel Attribute { get; set; }
-        public string Required
-        {
-            get { return Attribute.IsRequired ? "*" : ""; }
-            set { }
-        }
-        private bool _isTrue;
-        public bool IsTrue { get { return Attribute.Value == "true"; } set { Attribute.Value = value ? "true" : "false"; } }
+        public AttributeViewModel Attribute { get => DataContext as AttributeViewModel; }
         public AttributeContainer()
         {
             InitializeComponent();
+            DataContextChanged += AttributeContainer_DataContextChanged;
         }
-        public AttributeContainer(AttributeViewModel attribute):this()
+        private void AttributeContainer_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            DataContext = this;
-            Attribute = attribute;
             HandleValueType();
-            ChooseButton.Visibility = attribute.InputType != InputType.USER_INPUT ? Visibility.Visible : Visibility.Collapsed;
+            ChooseButton.Visibility = Attribute.InputType != InputType.USER_INPUT ? Visibility.Visible : Visibility.Collapsed;
         }
         private void OpenProvidersWindow_Click(object sender, RoutedEventArgs e)
         {

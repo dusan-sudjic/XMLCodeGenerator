@@ -33,7 +33,6 @@ namespace XMLCodeGenerator
     {
         public static List<ProviderReaderClass> ProviderReaderClasses = new();
         public static List<SourceProviderEntity> SourceProviderEntities = new();
-        public static string OutputPath { get; private set; }
         private bool _isProviderReaderImported;
         public bool IsProviderReaderImported { 
             get => _isProviderReaderImported; 
@@ -44,20 +43,6 @@ namespace XMLCodeGenerator
                     OnPropertyChanged();
                 }
             } 
-        }
-        private static bool _hasUnsavedChages;
-        public static bool HasUnsavedChanges
-        {
-            get => _hasUnsavedChages;
-            set
-            {
-                if (value != _hasUnsavedChages)
-                {
-                    _hasUnsavedChages = value;
-                    UnsavedButton.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
-                    SavedButton.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
-                }
-            }
         }
         private bool _isSourceProviderImported;
         public bool isSourceProviderImported
@@ -76,31 +61,20 @@ namespace XMLCodeGenerator
         public ICommand AddClassCommand { get; set; }
         public ICommand ExportToXmlCommand { get; set; }
         public ICommand OpenExistingFileCommand { get; set; }
-        public static List<ElementViewModel> CimClasses { get; set; }
-        public static List<ElementViewModel> FunctionDefinitions { get; set; }
-        public static StackPanel CimClassesStackPanel { get; set; }
-        public static StackPanel FunctionDefinitionsStackPanel { get; set; }
-        private static TextBlock XMLPreviewTextBlock;
-        private static Button UnsavedButton;
-        private static Button SavedButton;
+        public ICommand OpenNewProjectCommand { get; set; }
+        public static DocumentViewModel Document { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-            CimClasses = new List<ElementViewModel>();
-            FunctionDefinitions = new List<ElementViewModel>();
+            Document = new DocumentViewModel();
             AddClassCommand = new RelayCommand(ExecuteAddNewCimClassCommand);
             ExportToXmlCommand = new RelayCommand(ExecuteExportToXmlCommand);
             OpenExistingFileCommand = new RelayCommand(ExecuteOpenExistingFileCommand);
-            this.DataContext = this;
-            CimClassesStackPanel = (StackPanel)this.FindName("Stack");
-            SavedButton = (Button)this.FindName("Saved");
-            UnsavedButton = (Button)this.FindName("Unsaved");
-            FunctionDefinitionsStackPanel = (StackPanel)this.FindName("FunctionsStack");
-            XMLPreviewTextBlock = (TextBlock)this.FindName("XMLPreview");
+            OpenNewProjectCommand = new RelayCommand(ExecuteOpenNewProjectCommand);
             IsProviderReaderImported = false;
-            HasUnsavedChanges = false;
             xmlPreviewControl = (XmlPreviewUserControl)this.FindName("xmlPreview");
             ElementModelProvider.LoadModel();
+            this.DataContext = this;
         }
 
         public static void BindElementToXMLPreview(ElementViewModel element)
@@ -112,19 +86,12 @@ namespace XMLCodeGenerator
         {
             TabControl tab = (TabControl)FindName("TabControl");
             if (tab.SelectedIndex == 0)
-                AddNewCimClass();
+            {
+                Document.AddCimClass();
+                ScrollToBottomSmoothlyAsync("CimClassesScroll");
+            }
             else
                 AddNewCimFunction();
-        }
-
-        private void AddNewCimClass()
-        {
-            ElementModel bp = ElementModelProvider.GetElementModelByName("CimClass");
-            ElementViewModel element = new ElementViewModel(new Element(bp));
-            CimClasses.Add(element);
-            StackPanel stackPanel = (StackPanel)this.FindName("Stack");
-            stackPanel.Children.Add(new ElementUserControl(element));
-            ScrollToBottomSmoothlyAsync("CimClassesScroll");
         }
         private void AddNewCimFunction()
         {
@@ -138,57 +105,62 @@ namespace XMLCodeGenerator
                 }
                 else
                 {
-                    ElementModel model = ElementModelProvider.GetElementModelByName("FunctionDefinition");
-                    Element element = new Element(model);
-                    element.AttributeValues[0] = window.Name;
-                    ElementModelProvider.AddNewFunctionDefinition(window.Name);
-                    ElementViewModel elementVM = new ElementViewModel(element);
-                    FunctionDefinitions.Add(elementVM);
-                    StackPanel stackPanel = (StackPanel)this.FindName("FunctionsStack");
-                    stackPanel.Children.Add(new ElementUserControl(elementVM));
-                    foreach (var c in CimClasses)
-                        c.SetReplacable();
+                    Document.AddFunctionDefinition(window.Name);
                     ScrollToBottomSmoothlyAsync("CimFunctionsScroll");
                 }
             }
         }
         public static void RenameFunction(string oldFunctionName, string newFunctionName)
         {
-            FunctionDefinitions.First(x => x.Attributes[0].Value.Equals(oldFunctionName)).Attributes[0].Value = newFunctionName;
-            ElementModelProvider.RenameFunction(oldFunctionName, newFunctionName);
-            foreach (var c in CimClasses)
-                c.RenameFunction(oldFunctionName, newFunctionName);
+            Document.RenameFunction(oldFunctionName, newFunctionName);
+        }
+        public static void RemoveCimClass(ElementViewModel cimClassViewModel)
+        {
+            Document.CimClasses.Remove(cimClassViewModel);
+        }
+        public static void RemoveFunctionDefinition(ElementViewModel functionDefinitionViewModel)
+        {
+            Document.RemoveFunctionDefinition(functionDefinitionViewModel);
+        }
+        public void ExecuteOpenNewProjectCommand(object parameter)
+        {
+            if (Document.HasUnsavedChanges)
+            {
+                MessageBoxResult result = MessageBox.Show("Do you want to save changes in current project first?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    SaveToXml();
+                    if (Document.HasUnsavedChanges)
+                        return;
+                }
+                else if (result != MessageBoxResult.No)
+                    return;
+            }
+            Document.Reset();
         }
 
-        public static void RemoveCimClass(ElementUserControl uc)
-        {
-            ElementViewModel class1 = uc.Element;
-            if (class1 == null)
-                return;
-            CimClasses.Remove(class1);
-            CimClassesStackPanel.Children.Remove(uc);
-        }
-        public static void RemoveFunctionDefinition(ElementUserControl uc)
-        {
-            ElementViewModel function = uc.Element;
-            if (function == null)
-                return;
-            FunctionDefinitions.Remove(function);
-            ElementModelProvider.RemoveFunctionDefinition(function.Element.AttributeValues[0]);
-            FunctionDefinitionsStackPanel.Children.Remove(uc);
-            foreach (var c in CimClasses)
-                c.SetReplacable();
-        }
         public void ExecuteAddNewCimClassCommand(object parameter)
         {
             TabControl tab = (TabControl)FindName("TabControl");
             if (tab.SelectedIndex == 0)
-                AddNewCimClass();
+                Document.AddCimClass();
             else
                 AddNewCimFunction();
         }
         public void ExecuteOpenExistingFileCommand(object parameter)
         {
+            if (Document.HasUnsavedChanges)
+            {
+                MessageBoxResult result = MessageBox.Show("Do you want to save changes in current project first?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    SaveToXml();
+                    if (Document.HasUnsavedChanges)
+                        return;
+                }
+                else if (result != MessageBoxResult.No)
+                    return;
+            }
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "XML Files (*.xml)|*.xml";
 
@@ -197,40 +169,7 @@ namespace XMLCodeGenerator
                 string filePath = openFileDialog.FileName;
                 try
                 {
-                    XmlDocument xmlDoc = new XmlDocument();
-                    xmlDoc.Load(filePath);
-                    OutputPath = filePath;
-                    CimClasses = new();
-                    StackPanel cimClassesStackPanel = (StackPanel)this.FindName("Stack");
-                    cimClassesStackPanel.Children.Clear();
-                    StackPanel functionDefinitionsStackPanel = (StackPanel)this.FindName("FunctionsStack");
-                    functionDefinitionsStackPanel.Children.Clear();
-                    FunctionDefinitions = new();
-                    XmlNodeList functionDefinitionNodes = xmlDoc.SelectNodes("//FunctionDefinitions/Function");
-                    if (functionDefinitionNodes != null)
-                    {
-                        foreach (XmlElement functionDefinitionNode in functionDefinitionNodes)
-                        {
-                            Element el = XmlElementFactory.GetElement(functionDefinitionNode);
-                            ElementModelProvider.AddNewFunctionDefinition(el.AttributeValues[0]);
-                            ElementViewModel elemVM = new ElementViewModel(el);
-                            FunctionDefinitions.Add(elemVM);
-                            functionDefinitionsStackPanel.Children.Add(new ElementUserControl(elemVM));
-                        }
-                    }
-                    
-                    XmlNodeList cimClassNodes = xmlDoc.SelectNodes("//CimClass");
-                    if (cimClassNodes != null)
-                    {
-                        foreach (XmlElement cimClassNode in cimClassNodes)
-                        {
-                            ElementViewModel elemVM = new ElementViewModel(XmlElementFactory.GetElement(cimClassNode));
-                            CimClasses.Add(elemVM);
-                            cimClassesStackPanel.Children.Add(new ElementUserControl(elemVM));
-                        }
-                    }
-                    
-                    HasUnsavedChanges = false;
+                    Document.LoadFromXmlDocument(filePath);
                 }
                 catch (Exception ex)
                 {
@@ -240,46 +179,41 @@ namespace XMLCodeGenerator
         }
         public void ExecuteExportToXmlCommand(object parameter)
         {
-            if (OutputPath == null)
+            SaveToXml();
+        }
+
+        private static void SaveToXml()
+        {
+            if (Document.OutputPath == null)
             {
                 Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
                 saveFileDialog.Filter = "XML Files (*.xml)|*.xml";
                 saveFileDialog.OverwritePrompt = false;
                 if (saveFileDialog.ShowDialog() == true)
-                {
-                    OutputPath = saveFileDialog.FileName;
-                }
+                    Document.OutputPath = saveFileDialog.FileName;
             }
             try
             {
-                XmlDocument xmlDoc = new XmlDocument();
-                XmlElement rootElement = xmlDoc.CreateElement("Root");
-                var functionDefinitions = xmlDoc.CreateElement("FunctionDefinitions");
-                foreach (var functionDefinition in FunctionDefinitions)
-                    functionDefinitions.AppendChild(XmlElementFactory.GetXmlElement(functionDefinition.Element,xmlDoc));
-                rootElement.AppendChild(functionDefinitions);
-                xmlDoc.AppendChild(rootElement);
-                var cimClasses = xmlDoc.CreateElement("CimClasses");
-                foreach (var cimClass in CimClasses)
-                    cimClasses.AppendChild(XmlElementFactory.GetXmlElement(cimClass.Element,xmlDoc));
-                rootElement.AppendChild(cimClasses);
-
-                xmlDoc.Save(OutputPath);
-
+                if (Document.OutputPath == null)
+                    return;
+                XmlDocument xmlDoc = Document.ExportToXmlDocument();
+                xmlDoc.Save(Document.OutputPath);
                 MessageBox.Show("XML saved successfully.");
-                HasUnsavedChanges = false;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error saving XML file: {ex.Message}");
             }
         }
+
         public void ExportToXml(object sender, RoutedEventArgs e)
         {
             ExecuteExportToXmlCommand(null);
         }
-        
-
+        public void OpenNewProject(object sender, RoutedEventArgs e)
+        {
+            ExecuteOpenNewProjectCommand(null);
+        }
         public void ImportProviderReader(object sender, RoutedEventArgs e)
         {
             ProviderReaderClasses.Clear();
@@ -344,24 +278,6 @@ namespace XMLCodeGenerator
         public void OpenExistingFile(object sender, RoutedEventArgs e)
         {
             ExecuteOpenExistingFileCommand(null);
-        }
-        private List<string> GetClassProperties(Type type)
-        {
-            List<string> properties = new List<string>();
-            foreach (var property in type.GetProperties())
-                properties.Add($"\t{property.Name}: {property.PropertyType.Name}\n");
-            return properties;
-        }
-        public void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            var thumb = (Thumb)sender;
-            var border = (Border)thumb.Parent;
-
-            double deltaX = e.HorizontalChange;
-            double deltaY = e.VerticalChange;
-
-            border.Width = Math.Max(border.Width + deltaX, thumb.DesiredSize.Width);
-            border.Height = Math.Max(border.Height + deltaY, thumb.DesiredSize.Height);
         }
         private async void ScrollToBottomSmoothlyAsync(string name)
         {
