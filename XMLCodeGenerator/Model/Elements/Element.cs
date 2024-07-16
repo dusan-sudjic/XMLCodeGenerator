@@ -32,7 +32,7 @@ namespace XMLCodeGenerator.Model.Elements
             ChildElements = new();
             foreach (var block in Model.ContentBlocks)
                 for (int i = 0; i < block.MinSize; i++)
-                    ChildElements.Add(new Element(block.GetDefaultElement(), block));
+                    ChildElements.Add(new Element(block.GetDefaultElementModel(), block));
             ParentContentBlock = parentContentBlock;
         }
         public override string ToString()

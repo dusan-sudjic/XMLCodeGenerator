@@ -146,15 +146,7 @@ namespace XMLCodeGenerator.ViewModel
         public void AddNewChildElement(ElementModel model)
         {
             List<ElementModel> list;
-            Element newElement = null;
-            for (int i = Element.Model.ContentBlocks.Count - 1; i >= 0; i--)
-            {
-                if (Element.Model.ContentBlocks[i].SupportsElementModel(model))
-                {
-                    newElement = new Element(model, Element.Model.ContentBlocks[i]);
-                    break;
-                }
-            }
+            Element newElement = new Element(model, Element.Model.GetSuitableContentBlockForChildModel(model));
             for(int i = 0; i<Element.ChildElements.Count; i++)
             {
                 if (Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) < Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
