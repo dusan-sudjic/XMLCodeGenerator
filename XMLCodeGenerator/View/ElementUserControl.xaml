@@ -5,6 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:behaviors="clr-namespace:XMLCodeGenerator.Behaviors"
              xmlns:converters="clr-namespace:XMLCodeGenerator.Converters"
+             xmlns:local="clr-namespace:XMLCodeGenerator.View"
+             xmlns:local1="clr-namespace:XMLCodeGenerator.View.Attributes"
              xmlns:view="clr-namespace:XMLCodeGenerator.View"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
@@ -73,10 +75,10 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel ToolTip="{Binding Element.Name}" x:Name="SidePanel" Visibility="{Binding Element.IsExtendable, Converter={StaticResource BooleanToVisibilityConverter}}" Width="20" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <ToggleButton x:Name="ToggleButton" Cursor="Hand" Content="-" Visibility="{Binding Element.IsExtendable, Converter={StaticResource BooleanToVisibilityConverter}}" FontWeight="Bold" Width="20" Height="20" Margin="0 5 0 0" Click="ToggleButton_Click" FontSize="10" Padding="0"/>
+            <StackPanel ToolTip="{Binding Name}" x:Name="SidePanel" Visibility="{Binding IsExtendable, Converter={StaticResource BooleanToVisibilityConverter}}" Width="20" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <ToggleButton x:Name="ToggleButton" Cursor="Hand" Content="-" Visibility="{Binding IsExtendable, Converter={StaticResource BooleanToVisibilityConverter}}" FontWeight="Bold" Width="20" Height="20" Margin="0 5 0 0" Click="ToggleButton_Click" FontSize="10" Padding="0"/>
             </StackPanel>
-            <Grid ToolTip="{Binding Element.Name}" Grid.Column="1" HorizontalAlignment="Stretch">
+            <Grid ToolTip="{Binding Name}" Grid.Column="1" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -93,14 +95,27 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Cursor="Hand" Height="24" MouseLeftButtonDown="XMLPreview_Click" Margin="5" VerticalAlignment="Bottom" Padding="0 3 0 0">
-                        <Run Text="{Binding Element.Name}"/>
-                        <Run Text="{Binding Element.AdditionalInfo}" FontWeight="Bold" />
+                        <Run Text="{Binding Name}"/>
+                        <Run Text="{Binding AdditionalInfo}" FontWeight="Bold" />
                     </TextBlock>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Height="25" x:Name="AttributesContainer"></StackPanel>
-                    <Button Grid.Column="2" Background="White" Foreground="CornflowerBlue" Height="25" Width="25" VerticalAlignment="Center"  Cursor="Hand" Margin="0 0 5 0"  ToolTip="Rename function" BorderThickness="0" Visibility="{Binding Element.IsFunctionDefinition, Converter={StaticResource BooleanToVisibilityConverter}}" Click="RenameFunction_Click">🏷️</Button>
-                    <Button Grid.Column="3" Cursor="Hand" x:Name="AddButton" Visibility="{Binding Element.HasRoomForNewChildElement, Converter={StaticResource BooleanToVisibilityConverter}}" Content="➕" FontSize="13" Foreground="CornflowerBlue" BorderThickness="0" Click="AddChildElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                    <Button Grid.Column="4" Cursor="Hand" x:Name="DeleteButton" Visibility="{Binding Element.IsRemovable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⛔" FontSize="13" Foreground="IndianRed" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                    <Button Grid.Column="4" Cursor="Hand" x:Name="ReplaceButton" Visibility="{Binding Element.IsReplacable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⟳" FontSize="18" Padding="0 -2 0 6" Foreground="ForestGreen" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Height="25" x:Name="AttributesContainer" Visibility="{Binding IsUnextendableAndHasEditableAttributes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ItemsControl x:Name="itemsControlUnextendedAttributes" ItemsSource="{Binding Attributes}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local1:AttributeContainer DataContext="{Binding}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                    <Button Grid.Column="2" Background="White" Foreground="CornflowerBlue" Height="25" Width="25" VerticalAlignment="Center"  Cursor="Hand" Margin="0 0 5 0"  ToolTip="Rename function" BorderThickness="0" Visibility="{Binding IsFunctionDefinition, Converter={StaticResource BooleanToVisibilityConverter}}" Click="RenameFunction_Click">🏷️</Button>
+                    <Button Grid.Column="3" Cursor="Hand" x:Name="AddButton" Visibility="{Binding HasRoomForNewChildElement, Converter={StaticResource BooleanToVisibilityConverter}}" Content="➕" FontSize="13" Foreground="CornflowerBlue" BorderThickness="0" Click="AddChildElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <Button Grid.Column="4" Cursor="Hand" x:Name="DeleteButton" Visibility="{Binding IsRemovable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⛔" FontSize="13" Foreground="IndianRed" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <Button Grid.Column="4" Cursor="Hand" x:Name="ReplaceButton" Visibility="{Binding IsReplacable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⟳" FontSize="18" Padding="0 -2 0 6" Foreground="ForestGreen" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                 </Grid>
 
                 <Grid Grid.Row="1" HorizontalAlignment="Stretch" Margin="0 0 5 0">
@@ -108,14 +123,33 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Header=" Attributes " Margin="0 10 0 0" BorderBrush="CornflowerBlue" x:Name="AttributesGroupBox" Visibility="{Binding Element.IsExtendedAndHasEditableAttributes, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <StackPanel x:Name="AttributesStackPanel" Orientation="Horizontal" Height="25"></StackPanel>
+                    <GroupBox Header=" Attributes " Margin="0 10 0 0" BorderBrush="CornflowerBlue" x:Name="AttributesGroupBox" Visibility="{Binding IsExtendedAndHasEditableAttributes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel x:Name="AttributesStackPanel" Orientation="Horizontal" Height="25">
+                            <ItemsControl x:Name="itemsControlAttributes" ItemsSource="{Binding Attributes}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <local1:AttributeContainer DataContext="{Binding}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
                     </GroupBox>
                 </Grid>
-                <StackPanel Grid.Row="2" x:Name="ChildrenContainer" Visibility="{Binding Element.IsExtended, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 5 2" AllowDrop="True">
-                    <!-- Child elements go here -->
+                <StackPanel Grid.Row="2" x:Name="ChildrenContainer" Visibility="{Binding IsExtended, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 5 2" AllowDrop="True">
+                    <ItemsControl x:Name="itemsControlChildren" ItemsSource="{Binding ChildViewModels}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <local:ElementUserControl DataContext="{Binding}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
-                <Label x:Name="EndLabel" Visibility="{Binding Element.IsExtended, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Grid.Row="3" Content="{Binding Element.Name}" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Bottom"></Label>
+                <Label x:Name="EndLabel" Visibility="{Binding IsExtended, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Grid.Row="3" Content="{Binding Name}" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Bottom"></Label>
             </Grid>
         </Grid>
     </Border>

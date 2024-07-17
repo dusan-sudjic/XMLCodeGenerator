@@ -64,6 +64,8 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
+        public string Required { get => IsRequired ? "*" : ""; set { } }
+        public bool IsTrue { get { return Value == "true"; } set { Value = value ? "true" : "false"; } }
         public AttributeModel Attribute { get; set; }
         public AttributeViewModel(AttributeModel attribute, string value)
         {
@@ -74,7 +76,6 @@ namespace XMLCodeGenerator.ViewModel
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            MainWindow.HasUnsavedChanges = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

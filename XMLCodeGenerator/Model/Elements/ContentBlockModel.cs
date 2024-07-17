@@ -21,12 +21,6 @@ namespace XMLCodeGenerator.Model.Elements
             ElementsString = node.InnerText.Trim();
             ElementModels = new List<ElementModel>();
         }
-        public bool SupportsElementModel(ElementModel model)
-        {
-            if (model is FunctionModel)
-                return ElementModels.Contains(ElementModelProvider.GetElementModelByName("Function"));
-            return ElementModels.Contains(model);
-        }
         public void SetContent(Dictionary<string, List<ElementModel>> elementTypes)
         {
             if (elementTypes.ContainsKey(ElementsString))
@@ -35,7 +29,7 @@ namespace XMLCodeGenerator.Model.Elements
                 foreach (var el in ElementsString.Split(','))
                     ElementModels.Add(ElementModelProvider.GetElementModelByName(el));
         }
-        public ElementModel GetDefaultElement()
+        public ElementModel GetDefaultElementModel()
         {
             return ElementModels[0];
         }

@@ -14,7 +14,7 @@ namespace XMLCodeGenerator.Model.Elements
         public InputType InputType { get; set; }
         public bool IsRequired { get; set; }
         public bool Editable { get; set; }
-        private string defaultValue = null;
+        public string DefaultValue {  get; set; }
         public AttributeModel(XmlNode node)
         {
             Name = node.Attributes["Name"]?.InnerText;
@@ -22,6 +22,13 @@ namespace XMLCodeGenerator.Model.Elements
             ValueType = (ValueType)Enum.Parse(typeof(ValueType), node.Attributes["ValueType"]?.InnerText);
             InputType = (InputType)Enum.Parse(typeof(InputType), node.Attributes["Input"]?.InnerText);
             var editableText = node.Attributes["Editable"]?.InnerText;
+            switch (ValueType)
+            {
+                case ValueType.STRING: { DefaultValue = "null"; break; }
+                case ValueType.INTEGER: { DefaultValue = "0"; break; }
+                case ValueType.BOOLEAN: { DefaultValue = "false"; break; }
+                default: {DefaultValue = "unexpected value"; break;}
+            }
             Editable = editableText != null ? bool.Parse(editableText) : true;
         }
         private AttributeModel() { }
@@ -38,25 +45,6 @@ namespace XMLCodeGenerator.Model.Elements
         public override string ToString()
         {
             return Name;
-        }
-        public string DefaultValue
-        {
-            get
-            {
-                if (defaultValue != null)
-                    return defaultValue;
-                switch (ValueType)
-                {
-                    case ValueType.STRING: return "null";
-                    case ValueType.INTEGER: return "0";
-                    case ValueType.BOOLEAN: return "false";
-                    default: return "unexpected value";
-                }
-            }
-            set
-            {
-                defaultValue = value;
-            }
         }
     }
     public enum ValueType
