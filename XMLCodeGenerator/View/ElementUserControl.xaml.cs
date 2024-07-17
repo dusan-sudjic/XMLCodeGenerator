@@ -25,7 +25,6 @@ namespace XMLCodeGenerator.View
 {
     public partial class ElementUserControl : UserControl, INotifyPropertyChanged
     {
-        private Point _dragStartPoint;
         private UIElement _draggedElement;
         public string XML_Name { get { return Element.XML_Name; } set { } }
         private int _originalIndex;
@@ -33,9 +32,6 @@ namespace XMLCodeGenerator.View
         public ElementUserControl()
         {
             InitializeComponent();
-            this.MouseMove += Element_MouseMove;
-            this.DragOver += Element_DragOver;
-            this.Drop += Element_Drop;
             DataContextChanged += ElementUserControl_DataContextChanged;
         }
         private void ElementUserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -127,43 +123,6 @@ namespace XMLCodeGenerator.View
             SetButtons();
         }
 
-        private void Element_MouseMove(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                if (e.LeftButton == MouseButtonState.Pressed && sender is ElementUserControl element)
-                {
-                    _dragStartPoint = e.GetPosition(null);
-                    _draggedElement = element;
-                    _originalIndex = ChildrenContainer.Children.IndexOf(element);
-                    DragDrop.DoDragDrop(element, element, DragDropEffects.Move);
-                }
-            }
-            catch(Exception ex)
-            {
-                //MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void Element_DragOver(object sender, DragEventArgs e)
-        {
-            e.Effects = DragDropEffects.Move;
-        }
-
-        private void Element_Drop(object sender, DragEventArgs e)
-        {
-            if (_draggedElement != null && sender is ElementUserControl targetElement)
-            {
-                int targetIndex = ChildrenContainer.Children.IndexOf(targetElement);
-
-                if (targetIndex != _originalIndex)
-                {
-                    ChildrenContainer.Children.Remove(_draggedElement);
-                    ChildrenContainer.Children.Insert(targetIndex, _draggedElement);
-                }
-                _draggedElement = null;
-            }
-        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -183,6 +142,15 @@ namespace XMLCodeGenerator.View
                 }
                 MainWindow.RenameFunction(Element.Attributes[0].Value, functionWindow.Name);
             }
+        }
+
+        private void MoveUp_Click(object sender, RoutedEventArgs e)
+        {
+            Element.MoveUp();
+        }
+        private void MoveDown_Click(object sender, RoutedEventArgs e)
+        {
+            Element.MoveDown();
         }
     }
 

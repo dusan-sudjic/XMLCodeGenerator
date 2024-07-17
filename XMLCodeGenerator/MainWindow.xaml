@@ -125,7 +125,7 @@
                             <StackPanel>
                                 <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new CIM class element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="140" Click="AddNewCimClass_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add CIM Class</Button>
                                 <StackPanel x:Name="Stack" Margin="0 0 0 60">
-                                    <ItemsControl x:Name="itemsControlClasses" ItemsSource="{Binding Document.CimClasses}">
+                                    <ItemsControl x:Name="itemsControlClasses" ItemsSource="{Binding Document.CimClasses.ChildViewModels}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <local1:ElementUserControl DataContext="{Binding}" />
@@ -144,7 +144,7 @@
                             <StackPanel>
                                 <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new CIM function element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="140" Click="AddNewCimClass_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add CIM Function</Button>
                                 <StackPanel x:Name="FunctionsStack" Margin="0 0 0 60">
-                                    <ItemsControl x:Name="itemsControlFunctions" ItemsSource="{Binding Document.FunctionDefinitions}">
+                                    <ItemsControl x:Name="itemsControlFunctions" ItemsSource="{Binding Document.FunctionDefinitions.ChildViewModels}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <local1:ElementUserControl DataContext="{Binding}" />

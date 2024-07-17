@@ -69,7 +69,7 @@
         </Style>
     </UserControl.Resources>
     <!--22ADD8E6-->
-    <Border x:Name="Border" BorderBrush="Black" BorderThickness="1" Padding="3 0 3 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0 5 0 3" MinWidth="280" MaxWidth="2000">
+    <Border x:Name="Border" BorderBrush="Black" BorderThickness="1" Padding="3 0 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0 5 0 3" MinWidth="280" MaxWidth="2000">
         <Grid Opacity="1.0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -90,6 +90,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -116,6 +117,44 @@
                     <Button Grid.Column="3" Cursor="Hand" x:Name="AddButton" Visibility="{Binding HasRoomForNewChildElement, Converter={StaticResource BooleanToVisibilityConverter}}" Content="➕" FontSize="13" Foreground="CornflowerBlue" BorderThickness="0" Click="AddChildElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                     <Button Grid.Column="4" Cursor="Hand" x:Name="DeleteButton" Visibility="{Binding IsRemovable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⛔" FontSize="13" Foreground="IndianRed" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                     <Button Grid.Column="4" Cursor="Hand" x:Name="ReplaceButton" Visibility="{Binding IsReplacable, Converter={StaticResource BooleanToVisibilityConverter}}" Content="⟳" FontSize="18" Padding="0 -2 0 6" Foreground="ForestGreen" BorderThickness="0" Click="DeleteElement_Click" Background="White" Width="24" Height="24" Margin="0 5 5 5" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <StackPanel Grid.Column="5" Orientation="Vertical" Width="16" Height="34" Visibility="{Binding IsMovable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Button Visibility="{Binding IsMovableUp, Converter={StaticResource BooleanToVisibilityConverter}}" Height="17" Padding="0" Foreground="CornflowerBlue" Background="Transparent" BorderBrush="Transparent" Cursor="Hand" ToolTip="Move up" Click="MoveUp_Click">▲</Button>
+                        <Button Visibility="{Binding IsMovableUp, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Height="17" Padding="0" Foreground="CornflowerBlue" Opacity="0.3" Background="Transparent" BorderBrush="Transparent" ToolTip="Move up">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        SnapsToDevicePixels="true">
+                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                            Content="{TemplateBinding Content}"
+                                            RecognizesAccessKey="True" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            ▲
+                        </Button>
+                        <Button Visibility="{Binding IsMovableDown, Converter={StaticResource BooleanToVisibilityConverter}}" Height="17" Padding="0" Foreground="CornflowerBlue" Background="Transparent" BorderBrush="Transparent" Cursor="Hand" ToolTip="Move down" Click="MoveDown_Click">▼</Button>
+                        <Button Visibility="{Binding IsMovableDown, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Height="17" Padding="0" Foreground="CornflowerBlue" Opacity="0.3" Background="Transparent" BorderBrush="Transparent" ToolTip="Move down">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        SnapsToDevicePixels="true">
+                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                Content="{TemplateBinding Content}"
+                                                RecognizesAccessKey="True" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            ▼
+                        </Button>
+                    </StackPanel>
                 </Grid>
 
                 <Grid Grid.Row="1" HorizontalAlignment="Stretch" Margin="0 0 5 0">
@@ -149,7 +188,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
-                <Label x:Name="EndLabel" Visibility="{Binding IsExtended, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Grid.Row="3" Content="{Binding Name}" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Bottom"></Label>
+                <Label x:Name="EndLabel" Visibility="{Binding IsExtended, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Grid.Row="3" Content="{Binding Name}" Padding="0 0 5 0" HorizontalAlignment="Right" VerticalAlignment="Bottom"></Label>
             </Grid>
         </Grid>
     </Border>

@@ -13,23 +13,54 @@ using XMLCodeGenerator.Model.Elements;
 
 namespace XMLCodeGenerator.ViewModel
 {
-    public class ElementViewModel: INotifyPropertyChanged
+    public class ElementViewModel : INotifyPropertyChanged
     {
         public string XML_Name { get => Element.Model.XMLName; set { } }
-        public string Name { get=> Element.Model.Name; set { } }
+        public string Name { get => Element.Model.Name; set { } }
         public bool HasAttributes { get => Element.Model.Attributes.Count > 0; }
-        public bool HasEditableAttributes { get => Element.Model.Attributes.Where(a=>a.Editable).ToList().Count > 0; }
-        public bool IsUnextendableAndHasEditableAttributes { get=> !IsExtendable && HasEditableAttributes; }
+        public bool HasEditableAttributes { get => Element.Model.Attributes.Where(a => a.Editable).ToList().Count > 0; }
+        public bool IsUnextendableAndHasEditableAttributes { get => !IsExtendable && HasEditableAttributes; }
         public bool IsExtendable { get => Element.Model.ContentBlocks.Count > 0; set { } }
         public bool IsExtendedAndHasAttributes { get => IsExtended && HasAttributes; set { } }
+        public bool IsMovable { get => Element.ParentContentBlock.MaxSize != 1; set { } }
+        public bool IsMovableUp { 
+            get
+            {
+                if (Element.ParentContentBlock.MaxSize == 1)
+                    return false;
+                int index = Parent.ChildViewModels.IndexOf(this);
+                if (index <= 0)
+                    return false;
+                if (Parent.ChildViewModels[index - 1].Element.ParentContentBlock != Element.ParentContentBlock)
+                    return false;
+                return true;
+            }
+            set { } 
+        }
+        public bool IsMovableDown
+        {
+            get
+            {
+                if (Element.ParentContentBlock.MaxSize == 1)
+                    return false;
+                int index = Parent.ChildViewModels.IndexOf(this);
+                if (index == Parent.ChildViewModels.Count-1)
+                    return false;
+                if (Parent.ChildViewModels[index + 1].Element.ParentContentBlock != Element.ParentContentBlock)
+                    return false;
+                return true;
+            }
+            set { }
+        }
+        public bool IsMovableUpDown { get => Element.ParentContentBlock.MaxSize != 1; set { } }
         public bool IsExtendedAndHasEditableAttributes { get => IsExtended && HasEditableAttributes; set { } }
         private bool _isExtended;
         public bool IsExtended
         {
-            get=>_isExtended && IsExtendable;
+            get => _isExtended && IsExtendable;
             set
             {
-                if(value!=_isExtended)
+                if (value != _isExtended)
                 {
                     _isExtended = value;
                     OnPropertyChanged();
@@ -42,7 +73,7 @@ namespace XMLCodeGenerator.ViewModel
             get => _hasRoomForNewChildElement && IsExtended;
             set
             {
-                if(value != _hasRoomForNewChildElement)
+                if (value != _hasRoomForNewChildElement)
                 {
                     _hasRoomForNewChildElement = value;
                     OnPropertyChanged();
@@ -79,9 +110,9 @@ namespace XMLCodeGenerator.ViewModel
         public bool IsReplacableOrRemovable
         {
             get => _isReplacable || _isRemovable;
-            set{}
+            set { }
         }
-        public bool IsFunctionDefinition { get=>Name.Contains("FunctionDefinition"); set { } }
+        public bool IsFunctionDefinition { get => Name.Contains("FunctionDefinition"); set { } }
         public ElementViewModel Parent { get; init; }
 
         private ObservableCollection<AttributeViewModel> _attributes;
@@ -106,7 +137,7 @@ namespace XMLCodeGenerator.ViewModel
             {
                 if (Element.Model.Name.Equals("CimClass") || Element.Model.Name.Equals("CimProperty") || Element.Model.Name.Equals("FunctionDefinition"))
                     return "[" + Attributes.FirstOrDefault(a => a.Name.Equals("name", StringComparison.OrdinalIgnoreCase))?.Value + "]";
-                if(Element.Model is FunctionModel functionModel)
+                if (Element.Model is FunctionModel functionModel)
                     return "[" + functionModel.FunctionName + "]";
                 else return "";
             }
@@ -116,9 +147,18 @@ namespace XMLCodeGenerator.ViewModel
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<ElementViewModel> ChildViewModels = new();
+        private ObservableCollection<ElementViewModel> _childViewModels;
+        public ObservableCollection<ElementViewModel> ChildViewModels
+        {
+            get => _childViewModels;
+            set
+            {
+                _childViewModels = value;
+                OnPropertyChanged(nameof(ChildViewModels));
+            }
+        }
         public Element Element { get; set; }
-        
+
         public ElementViewModel(Element element, ElementViewModel parent = null)
         {
             Element = element;
@@ -131,11 +171,12 @@ namespace XMLCodeGenerator.ViewModel
             DefaultNewChild = list.Count == 1 ? list[0] : null;
             IsExtended = true;
             Attributes.CollectionChanged += Attributes_CollectionChanged;
+            ChildViewModels = new();
             foreach (var child in element.ChildElements)
                 ChildViewModels.Add(new ElementViewModel(child, this));
-            foreach(var attribute in element.Model.Attributes)
+            foreach (var attribute in element.Model.Attributes)
                 Attributes.Add(new AttributeViewModel(attribute, element.AttributeValues[element.Model.Attributes.IndexOf(attribute)]));
-            setRemovableForChildren();
+            SetRemovableForChildren();
         }
         public void SetReplacable()
         {
@@ -147,30 +188,30 @@ namespace XMLCodeGenerator.ViewModel
         {
             List<ElementModel> list;
             Element newElement = new Element(model, Element.Model.GetSuitableContentBlockForChildModel(model));
-            for(int i = 0; i<Element.ChildElements.Count; i++)
+            for (int i = 0; i < Element.ChildElements.Count; i++)
             {
                 if (Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) < Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
                     continue;
-                else if(Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) > Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
+                else if (Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) > Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
                 {
                     Element.ChildElements.Insert(i, newElement);
                     ChildViewModels.Insert(i, new ElementViewModel(newElement, this));
                 }
                 else
-                { 
-                    while (Element.ChildElements.Count>i && Element.ChildElements[i].ParentContentBlock == newElement.ParentContentBlock) 
+                {
+                    while (Element.ChildElements.Count > i && Element.ChildElements[i].ParentContentBlock == newElement.ParentContentBlock)
                         i++;
                     Element.ChildElements.Insert(i, newElement);
                     ChildViewModels.Insert(i, new ElementViewModel(newElement, this));
                 }
-                setRemovableForChildren();
+                SetRemovableForChildren();
                 list = ElementModelProvider.GetModelsForNewChildElement(Element);
                 DefaultNewChild = list.Count == 1 ? list[0] : null;
                 return;
             }
             Element.ChildElements.Add(newElement);
             ChildViewModels.Add(new ElementViewModel(newElement, this));
-            setRemovableForChildren();
+            SetRemovableForChildren();
             list = ElementModelProvider.GetModelsForNewChildElement(Element);
             DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
@@ -178,7 +219,7 @@ namespace XMLCodeGenerator.ViewModel
         {
             Parent.ChildViewModels.Remove(this);
             Parent.Element.ChildElements.Remove(this.Element);
-            Parent.setRemovableForChildren();
+            Parent.SetRemovableForChildren();
             var list = ElementModelProvider.GetModelsForNewChildElement(Element);
             Parent.DefaultNewChild = list.Count == 1 ? list[0] : null;
         }
@@ -205,10 +246,39 @@ namespace XMLCodeGenerator.ViewModel
                 foreach (var c in ChildViewModels)
                     c.RenameFunction(oldName, newName);
         }
-        private void setRemovableForChildren()
+        public void SetRemovableForChildren()
         {
-            foreach(var child in ChildViewModels)
-                child.IsRemovable = Element.ChildElements.Where(c=>c.ParentContentBlock==child.Element.ParentContentBlock).ToList().Count > child.Element.ParentContentBlock.MinSize;
+            foreach (var child in ChildViewModels)
+                child.IsRemovable = Element.ChildElements.Where(c => c.ParentContentBlock == child.Element.ParentContentBlock).ToList().Count > child.Element.ParentContentBlock.MinSize;
+        }
+        public void MoveUp()
+        {
+            int index = Parent.ChildViewModels.IndexOf(this);
+            Parent.ChildViewModels.Move(index, index - 1);
+            var temp = Parent.Element.ChildElements[index];
+            Parent.Element.ChildElements[index] = Parent.Element.ChildElements[index - 1];
+            Parent.Element.ChildElements[index - 1] = temp;
+            RefreshMovable();
+        }
+
+        private void RefreshMovable()
+        {
+            if(Parent!=null)
+                foreach (var e in Parent.ChildViewModels)
+                {
+                    e.OnPropertyChanged(nameof(IsMovableDown));
+                    e.OnPropertyChanged(nameof(IsMovableUp));
+                }
+        }
+
+        public void MoveDown()
+        {
+            int index = Parent.ChildViewModels.IndexOf(this);
+            Parent.ChildViewModels.Move(index, index + 1);
+            var temp = Parent.Element.ChildElements[index];
+            Parent.Element.ChildElements[index] = Parent.Element.ChildElements[index + 1];
+            Parent.Element.ChildElements[index + 1] = temp;
+            RefreshMovable();
         }
         private void Attributes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -237,15 +307,21 @@ namespace XMLCodeGenerator.ViewModel
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            if (propertyName.Contains("Movable"))
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                return;
+            }
             if (propertyName == "IsExtended")
             {
                 OnPropertyChanged(nameof(HasRoomForNewChildElement));
                 OnPropertyChanged(nameof(IsExtendedAndHasAttributes));
                 OnPropertyChanged(nameof(IsExtendedAndHasEditableAttributes));
             }
-            if(!propertyName.Contains("IsExtended") && !propertyName.Contains("Room"))
+            if (!propertyName.Contains("IsExtended") && !propertyName.Contains("Room"))
                 MainWindow.Document.HasUnsavedChanges = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            RefreshMovable();
         }
         public override string ToString()
         {

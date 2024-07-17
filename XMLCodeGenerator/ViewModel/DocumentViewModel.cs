@@ -15,10 +15,10 @@ using XMLCodeGenerator.View;
 
 namespace XMLCodeGenerator.ViewModel
 {
-    public sealed class DocumentViewModel: INotifyPropertyChanged
+    public sealed class DocumentViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<ElementViewModel> CimClasses { get; set; }
-        public ObservableCollection<ElementViewModel> FunctionDefinitions { get; set; }
+        public ElementViewModel CimClasses { get; set; }
+        public ElementViewModel FunctionDefinitions { get; set; }
         public string OutputPath { get; set; }
         private bool _hasUnsavedChages;
         public bool HasUnsavedChanges
@@ -33,15 +33,19 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
-        public DocumentViewModel()
+        public DocumentViewModel() { }
+        public void setup()
         {
-            CimClasses = new();
-            FunctionDefinitions = new();
+            CimClasses = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("CimClasses")));
+            FunctionDefinitions = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("FunctionDefinitions")));
+            HasUnsavedChanges = false;
         }
         public void Reset()
         {
-            CimClasses.Clear();
-            FunctionDefinitions.Clear();
+            CimClasses.Element.ChildElements.Clear();
+            CimClasses.ChildViewModels.Clear();
+            FunctionDefinitions.ChildViewModels.Clear();
+            FunctionDefinitions.Element.ChildElements.Clear();
             HasUnsavedChanges = false;
             ElementModelProvider.ResetFunctionDefinitions();
             OutputPath = null;
@@ -58,9 +62,11 @@ namespace XMLCodeGenerator.ViewModel
                 foreach (XmlElement functionDefinitionNode in functionDefinitionNodes)
                 {
                     Element el = XmlElementFactory.GetElement(functionDefinitionNode);
+                    el.ParentContentBlock = FunctionDefinitions.Element.Model.ContentBlocks[0];
                     ElementModelProvider.AddNewFunctionDefinition(el.AttributeValues[0]);
-                    ElementViewModel elemVM = new ElementViewModel(el);
-                    FunctionDefinitions.Add(elemVM);
+                    FunctionDefinitions.Element.ChildElements.Add(el);
+                    FunctionDefinitions.ChildViewModels.Add(new ElementViewModel(el, FunctionDefinitions));
+                    FunctionDefinitions.SetRemovableForChildren();
                 }
             }
             XmlNodeList cimClassNodes = document.SelectNodes("//CimClass");
@@ -68,8 +74,11 @@ namespace XMLCodeGenerator.ViewModel
             {
                 foreach (XmlElement cimClassNode in cimClassNodes)
                 {
-                    ElementViewModel elemVM = new ElementViewModel(XmlElementFactory.GetElement(cimClassNode));
-                    CimClasses.Add(elemVM);
+                    Element el = XmlElementFactory.GetElement(cimClassNode);
+                    el.ParentContentBlock = CimClasses.Element.Model.ContentBlocks[0];
+                    CimClasses.Element.ChildElements.Add(el);
+                    CimClasses.ChildViewModels.Add(new ElementViewModel(el, CimClasses));
+                    CimClasses.SetRemovableForChildren();
                 }
             }
             HasUnsavedChanges = false;
@@ -78,55 +87,44 @@ namespace XMLCodeGenerator.ViewModel
         {
             XmlDocument xmlDoc = new XmlDocument();
             XmlElement rootElement = xmlDoc.CreateElement("Root");
-            var functionDefinitions = xmlDoc.CreateElement("FunctionDefinitions");
-            foreach (var functionDefinition in FunctionDefinitions)
-                functionDefinitions.AppendChild(XmlElementFactory.GetXmlElement(functionDefinition.Element, xmlDoc));
-            rootElement.AppendChild(functionDefinitions);
+            rootElement.AppendChild(XmlElementFactory.GetXmlElement(FunctionDefinitions.Element, xmlDoc));
+            rootElement.AppendChild(XmlElementFactory.GetXmlElement(CimClasses.Element, xmlDoc));
             xmlDoc.AppendChild(rootElement);
-            var cimClasses = xmlDoc.CreateElement("CimClasses");
-            foreach (var cimClass in CimClasses)
-                cimClasses.AppendChild(XmlElementFactory.GetXmlElement(cimClass.Element, xmlDoc));
-            rootElement.AppendChild(cimClasses);
             HasUnsavedChanges = false;
             return xmlDoc;
         }
 
         public void AddCimClass()
         {
-            ElementModel bp = ElementModelProvider.GetElementModelByName("CimClass");
-            ElementViewModel element = new ElementViewModel(new Element(bp));
-            CimClasses.Add(element);
+            CimClasses.AddNewChildElement(ElementModelProvider.GetElementModelByName("CimClass"));
         }
         public void AddFunctionDefinition(string name)
         {
-            ElementModel model = ElementModelProvider.GetElementModelByName("FunctionDefinition");
-            Element element = new Element(model);
-            element.AttributeValues[0] = name;
+            FunctionDefinitions.AddNewChildElement(ElementModelProvider.GetElementModelByName("FunctionDefinition"));
+            FunctionDefinitions.ChildViewModels.Last().Attributes[0].Value = name;
             ElementModelProvider.AddNewFunctionDefinition(name);
-            ElementViewModel elementVM = new ElementViewModel(element);
-            FunctionDefinitions.Add(elementVM);
-            foreach (var c in CimClasses)
+            foreach (var c in CimClasses.ChildViewModels)
                 c.SetReplacable();
         }
         public void RenameFunction(string oldName, string newName)
         {
-            FunctionDefinitions.First(x => x.Attributes[0].Value.Equals(oldName)).Attributes[0].Value = newName;
+            FunctionDefinitions.ChildViewModels.First(x => x.Attributes[0].Value.Equals(oldName)).Attributes[0].Value = newName;
             ElementModelProvider.RenameFunction(oldName, newName);
-            foreach (var c in CimClasses)
+            foreach (var c in CimClasses.ChildViewModels)
                 c.RenameFunction(oldName, newName);
         }
         public void RemoveFunctionDefinition(ElementViewModel functionDefinition)
         {
-            FunctionDefinitions.Remove(functionDefinition);
+            functionDefinition.DeleteElement();
             ElementModelProvider.RemoveFunctionDefinition(functionDefinition.Attributes[0].Value);
-            foreach (var c in CimClasses)
+            foreach (var c in CimClasses.ChildViewModels)
                 c.SetReplacable();
         }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if(!propertyName.Equals("HasUnsavedChanges"))
+            if (!propertyName.Equals("HasUnsavedChanges"))
                 HasUnsavedChanges = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

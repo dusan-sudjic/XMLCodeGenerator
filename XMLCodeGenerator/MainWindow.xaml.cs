@@ -66,14 +66,15 @@ namespace XMLCodeGenerator
         public MainWindow()
         {
             InitializeComponent();
+            ElementModelProvider.LoadModel();
             Document = new DocumentViewModel();
+            Document.setup();
             AddClassCommand = new RelayCommand(ExecuteAddNewCimClassCommand);
             ExportToXmlCommand = new RelayCommand(ExecuteExportToXmlCommand);
             OpenExistingFileCommand = new RelayCommand(ExecuteOpenExistingFileCommand);
             OpenNewProjectCommand = new RelayCommand(ExecuteOpenNewProjectCommand);
             IsProviderReaderImported = false;
             xmlPreviewControl = (XmlPreviewUserControl)this.FindName("xmlPreview");
-            ElementModelProvider.LoadModel();
             this.DataContext = this;
         }
 
@@ -116,7 +117,7 @@ namespace XMLCodeGenerator
         }
         public static void RemoveCimClass(ElementViewModel cimClassViewModel)
         {
-            Document.CimClasses.Remove(cimClassViewModel);
+            cimClassViewModel.DeleteElement();
         }
         public static void RemoveFunctionDefinition(ElementViewModel functionDefinitionViewModel)
         {
