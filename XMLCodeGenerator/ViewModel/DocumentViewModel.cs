@@ -97,11 +97,23 @@ namespace XMLCodeGenerator.ViewModel
         public void AddCimClass()
         {
             CimClasses.AddNewChildElement(ElementModelProvider.GetElementModelByName("CimClass"));
+            foreach(var c in CimClasses.ChildViewModels)
+            {
+                c.OnPropertyChanged("IsMovableUp");
+                c.OnPropertyChanged("IsMovableDown");
+                c.OnPropertyChanged("IsMovable");
+            }
         }
         public void AddFunctionDefinition(string name)
         {
             FunctionDefinitions.AddNewChildElement(ElementModelProvider.GetElementModelByName("FunctionDefinition"));
             FunctionDefinitions.ChildViewModels.Last().Attributes[0].Value = name;
+            foreach (var c in FunctionDefinitions.ChildViewModels)
+            {
+                c.OnPropertyChanged("IsMovableUp");
+                c.OnPropertyChanged("IsMovableDown");
+                c.OnPropertyChanged("IsMovable");
+            }
             ElementModelProvider.AddNewFunctionDefinition(name);
             foreach (var c in CimClasses.ChildViewModels)
                 c.SetReplacable();

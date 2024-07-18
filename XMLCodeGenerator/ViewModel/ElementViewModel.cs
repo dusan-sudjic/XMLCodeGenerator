@@ -22,7 +22,7 @@ namespace XMLCodeGenerator.ViewModel
         public bool IsUnextendableAndHasEditableAttributes { get => !IsExtendable && HasEditableAttributes; }
         public bool IsExtendable { get => Element.Model.ContentBlocks.Count > 0; set { } }
         public bool IsExtendedAndHasAttributes { get => IsExtended && HasAttributes; set { } }
-        public bool IsMovable { get => Element.ParentContentBlock.MaxSize != 1; set { } }
+        public bool IsMovable { get => IsMovableUp || IsMovableDown; set { } }
         public bool IsMovableUp { 
             get
             {
@@ -52,7 +52,6 @@ namespace XMLCodeGenerator.ViewModel
             }
             set { }
         }
-        public bool IsMovableUpDown { get => Element.ParentContentBlock.MaxSize != 1; set { } }
         public bool IsExtendedAndHasEditableAttributes { get => IsExtended && HasEditableAttributes; set { } }
         private bool _isExtended;
         public bool IsExtended
@@ -222,6 +221,7 @@ namespace XMLCodeGenerator.ViewModel
             Parent.SetRemovableForChildren();
             var list = ElementModelProvider.GetModelsForNewChildElement(Element);
             Parent.DefaultNewChild = list.Count == 1 ? list[0] : null;
+            RefreshMovable();
         }
         public void ReplaceElement(ElementModel newElementModel)
         {
@@ -268,6 +268,7 @@ namespace XMLCodeGenerator.ViewModel
                 {
                     e.OnPropertyChanged(nameof(IsMovableDown));
                     e.OnPropertyChanged(nameof(IsMovableUp));
+                    e.OnPropertyChanged(nameof(IsMovable));
                 }
         }
 
@@ -305,7 +306,7 @@ namespace XMLCodeGenerator.ViewModel
         }
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (propertyName.Contains("Movable"))
             {

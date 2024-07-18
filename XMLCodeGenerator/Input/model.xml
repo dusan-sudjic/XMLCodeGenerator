@@ -31,7 +31,7 @@
 		<Element Name="CimClass" XMLName="CimClass">
 			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="PROVIDER_READER"/>
 			<Attribute Name="source" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
-			<ContentBlock MinSize="1" MaxSize="-1">
+			<ContentBlock MinSize="0" MaxSize="-1">
 				CimProperty,Function
 			</ContentBlock>
 		</Element>
