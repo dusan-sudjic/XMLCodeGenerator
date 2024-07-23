@@ -23,11 +23,13 @@ namespace XMLCodeGenerator.Model.Elements
         }
         public void SetContent(Dictionary<string, List<ElementModel>> elementTypes)
         {
-            if (elementTypes.ContainsKey(ElementsString))
-                ElementModels = elementTypes[ElementsString];
-            else
-                foreach (var el in ElementsString.Split(','))
+            foreach (var el in ElementsString.Split(','))
+            {
+                if (elementTypes.ContainsKey(el))
+                    ElementModels.AddRange(elementTypes[el]);
+                else
                     ElementModels.Add(ElementModelProvider.GetElementModelByName(el));
+            }
         }
         public ElementModel GetDefaultElementModel()
         {

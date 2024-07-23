@@ -231,13 +231,13 @@
 		<Element Name="AndConditions" XMLName="AndConditions">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="2" MaxSize="-1">
-				BooleanOperator
+				BooleanOperator,AndConditions,OrConditions
 			</ContentBlock>
 		</Element>
 		<Element Name="OrConditions" XMLName="OrConditions">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="2" MaxSize="-1">
-				BooleanOperator
+				BooleanOperator,AndConditions,OrConditions
 			</ContentBlock>
 		</Element>
 		<Element Name="If" XMLName="If">
