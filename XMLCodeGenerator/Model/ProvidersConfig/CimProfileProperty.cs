@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace XMLCodeGenerator.Model.ProvidersConfig
 {
-    public class ProviderReaderProperty : ProviderElement
+    public class CimProfileProperty : ProviderElement
     {
         private string ClassName { get; init; }
         private string Type { get; init; }
-        public ProviderReaderProperty(string name, string type, string className) : base(name)
+        public CimProfileProperty(string name, string type, string className) : base(name)
         {
             Type = type;
             ClassName = className;

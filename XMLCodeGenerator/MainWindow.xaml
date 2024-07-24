@@ -7,7 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:behaviors="clr-namespace:XMLCodeGenerator.Behaviors"
         mc:Ignorable="d"
         xmlns:view="clr-namespace:XMLCodeGenerator.View"
-        Title="MainWindow"
+        Title="XML editor"
         xmlns:converters="clr-namespace:XMLCodeGenerator.Converters"
         WindowStartupLocation="CenterScreen"
         Background="White"
@@ -63,7 +63,7 @@
                         <MenuItem Header="Exit" />
                     </MenuItem>
                     <MenuItem Height="25" Header="Import">
-                        <MenuItem Header="Provider reader" Click="ImportProviderReader"/>
+                        <MenuItem Header="Provider reader" Click="ImportCimProfile"/>
                         <Separator />
                         <MenuItem Header="Source provider" Click="ImportSourceProvider" />
                         </MenuItem>
@@ -99,8 +99,8 @@
                         <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding isSourceProviderImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Source provider imported</Button>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Button VerticalAlignment="Bottom" Cursor="Hand" Click="ImportProviderReader" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding IsProviderReaderImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Provider reader not imported</Button>
-                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding IsProviderReaderImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Provider reader imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Click="ImportCimProfile" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding IsCimProfileImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Cim pofile not imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding IsCimProfileImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Cim profile imported</Button>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">

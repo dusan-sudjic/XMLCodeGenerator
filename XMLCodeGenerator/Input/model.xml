@@ -29,7 +29,7 @@
 			</ContentBlock>
 		</Element>
 		<Element Name="CimClass" XMLName="CimClass">
-			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="PROVIDER_READER"/>
+			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE"/>
 			<Attribute Name="source" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
 			<ContentBlock MinSize="0" MaxSize="-1">
 				CimProperty,Function
@@ -45,7 +45,7 @@
 			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Editable="false" Input="USER_INPUT"/>
 		</Element>
 		<Element Name="CimProperty" XMLName="CimProperty">
-			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
+			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE"/>
 			<Attribute Name="mandatory" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
@@ -217,7 +217,7 @@
 			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
 		</Element>
 		<Element Name="GetSourceValue" XMLName="GetValue">
-			<Attribute Name="SourceName" IsRequired="true" ValueType="STRING" Input="PROVIDER_READER"/>
+			<Attribute Name="SourceName" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE"/>
 		</Element>
 		<Element Name="GetEntityValue" XMLName="GetValue">
 			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>

@@ -21,10 +21,10 @@ namespace XMLCodeGenerator.View
     {
         public string SelectedValue { get; set; }
         public Model.Elements.InputType InputType { get; set; }
-        public List<ProviderReaderClass> Classes { get; set; }
+        public List<CimProfileClass> Classes { get; set; }
         public List<SourceProviderEntity> Entities { get; set; }
-        public ObservableCollection<ProviderReaderClass> SearchResultsClasses { get; set; } = new();
-        public ObservableCollection<ProviderReaderProperty> SearchResultsProperties { get; set; } = new();
+        public ObservableCollection<CimProfileClass> SearchResultsClasses { get; set; } = new();
+        public ObservableCollection<CimProfileProperty> SearchResultsProperties { get; set; } = new();
         public ObservableCollection<SourceProviderEntity> SearchResultsEntities { get; set; } = new();
         public ObservableCollection<SourceProviderAttribute> SearchResultsAttributes { get; set; } = new();
         public ProviderWindow(Model.Elements.InputType type)
@@ -32,14 +32,14 @@ namespace XMLCodeGenerator.View
             InitializeComponent();
             DataContext = this;
             InputType = type;
-            Classes = MainWindow.ProviderReaderClasses;
+            Classes = MainWindow.CimProfileClasses;
             Entities = MainWindow.SourceProviderEntities;
-            tabControl.SelectedIndex = type==Model.Elements.InputType.PROVIDER_READER ? 0 : 1;
+            tabControl.SelectedIndex = type==Model.Elements.InputType.CIM_PROFILE ? 0 : 1;
             setupSearchResults();
         }
         private void setupSearchResults()
         {
-            foreach (ProviderReaderClass c in Classes)
+            foreach (CimProfileClass c in Classes)
             {
                 SearchResultsClasses.Add(c);
                 foreach (var property in c.Properties)

@@ -31,15 +31,16 @@ namespace XMLCodeGenerator
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public static List<ProviderReaderClass> ProviderReaderClasses = new();
+        public static List<CimProfileClass> CimProfileClasses = new();
         public static List<SourceProviderEntity> SourceProviderEntities = new();
-        private bool _isProviderReaderImported;
-        public bool IsProviderReaderImported { 
-            get => _isProviderReaderImported; 
+        private bool _isCimProfileImported;
+        public bool IsCimProfileImported
+        { 
+            get => _isCimProfileImported; 
             set { 
-                if(value!=_isProviderReaderImported) 
-                { 
-                    _isProviderReaderImported = value;
+                if(value!= _isCimProfileImported) 
+                {
+                    _isCimProfileImported = value;
                     OnPropertyChanged();
                 }
             } 
@@ -73,7 +74,7 @@ namespace XMLCodeGenerator
             ExportToXmlCommand = new RelayCommand(ExecuteExportToXmlCommand);
             OpenExistingFileCommand = new RelayCommand(ExecuteOpenExistingFileCommand);
             OpenNewProjectCommand = new RelayCommand(ExecuteOpenNewProjectCommand);
-            IsProviderReaderImported = false;
+            IsCimProfileImported = false;
             xmlPreviewControl = (XmlPreviewUserControl)this.FindName("xmlPreview");
             this.DataContext = this;
         }
@@ -215,9 +216,9 @@ namespace XMLCodeGenerator
         {
             ExecuteOpenNewProjectCommand(null);
         }
-        public void ImportProviderReader(object sender, RoutedEventArgs e)
+        public void ImportCimProfile(object sender, RoutedEventArgs e)
         {
-            ProviderReaderClasses.Clear();
+            CimProfileClasses.Clear();
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "DLL Files (*.dll)|*.dll";
 
@@ -230,8 +231,8 @@ namespace XMLCodeGenerator
                     Assembly assembly = Assembly.LoadFrom(filePath);
                     Type[] types = assembly.GetTypes();
                     foreach (Type type in types)
-                        ProviderReaderClasses.Add(new ProviderReaderClass(type));
-                    IsProviderReaderImported = true;
+                        CimProfileClasses.Add(new CimProfileClass(type));
+                    IsCimProfileImported = true;
                 }
                 catch (Exception ex)
                 {
