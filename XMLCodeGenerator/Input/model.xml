@@ -23,6 +23,37 @@
 				CimClass
 			</ContentBlock>
 		</Element>
+		<Element Name="PreprocessProcedures" XMLName="PreprocessProcedures">
+			<ContentBlock MinSize="0" MaxSize="-1">
+				Procedure
+			</ContentBlock>
+		</Element>
+		<Element Name="RewritingProcedures" XMLName="RewritingProcedures">
+			<ContentBlock MinSize="0" MaxSize="-1">
+				Procedure
+			</ContentBlock>
+		</Element>
+		<Element Name="Procedure" XMLName="Procedure">
+			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+			<Attribute Name="Folder" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+			<ContentBlock MinSize="0" MaxSize="1">
+				Parameters
+			</ContentBlock>
+		</Element>
+		<Element Name="Parameters" XMLName="Parameters">
+			<ContentBlock MinSize="1" MaxSize="-1">
+				Parameter
+			</ContentBlock>
+		</Element>
+		<Element Name="Parameter" XMLName="Parameter">
+			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+			<ContentBlock MinSize="1" MaxSize="1">
+				Value
+			</ContentBlock>
+		</Element>
+		<Element Name="Value" XMLName="val">
+			<Attribute Name="" IsRequired="false" ValueType="STRING" Input="USER_INPUT"/>
+		</Element>
 		<Element Name="FunctionDefinitions" XMLName="FunctionDefinitions">
 			<ContentBlock MinSize="0" MaxSize="-1">
 				FunctionDefinition

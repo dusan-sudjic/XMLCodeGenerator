@@ -11,6 +11,8 @@ namespace XMLCodeGenerator.Model.Elements
     {
         public static XmlElement GetXmlElement(Element element, XmlDocument doc = null)
         {
+            if (element.Model.XMLName.Equals("val"))
+                return null;
             if (doc == null)
             {
                 doc = new XmlDocument();
@@ -25,6 +27,14 @@ namespace XMLCodeGenerator.Model.Elements
         }
         private static void appendChildNodes(Element element, XmlDocument doc, XmlNode node)
         {
+            if (element.ChildElements.Count == 1)
+            {
+                if (element.ChildElements[0].Model.XMLName.Equals("val"))
+                {
+                    node.InnerText = element.ChildElements[0].AttributeValues[0];
+                    return;
+                }
+            }
             foreach (var child in element.ChildElements)
             {
                 if (child.Model.XMLName.Length > 0)
@@ -46,7 +56,18 @@ namespace XMLCodeGenerator.Model.Elements
 
         private static void addChildren(XmlElement xmlElement, Element element)
         {
-            foreach (XmlElement childXmlElement in xmlElement.ChildNodes)
+            XmlNodeList nodes = xmlElement.ChildNodes;
+            if (nodes.Count == 0) return;
+            XmlText val = nodes[0] as XmlText;
+            if (val!=null)
+            {
+                var valModel = ElementModelProvider.GetElementModelByName("Value");
+                var valEl = new Element(valModel, element.Model.GetSuitableContentBlockForChildModel(valModel));
+                valEl.AttributeValues[0] = val.InnerText;
+                element.ChildElements.Add(valEl);
+                return;
+            }
+            foreach (XmlElement childXmlElement in nodes)
             {
                 ElementModel childModel = ElementModelProvider.GetElementModelByXMLElement(childXmlElement);
                 ContentBlockModel parentContentBlock = element.Model.GetSuitableContentBlockForChildModel(childModel);

@@ -1,26 +1,10 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data.Common;
-using System.IO;
+﻿using System.ComponentModel;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
-using System.Security.Policy;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Xml;
-using System.Xml.Linq;
 using XMLCodeGenerator.Commands;
 using XMLCodeGenerator.Model.Elements;
 using XMLCodeGenerator.Model.ProvidersConfig;
@@ -79,21 +63,25 @@ namespace XMLCodeGenerator
             this.DataContext = this;
         }
 
+        public void ExportToXml(object sender, RoutedEventArgs e)
+        {
+            ExecuteExportToXmlCommand(null);
+        }
+        public void OpenNewProject(object sender, RoutedEventArgs e)
+        {
+            ExecuteOpenNewProjectCommand(null);
+        }
+        public void AddNewCimClass_Click(object sender, RoutedEventArgs e)
+        {
+            ExecuteAddNewCimClassCommand(null);
+        }
+        public void OpenExistingFile(object sender, RoutedEventArgs e)
+        {
+            ExecuteOpenExistingFileCommand(null);
+        }
         public static void BindElementToXMLPreview(ElementViewModel element)
         {
             xmlPreviewControl.XmlElements = new List<XmlElement> { XmlElementFactory.GetXmlElement(element.Element) };
-        }
-
-        public void AddNewCimClass_Click(object sender, RoutedEventArgs e)
-        {
-            TabControl tab = (TabControl)FindName("TabControl");
-            if (tab.SelectedIndex == 0)
-            {
-                Document.AddCimClass();
-                ScrollToBottomSmoothlyAsync("CimClassesScroll");
-            }
-            else
-                AddNewCimFunction();
         }
         private void AddNewCimFunction()
         {
@@ -108,17 +96,12 @@ namespace XMLCodeGenerator
                 else
                 {
                     Document.AddFunctionDefinition(window.Name);
-                    ScrollToBottomSmoothlyAsync("CimFunctionsScroll");
                 }
             }
         }
         public static void RenameFunction(string oldFunctionName, string newFunctionName)
         {
             Document.RenameFunction(oldFunctionName, newFunctionName);
-        }
-        public static void RemoveCimClass(ElementViewModel cimClassViewModel)
-        {
-            cimClassViewModel.DeleteElement();
         }
         public static void RemoveFunctionDefinition(ElementViewModel functionDefinitionViewModel)
         {
@@ -131,7 +114,7 @@ namespace XMLCodeGenerator
                 MessageBoxResult result = MessageBox.Show("Do you want to save changes in current project first?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
-                    SaveToXml();
+                    ExecuteExportToXmlCommand(null);
                     if (Document.HasUnsavedChanges)
                         return;
                 }
@@ -146,8 +129,12 @@ namespace XMLCodeGenerator
             TabControl tab = (TabControl)FindName("TabControl");
             if (tab.SelectedIndex == 0)
                 Document.AddCimClass();
-            else
+            else if (tab.SelectedIndex == 1)
                 AddNewCimFunction();
+            else if (tab.SelectedIndex == 2)
+                Document.AddPreprocessProcedure();
+            else if (tab.SelectedIndex == 3)
+                Document.AddRewritingProcedure();
         }
         public void ExecuteOpenExistingFileCommand(object parameter)
         {
@@ -156,7 +143,7 @@ namespace XMLCodeGenerator
                 MessageBoxResult result = MessageBox.Show("Do you want to save changes in current project first?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
-                    SaveToXml();
+                    ExecuteExportToXmlCommand(null);
                     if (Document.HasUnsavedChanges)
                         return;
                 }
@@ -169,22 +156,10 @@ namespace XMLCodeGenerator
             if (openFileDialog.ShowDialog() == true)
             {
                 string filePath = openFileDialog.FileName;
-                try
-                {
-                    Document.LoadFromXmlDocument(filePath);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error loading or processing XML file: {ex.Message}");
-                }
+                Document.LoadFromXmlDocument(filePath);
             }
         }
         public void ExecuteExportToXmlCommand(object parameter)
-        {
-            SaveToXml();
-        }
-
-        private static void SaveToXml()
         {
             if (Document.OutputPath == null)
             {
@@ -206,15 +181,6 @@ namespace XMLCodeGenerator
             {
                 MessageBox.Show($"Error saving XML file: {ex.Message}");
             }
-        }
-
-        public void ExportToXml(object sender, RoutedEventArgs e)
-        {
-            ExecuteExportToXmlCommand(null);
-        }
-        public void OpenNewProject(object sender, RoutedEventArgs e)
-        {
-            ExecuteOpenNewProjectCommand(null);
         }
         public void ImportCimProfile(object sender, RoutedEventArgs e)
         {
@@ -277,26 +243,6 @@ namespace XMLCodeGenerator
             }
         }
 
-        public void OpenExistingFile(object sender, RoutedEventArgs e)
-        {
-            ExecuteOpenExistingFileCommand(null);
-        }
-        private async void ScrollToBottomSmoothlyAsync(string name)
-        {
-            ScrollViewer scrollViewer = (ScrollViewer)this.FindName(name);
-            double scrollHeight = scrollViewer.ScrollableHeight;
-            double currentOffset = scrollViewer.VerticalOffset;
-            double targetOffset = scrollHeight;
-            int steps = 20;
-            double stepSize = (targetOffset - currentOffset) / steps;
-            for (int i = 0; i < steps; i++)
-            {
-                currentOffset += stepSize;
-                scrollViewer.ScrollToVerticalOffset(currentOffset);
-                await Task.Delay(10); 
-            }
-            scrollViewer.ScrollToBottom();
-        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             MaximizeToWorkingArea();

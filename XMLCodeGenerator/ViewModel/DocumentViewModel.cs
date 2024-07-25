@@ -19,6 +19,8 @@ namespace XMLCodeGenerator.ViewModel
     {
         public ElementViewModel CimClasses { get; set; }
         public ElementViewModel FunctionDefinitions { get; set; }
+        public ElementViewModel PreprocessProcedures { get; set; }
+        public ElementViewModel RewritingProcedures { get; set; }
         public string OutputPath { get; set; }
         private bool _hasUnsavedChages;
         public bool HasUnsavedChanges
@@ -38,6 +40,8 @@ namespace XMLCodeGenerator.ViewModel
         {
             CimClasses = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("CimClasses")));
             FunctionDefinitions = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("FunctionDefinitions")));
+            PreprocessProcedures = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("PreprocessProcedures")));
+            RewritingProcedures = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("RewritingProcedures")));
             HasUnsavedChanges = false;
         }
         public void Reset()
@@ -46,6 +50,10 @@ namespace XMLCodeGenerator.ViewModel
             CimClasses.ChildViewModels.Clear();
             FunctionDefinitions.ChildViewModels.Clear();
             FunctionDefinitions.Element.ChildElements.Clear();
+            PreprocessProcedures.ChildViewModels.Clear();
+            PreprocessProcedures.Element.ChildElements.Clear();
+            RewritingProcedures.ChildViewModels.Clear();
+            RewritingProcedures.Element.ChildElements.Clear();
             HasUnsavedChanges = false;
             ElementModelProvider.ResetFunctionDefinitions();
             OutputPath = null;
@@ -81,12 +89,38 @@ namespace XMLCodeGenerator.ViewModel
                     CimClasses.SetRemovableForChildren();
                 }
             }
+            XmlNodeList preprocessProcedures = document.SelectNodes("//PreprocessProcedures/Procedure");
+            if (preprocessProcedures != null)
+            {
+                foreach (XmlElement procedure in preprocessProcedures)
+                {
+                    Element el = XmlElementFactory.GetElement(procedure);
+                    el.ParentContentBlock = PreprocessProcedures.Element.Model.ContentBlocks[0];
+                    PreprocessProcedures.Element.ChildElements.Add(el);
+                    PreprocessProcedures.ChildViewModels.Add(new ElementViewModel(el, PreprocessProcedures));
+                    PreprocessProcedures.SetRemovableForChildren();
+                }
+            }
+            XmlNodeList rewritingProcedures = document.SelectNodes("//RewritingProcedures/Procedure");
+            if (rewritingProcedures != null)
+            {
+                foreach (XmlElement procedure in rewritingProcedures)
+                {
+                    Element el = XmlElementFactory.GetElement(procedure);
+                    el.ParentContentBlock = RewritingProcedures.Element.Model.ContentBlocks[0];
+                    RewritingProcedures.Element.ChildElements.Add(el);
+                    RewritingProcedures.ChildViewModels.Add(new ElementViewModel(el, RewritingProcedures));
+                    RewritingProcedures.SetRemovableForChildren();
+                }
+            }
             HasUnsavedChanges = false;
         }
         public XmlDocument ExportToXmlDocument()
         {
             XmlDocument xmlDoc = new XmlDocument();
             XmlElement rootElement = xmlDoc.CreateElement("Root");
+            rootElement.AppendChild(XmlElementFactory.GetXmlElement(PreprocessProcedures.Element, xmlDoc));
+            rootElement.AppendChild(XmlElementFactory.GetXmlElement(RewritingProcedures.Element, xmlDoc));
             rootElement.AppendChild(XmlElementFactory.GetXmlElement(FunctionDefinitions.Element, xmlDoc));
             rootElement.AppendChild(XmlElementFactory.GetXmlElement(CimClasses.Element, xmlDoc));
             xmlDoc.AppendChild(rootElement);
@@ -98,6 +132,26 @@ namespace XMLCodeGenerator.ViewModel
         {
             CimClasses.AddNewChildElement(ElementModelProvider.GetElementModelByName("CimClass"));
             foreach(var c in CimClasses.ChildViewModels)
+            {
+                c.OnPropertyChanged("IsMovableUp");
+                c.OnPropertyChanged("IsMovableDown");
+                c.OnPropertyChanged("IsMovable");
+            }
+        }
+        public void AddPreprocessProcedure()
+        {
+            PreprocessProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("Procedure"));
+            foreach (var c in PreprocessProcedures.ChildViewModels)
+            {
+                c.OnPropertyChanged("IsMovableUp");
+                c.OnPropertyChanged("IsMovableDown");
+                c.OnPropertyChanged("IsMovable");
+            }
+        }
+        public void AddRewritingProcedure()
+        {
+            RewritingProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("Procedure"));
+            foreach (var c in RewritingProcedures.ChildViewModels)
             {
                 c.OnPropertyChanged("IsMovableUp");
                 c.OnPropertyChanged("IsMovableDown");

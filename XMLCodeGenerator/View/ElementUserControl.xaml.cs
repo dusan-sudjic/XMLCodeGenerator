@@ -86,15 +86,8 @@ namespace XMLCodeGenerator.View
         }
         private void DeleteElement_Click(object sender, RoutedEventArgs e)
         {
-
-            if(Element.XML_Name.Equals("CimClass"))
-            {
-                MainWindow.RemoveCimClass(Element);
-            }
-            else if (Element.Element.Model.Name.Equals("FunctionDefinition"))
-            {
+            if (Element.Element.Model.Name.Equals("FunctionDefinition"))
                 MainWindow.RemoveFunctionDefinition(Element);
-            }
             else
             {
                 if (Element.IsRemovable)
