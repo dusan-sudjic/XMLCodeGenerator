@@ -4,13 +4,14 @@ using XMLCodeGenerator.Model.Elements;
 
 namespace XMLCodeGenerator.ViewModel
 {
-    public sealed class AttributeViewModel: INotifyPropertyChanged
+    public sealed class AttributeViewModel : INotifyPropertyChanged
     {
-        public string Name { 
+        public string Name
+        {
             get => Attribute.Name;
             set
             {
-                if(value!= Attribute.Name)
+                if (value != Attribute.Name)
                 {
                     Attribute.Name = value;
                     OnPropertyChanged();
@@ -18,11 +19,12 @@ namespace XMLCodeGenerator.ViewModel
             }
         }
         private string _value;
-        public string Value { 
+        public string Value
+        {
             get => _value;
             set
             {
-                if(value!= _value)
+                if (value != _value)
                 {
                     _value = value;
                     OnPropertyChanged();
@@ -30,11 +32,11 @@ namespace XMLCodeGenerator.ViewModel
             }
         }
         public Model.Elements.ValueType ValueType
-        { 
+        {
             get => Attribute.ValueType;
             set
             {
-                if(value!= Attribute.ValueType)
+                if (value != Attribute.ValueType)
                 {
                     Attribute.ValueType = value;
                     OnPropertyChanged();
@@ -42,22 +44,23 @@ namespace XMLCodeGenerator.ViewModel
             }
         }
         public InputType InputType
-        { 
+        {
             get => Attribute.InputType;
             set
             {
-                if(value!= Attribute.InputType)
+                if (value != Attribute.InputType)
                 {
                     Attribute.InputType = value;
                     OnPropertyChanged();
                 }
             }
         }
-        public bool IsRequired{ 
+        public bool IsRequired
+        {
             get => Attribute.IsRequired;
             set
             {
-                if(value!= Attribute.IsRequired)
+                if (value != Attribute.IsRequired)
                 {
                     Attribute.IsRequired = value;
                     OnPropertyChanged();
@@ -67,10 +70,12 @@ namespace XMLCodeGenerator.ViewModel
         public string Required { get => IsRequired ? "*" : ""; set { } }
         public bool IsTrue { get { return Value == "true"; } set { Value = value ? "true" : "false"; } }
         public AttributeModel Attribute { get; set; }
-        public AttributeViewModel(AttributeModel attribute, string value)
+        public ElementViewModel Element { get; init; }
+        public AttributeViewModel(AttributeModel attribute, string value, ElementViewModel element)
         {
             Attribute = attribute;
             Value = value;
+            Element = element;
         }
         public event PropertyChangedEventHandler PropertyChanged;
 

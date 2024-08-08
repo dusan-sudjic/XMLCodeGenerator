@@ -14,7 +14,7 @@ namespace XMLCodeGenerator.Model.Elements
         public InputType InputType { get; set; }
         public bool IsRequired { get; set; }
         public bool Editable { get; set; }
-        public string DefaultValue {  get; set; }
+        public string DefaultValue { get; set; }
         public AttributeModel(XmlNode node)
         {
             Name = node.Attributes["Name"]?.InnerText;
@@ -27,7 +27,7 @@ namespace XMLCodeGenerator.Model.Elements
                 case ValueType.STRING: { DefaultValue = "null"; break; }
                 case ValueType.INTEGER: { DefaultValue = "0"; break; }
                 case ValueType.BOOLEAN: { DefaultValue = "false"; break; }
-                default: {DefaultValue = "unexpected value"; break;}
+                default: { DefaultValue = "unexpected value"; break; }
             }
             Editable = editableText != null ? bool.Parse(editableText) : true;
         }
@@ -53,6 +53,6 @@ namespace XMLCodeGenerator.Model.Elements
     }
     public enum InputType
     {
-        USER_INPUT, SOURCE_PROVIDER, CIM_PROFILE
+        USER_INPUT, SOURCE_PROVIDER_ENTITY, SOURCE_PROVIDER_ATTRIBUTE, CIM_PROFILE_CLASS, CIM_PROFILE_PROPERTY
     }
 }

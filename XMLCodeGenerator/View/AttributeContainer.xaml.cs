@@ -19,10 +19,11 @@ namespace XMLCodeGenerator.View.Attributes
         {
             HandleValueType();
             ChooseButton.Visibility = Attribute.InputType != InputType.USER_INPUT ? Visibility.Visible : Visibility.Collapsed;
+            AttributeName.Visibility = Attribute.Name.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
         private void OpenProvidersWindow_Click(object sender, RoutedEventArgs e)
         {
-            ProviderWindow window = new ProviderWindow(Attribute.InputType);
+            ProviderWindow window = new ProviderWindow(Attribute.InputType, Attribute.Element);
             if (window.ShowDialog() == true)
             {
                 Attribute.Value = window.SelectedValue;

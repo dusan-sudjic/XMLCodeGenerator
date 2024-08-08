@@ -12,106 +12,160 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Xceed.Wpf.Toolkit;
 using XMLCodeGenerator.Model.Elements;
 using XMLCodeGenerator.Model.ProvidersConfig;
+using XMLCodeGenerator.ViewModel;
 
 namespace XMLCodeGenerator.View
 {
     public partial class ProviderWindow : Window
     {
+        public ListBox ValuesListBox { get; set; }
         public string SelectedValue { get; set; }
-        public Model.Elements.InputType InputType { get; set; }
-        public List<CimProfileClass> Classes { get; set; }
-        public List<SourceProviderEntity> Entities { get; set; }
-        public ObservableCollection<CimProfileClass> SearchResultsClasses { get; set; } = new();
-        public ObservableCollection<CimProfileProperty> SearchResultsProperties { get; set; } = new();
-        public ObservableCollection<SourceProviderEntity> SearchResultsEntities { get; set; } = new();
-        public ObservableCollection<SourceProviderAttribute> SearchResultsAttributes { get; set; } = new();
-        public ProviderWindow(Model.Elements.InputType type)
+        WatermarkTextBox searchTextBox { get; set; }
+        List<ProviderElement> ProviderElements { get; set; }
+        public bool MultiSelect { get; set; } = false;
+        public ProviderWindow(Model.Elements.InputType type, ElementViewModel element)
         {
             InitializeComponent();
+            ProviderElements = new List<ProviderElement>();
             DataContext = this;
-            InputType = type;
-            Classes = MainWindow.CimProfileClasses;
-            Entities = MainWindow.SourceProviderEntities;
-            tabControl.SelectedIndex = type==Model.Elements.InputType.CIM_PROFILE ? 0 : 1;
-            setupSearchResults();
-        }
-        private void setupSearchResults()
-        {
-            foreach (CimProfileClass c in Classes)
+            ValuesListBox = (ListBox)this.FindName("listBox");
+            switch (type)
             {
-                SearchResultsClasses.Add(c);
-                foreach (var property in c.Properties)
-                    SearchResultsProperties.Add(property);
+                case Model.Elements.InputType.CIM_PROFILE_CLASS:
+                    {
+                        foreach (var c in MainWindow.CimProfileClasses)
+                            ProviderElements.Add(c);
+                        break;
+                    }
+                case Model.Elements.InputType.CIM_PROFILE_PROPERTY:
+                    {
+                        string className = element.Parent.Attributes[0].Value;
+                        CimProfileClass cl = MainWindow.CimProfileClasses.Where(c => c.Name == className).FirstOrDefault();
+                        if (cl == null)
+                        {
+                            foreach (var c in MainWindow.CimProfileClasses)
+                                foreach (var p in c.Properties)
+                                    if (ProviderElements.Where(e => e.Name.Equals(p.Name)).ToList().Count == 0)
+                                        ProviderElements.Add(p);
+                            break;
+                        }
+                        foreach (var c in cl.Properties)
+                            ProviderElements.Add(c);
+                        break;
+                    }
+                case Model.Elements.InputType.SOURCE_PROVIDER_ENTITY:
+                    {
+                        MultiSelect = true;
+                        foreach (var c in MainWindow.SourceProviderEntities)
+                            ProviderElements.Add(c);
+                        break;
+                    }
+                case Model.Elements.InputType.SOURCE_PROVIDER_ATTRIBUTE:
+                    {
+                        string entityName = element.Parent.Attributes[0].Value;
+                        SourceProviderEntity cl = MainWindow.SourceProviderEntities.Where(c => c.Name == entityName).FirstOrDefault();
+                        foreach (var c in cl.Attributes)
+                            ProviderElements.Add(c);
+                        break;
+                    }
+                default: break;
             }
-            foreach (SourceProviderEntity c in Entities)
+            ValuesListBox.ItemsSource = ProviderElements;
+            ValuesListBox.SelectedIndex = MultiSelect ? -1 : 0;
+            searchTextBox = (WatermarkTextBox)this.FindName("search");
+            searchTextBox.Focus();
+        }
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Down)
             {
-                SearchResultsEntities.Add(c);
-                foreach (var attribute in c.Attributes)
-                    SearchResultsAttributes.Add(attribute);
+                OnDownArrowPressed();
+                e.Handled = true;
+            }
+            if (e.Key == Key.Up)
+            {
+                OnUpArrowPressed();
+                e.Handled = true;
+            }
+            if (e.Key == Key.Enter)
+            {
+                Select();
+                e.Handled = true;
             }
         }
 
-        private void Select_Click(object sender, RoutedEventArgs e)
+        private void OnDownArrowPressed()
         {
-            SelectedValue = ((sender as Button).Content as ProviderElement).Name;
-            this.DialogResult = true;
+            if (ValuesListBox.SelectedIndex == -1)
+            {
+                ValuesListBox.SelectedIndex = 0;
+                return;
+            }
+            if (ValuesListBox.SelectedIndex == ValuesListBox.Items.Count - 1)
+            {
+                ValuesListBox.SelectedIndex = 0;
+                return;
+            }
+            ValuesListBox.SelectedIndex++;
+        }
+        private void OnUpArrowPressed()
+        {
+            if (ValuesListBox.SelectedIndex == -1)
+            {
+                ValuesListBox.SelectedIndex = ValuesListBox.Items.Count - 1;
+                return;
+            }
+            if (ValuesListBox.SelectedIndex == 0)
+            {
+                ValuesListBox.SelectedIndex = ValuesListBox.Items.Count - 1;
+                return;
+            }
+            ValuesListBox.SelectedIndex--;
+        }
+        public void OKButton_Click(object sender, RoutedEventArgs e)
+        {
+            Select();
         }
 
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Select()
         {
-            search.Text = "";
+            if (MultiSelect)
+            {
+                if (ValuesListBox.SelectedItems.Count == 0)
+                {
+                    System.Windows.MessageBox.Show("Please select values.");
+                    return;
+                }
+                SelectedValue = "";
+                foreach (ProviderElement provider in ValuesListBox.SelectedItems)
+                    SelectedValue = SelectedValue + provider.Name + (ValuesListBox.SelectedItems.IndexOf(provider) == ValuesListBox.SelectedItems.Count - 1 ? "" : ", ");
+                this.DialogResult = true;
+            }
+            else if (ValuesListBox.SelectedItem != null)
+            {
+                var provider = ValuesListBox.SelectedItem as ProviderElement;
+                SelectedValue = provider.Name;
+                this.DialogResult = true;
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Please select an option.");
+            }
         }
+
         public void TextChanged(object sender, TextChangedEventArgs e)
         {
-            switch (tabControl2.SelectedIndex)
+            List<ProviderElement> newList = new();
+            foreach (var s in ProviderElements)
             {
-                case 0:
-                    {
-                        SearchResultsClasses.Clear();
-                        foreach(var c in Classes)
-                        {
-                            if(c.ToString().ToLower().Contains(search.Text.ToLower()))
-                                SearchResultsClasses.Add(c);
-                        }
-                        return;
-                    }
-                case 1:
-                    {
-                        SearchResultsProperties.Clear();
-                        foreach (var c in Classes)
-                        {
-                            foreach(var p in c.Properties)
-                                if (p.ToString().ToLower().Contains(search.Text.ToLower()))
-                                    SearchResultsProperties.Add(p);
-                        }
-                        return;
-                    }
-                case 2:
-                    {
-                        SearchResultsEntities.Clear();
-                        foreach (var c in Entities)
-                        {
-                            if (c.ToString().ToLower().Contains(search.Text.ToLower()))
-                                SearchResultsEntities.Add(c);
-                        }
-                        return;
-                    }
-                case 3:
-                    {
-                        SearchResultsAttributes.Clear();
-                        foreach (var c in Entities)
-                        {
-                            foreach(var a in c.Attributes)
-                                if (a.ToString().ToLower().Contains(search.Text.ToLower()))
-                                    SearchResultsAttributes.Add(a);
-                        }
-                        return;
-                    }
-                case -1:
-                    break;
+                if (s.Name.ToLower().Contains(searchTextBox.Text.ToLower()))
+                    newList.Add(s);
             }
+            ValuesListBox.ItemsSource = newList;
+            if (ValuesListBox.SelectedIndex == -1) ValuesListBox.SelectedIndex = 0;
         }
     }
 }

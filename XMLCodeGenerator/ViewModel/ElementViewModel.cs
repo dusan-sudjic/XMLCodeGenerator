@@ -174,7 +174,7 @@ namespace XMLCodeGenerator.ViewModel
             foreach (var child in element.ChildElements)
                 ChildViewModels.Add(new ElementViewModel(child, this));
             foreach (var attribute in element.Model.Attributes)
-                Attributes.Add(new AttributeViewModel(attribute, element.AttributeValues[element.Model.Attributes.IndexOf(attribute)]));
+                Attributes.Add(new AttributeViewModel(attribute, element.AttributeValues[element.Model.Attributes.IndexOf(attribute)], this));
             SetRemovableForChildren();
         }
         public void SetReplacable()
