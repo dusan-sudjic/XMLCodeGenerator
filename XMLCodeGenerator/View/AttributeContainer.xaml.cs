@@ -23,7 +23,7 @@ namespace XMLCodeGenerator.View.Attributes
         }
         private void OpenProvidersWindow_Click(object sender, RoutedEventArgs e)
         {
-            ProviderWindow window = new ProviderWindow(Attribute.InputType);
+            ProviderWindow window = new ProviderWindow(Attribute.InputType, Attribute.Element);
             if (window.ShowDialog() == true)
             {
                 Attribute.Value = window.SelectedValue;

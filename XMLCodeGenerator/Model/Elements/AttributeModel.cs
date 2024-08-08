@@ -53,6 +53,6 @@ namespace XMLCodeGenerator.Model.Elements
     }
     public enum InputType
     {
-        USER_INPUT, SOURCE_PROVIDER, CIM_PROFILE
+        USER_INPUT, SOURCE_PROVIDER_ENTITY, SOURCE_PROVIDER_ATTRIBUTE, CIM_PROFILE_CLASS, CIM_PROFILE_PROPERTY
     }
 }

@@ -60,8 +60,8 @@
 			</ContentBlock>
 		</Element>
 		<Element Name="CimClass" XMLName="CimClass">
-			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE"/>
-			<Attribute Name="source" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
+			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE_CLASS"/>
+			<Attribute Name="source" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
 			<ContentBlock MinSize="0" MaxSize="-1">
 				CimProperty,Function
 			</ContentBlock>
@@ -76,7 +76,7 @@
 			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Editable="false" Input="USER_INPUT"/>
 		</Element>
 		<Element Name="CimProperty" XMLName="CimProperty">
-			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE"/>
+			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE_PROPERTY"/>
 			<Attribute Name="mandatory" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
@@ -242,16 +242,16 @@
 		</Element>
 		<Element Name="GetPrimarySource"  XMLName="GetPrimarySource"/>
 		<Element Name="GetSourceColumn"  XMLName="GetSourceColumn">
-			<Attribute Name="EntityProperty" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
+			<Attribute Name="EntityProperty" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
 		</Element>
 		<Element Name="GetSourceTable"  XMLName="GetSourceTable">
-			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
+			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
 		</Element>
 		<Element Name="GetSourceValue" XMLName="GetValue">
-			<Attribute Name="SourceName" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE"/>
+			<Attribute Name="SourceName" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE_CLASS"/>
 		</Element>
 		<Element Name="GetEntityValue" XMLName="GetValue">
-			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER"/>
+			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
 		</Element>
 		<Element Name="Condition" XMLName="Condition">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
