@@ -23,19 +23,28 @@
 				CimClass
 			</ContentBlock>
 		</Element>
-		<Element Name="PreprocessProcedures" XMLName="PreprocessProcedures">
+		<Element Name="PreProcessProcedures" XMLName="PreProcessProcedures">
 			<ContentBlock MinSize="0" MaxSize="-1">
-				Procedure
+				PreProcessProcedure
 			</ContentBlock>
 		</Element>
 		<Element Name="RewritingProcedures" XMLName="RewritingProcedures">
 			<ContentBlock MinSize="0" MaxSize="-1">
-				Procedure
+				RewritingProcedure
 			</ContentBlock>
 		</Element>
-		<Element Name="Procedure" XMLName="Procedure">
-			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
-			<Attribute Name="Folder" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+		<Element Name="PreProcessProcedure" XMLName="PreProcessProcedure">
+			<Attribute Name="ClassName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+			<Attribute Name="AdditionalFolderStructure" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+			<ContentBlock MinSize="0" MaxSize="1">
+				Parameters
+			</ContentBlock>
+		</Element>
+		<Element Name="RewritingProcedure" XMLName="RewritingProcedure">
+			<Attribute Name="ClassName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+			<Attribute Name="AdditionalFolderStructure" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 			<ContentBlock MinSize="0" MaxSize="1">
 				Parameters
 			</ContentBlock>

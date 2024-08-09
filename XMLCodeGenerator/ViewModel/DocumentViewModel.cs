@@ -19,7 +19,7 @@ namespace XMLCodeGenerator.ViewModel
     {
         public ElementViewModel CimClasses { get; set; }
         public ElementViewModel FunctionDefinitions { get; set; }
-        public ElementViewModel PreprocessProcedures { get; set; }
+        public ElementViewModel PreProcessProcedures { get; set; }
         public ElementViewModel RewritingProcedures { get; set; }
         public string OutputPath { get; set; }
         private bool _hasUnsavedChages;
@@ -40,7 +40,7 @@ namespace XMLCodeGenerator.ViewModel
         {
             CimClasses = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("CimClasses")));
             FunctionDefinitions = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("FunctionDefinitions")));
-            PreprocessProcedures = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("PreprocessProcedures")));
+            PreProcessProcedures = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("PreProcessProcedures")));
             RewritingProcedures = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("RewritingProcedures")));
             HasUnsavedChanges = false;
         }
@@ -50,8 +50,8 @@ namespace XMLCodeGenerator.ViewModel
             CimClasses.ChildViewModels.Clear();
             FunctionDefinitions.ChildViewModels.Clear();
             FunctionDefinitions.Element.ChildElements.Clear();
-            PreprocessProcedures.ChildViewModels.Clear();
-            PreprocessProcedures.Element.ChildElements.Clear();
+            PreProcessProcedures.ChildViewModels.Clear();
+            PreProcessProcedures.Element.ChildElements.Clear();
             RewritingProcedures.ChildViewModels.Clear();
             RewritingProcedures.Element.ChildElements.Clear();
             HasUnsavedChanges = false;
@@ -89,19 +89,19 @@ namespace XMLCodeGenerator.ViewModel
                     CimClasses.SetRemovableForChildren();
                 }
             }
-            XmlNodeList preprocessProcedures = document.SelectNodes("//PreprocessProcedures/Procedure");
+            XmlNodeList preprocessProcedures = document.SelectNodes("//PreProcessProcedures/PreProcessProcedure");
             if (preprocessProcedures != null)
             {
                 foreach (XmlElement procedure in preprocessProcedures)
                 {
                     Element el = XmlElementFactory.GetElement(procedure);
-                    el.ParentContentBlock = PreprocessProcedures.Element.Model.ContentBlocks[0];
-                    PreprocessProcedures.Element.ChildElements.Add(el);
-                    PreprocessProcedures.ChildViewModels.Add(new ElementViewModel(el, PreprocessProcedures));
-                    PreprocessProcedures.SetRemovableForChildren();
+                    el.ParentContentBlock = PreProcessProcedures.Element.Model.ContentBlocks[0];
+                    PreProcessProcedures.Element.ChildElements.Add(el);
+                    PreProcessProcedures.ChildViewModels.Add(new ElementViewModel(el, PreProcessProcedures));
+                    PreProcessProcedures.SetRemovableForChildren();
                 }
             }
-            XmlNodeList rewritingProcedures = document.SelectNodes("//RewritingProcedures/Procedure");
+            XmlNodeList rewritingProcedures = document.SelectNodes("//RewritingProcedures/RewritingProcedure");
             if (rewritingProcedures != null)
             {
                 foreach (XmlElement procedure in rewritingProcedures)
@@ -118,8 +118,8 @@ namespace XMLCodeGenerator.ViewModel
         public XmlDocument ExportToXmlDocument()
         {
             XmlDocument xmlDoc = new XmlDocument();
-            XmlElement rootElement = xmlDoc.CreateElement("Root");
-            rootElement.AppendChild(XmlElementFactory.GetXmlElement(PreprocessProcedures.Element, xmlDoc));
+            XmlElement rootElement = xmlDoc.CreateElement("ElementMapping");
+            rootElement.AppendChild(XmlElementFactory.GetXmlElement(PreProcessProcedures.Element, xmlDoc));
             rootElement.AppendChild(XmlElementFactory.GetXmlElement(RewritingProcedures.Element, xmlDoc));
             rootElement.AppendChild(XmlElementFactory.GetXmlElement(FunctionDefinitions.Element, xmlDoc));
             rootElement.AppendChild(XmlElementFactory.GetXmlElement(CimClasses.Element, xmlDoc));
@@ -131,47 +131,38 @@ namespace XMLCodeGenerator.ViewModel
         public void AddCimClass()
         {
             CimClasses.AddNewChildElement(ElementModelProvider.GetElementModelByName("CimClass"));
-            foreach(var c in CimClasses.ChildViewModels)
-            {
-                c.OnPropertyChanged("IsMovableUp");
-                c.OnPropertyChanged("IsMovableDown");
-                c.OnPropertyChanged("IsMovable");
-            }
+            UpdateMovable(CimClasses);
         }
         public void AddPreprocessProcedure()
         {
-            PreprocessProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("Procedure"));
-            foreach (var c in PreprocessProcedures.ChildViewModels)
-            {
-                c.OnPropertyChanged("IsMovableUp");
-                c.OnPropertyChanged("IsMovableDown");
-                c.OnPropertyChanged("IsMovable");
-            }
+            PreProcessProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("PreProcessProcedure"));
+            UpdateMovable(PreProcessProcedures);
         }
         public void AddRewritingProcedure()
         {
-            RewritingProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("Procedure"));
-            foreach (var c in RewritingProcedures.ChildViewModels)
-            {
-                c.OnPropertyChanged("IsMovableUp");
-                c.OnPropertyChanged("IsMovableDown");
-                c.OnPropertyChanged("IsMovable");
-            }
+            RewritingProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("RewritingProcedure"));
+            UpdateMovable(RewritingProcedures);
         }
         public void AddFunctionDefinition(string name)
         {
             FunctionDefinitions.AddNewChildElement(ElementModelProvider.GetElementModelByName("FunctionDefinition"));
             FunctionDefinitions.ChildViewModels.Last().Attributes[0].Value = name;
-            foreach (var c in FunctionDefinitions.ChildViewModels)
+            UpdateMovable(FunctionDefinitions);
+            ElementModelProvider.AddNewFunctionDefinition(name);
+            foreach (var c in CimClasses.ChildViewModels)
+                c.SetReplacable();
+        }
+
+        private void UpdateMovable(ElementViewModel vm)
+        {
+            foreach (var c in vm.ChildViewModels)
             {
                 c.OnPropertyChanged("IsMovableUp");
                 c.OnPropertyChanged("IsMovableDown");
                 c.OnPropertyChanged("IsMovable");
             }
-            ElementModelProvider.AddNewFunctionDefinition(name);
-            foreach (var c in CimClasses.ChildViewModels)
-                c.SetReplacable();
         }
+
         public void RenameFunction(string oldName, string newName)
         {
             FunctionDefinitions.ChildViewModels.First(x => x.Attributes[0].Value.Equals(oldName)).Attributes[0].Value = newName;

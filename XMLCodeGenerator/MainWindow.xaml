@@ -7,7 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:behaviors="clr-namespace:XMLCodeGenerator.Behaviors"
         mc:Ignorable="d"
         xmlns:view="clr-namespace:XMLCodeGenerator.View"
-        Title="XML editor"
+        Title="Element mapping"
         xmlns:converters="clr-namespace:XMLCodeGenerator.Converters"
         WindowStartupLocation="CenterScreen"
         Background="White"
@@ -149,12 +149,12 @@
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
-                    <TabItem Header="Preprocess procedures">
+                    <TabItem Header="PreProcess procedures">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" x:Name="PreprocessScroll" Padding="6">
                             <StackPanel>
                                 <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new preprocess procedure element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="180" Click="AddNewCimClass_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add Preprocess Procedure</Button>
                                 <StackPanel x:Name="PreprocessStack" Margin="0 0 0 60">
-                                    <ItemsControl x:Name="itemsControlPreprocess" ItemsSource="{Binding Document.PreprocessProcedures.ChildViewModels}">
+                                    <ItemsControl x:Name="itemsControlPreprocess" ItemsSource="{Binding Document.PreProcessProcedures.ChildViewModels}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <local1:ElementUserControl DataContext="{Binding}" />
