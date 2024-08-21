@@ -68,14 +68,14 @@
 				FunctionDefinition
 			</ContentBlock>
 		</Element>
-		<Element Name="CimClass" XMLName="CimClass">
+		<Element Name="CimClass" XMLName="CimClass" NamespacePrefix="cc">
 			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE_CLASS"/>
 			<Attribute Name="source" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
 			<ContentBlock MinSize="0" MaxSize="-1">
 				CimProperty,Function
 			</ContentBlock>
 		</Element>
-		<Element Name="FunctionDefinition" XMLName="Function">
+		<Element Name="FunctionDefinition" XMLName="Function" NamespacePrefix="fn">
 			<Attribute Name="Name" IsRequired="true" ValueType="STRING"  Editable="false" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="-1">
 				Element
@@ -84,7 +84,7 @@
 		<Element Name="Function" XMLName="Function">
 			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Editable="false" Input="USER_INPUT"/>
 		</Element>
-		<Element Name="CimProperty" XMLName="CimProperty">
+		<Element Name="CimProperty" XMLName="CimProperty" NamespacePrefix="cp">
 			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE_PROPERTY"/>
 			<Attribute Name="mandatory" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
@@ -99,162 +99,162 @@
 		</Element>
 		<Element Name="BreakInstanceCreation" XMLName="BreakInstanceCreation"/>
 		<Element Name="BreakInstanceTypeCreation" XMLName="BreakInstanceTypeCreation"/>
-		<Element Name="StringConcatenate" XMLName="StringConcatenate">
+		<Element Name="StringConcatenate" XMLName="StringConcatenate" NamespacePrefix="op">
 			<Attribute Name="delimiter" IsRequired="false" ValueType="STRING" Input="USER_INPUT"/>
 			<ContentBlock MinSize="2" MaxSize="-1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringRemove" XMLName="StringRemove">
+		<Element Name="StringRemove" XMLName="StringRemove" NamespacePrefix="op">
 			<Attribute Name="StartIndex" IsRequired="true" ValueType="INTEGER" Input="USER_INPUT"/>
 			<Attribute Name="Count" IsRequired="true" ValueType="INTEGER" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringSplit" XMLName="StringSplit">
+		<Element Name="StringSplit" XMLName="StringSplit" NamespacePrefix="op">
 			<Attribute Name="Separator" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 			<Attribute Name="Index" IsRequired="true" ValueType="INTEGER" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="Substring" XMLName="Substring">
+		<Element Name="Substring" XMLName="Substring" NamespacePrefix="op">
 			<Attribute Name="StartIndex" IsRequired="true" ValueType="INTEGER" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringToLower" XMLName="StringToLower">
+		<Element Name="StringToLower" XMLName="StringToLower" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringToUpper" XMLName="StringToUpper">
+		<Element Name="StringToUpper" XMLName="StringToUpper" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringTrim" XMLName="StringTrim">
+		<Element Name="StringTrim" XMLName="StringTrim" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringTrimEnd" XMLName="StringTrimEnd">
+		<Element Name="StringTrimEnd" XMLName="StringTrimEnd" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringTrimStart" XMLName="StringTrimStart">
+		<Element Name="StringTrimStart" XMLName="StringTrimStart" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringIndexOf" XMLName="StringIndexOf">
+		<Element Name="StringIndexOf" XMLName="StringIndexOf" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringLastIndexOf" XMLName="StringLastIndexOf">
+		<Element Name="StringLastIndexOf" XMLName="StringLastIndexOf" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringLength" XMLName="StringLength">
+		<Element Name="StringLength" XMLName="StringLength" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringFormat" XMLName="StringFormat">
+		<Element Name="StringFormat" XMLName="StringFormat" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="-1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="Substraction" XMLName="Substraction">
+		<Element Name="Substraction" XMLName="Substraction" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MathPow" XMLName="MathPowe">
+		<Element Name="MathPow" XMLName="MathPowe" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="Division" XMLName="Division">
+		<Element Name="Division" XMLName="Division" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MathMax" XMLName="MathMax">
+		<Element Name="MathMax" XMLName="MathMax" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MathMin" XMLName="MathMin">
+		<Element Name="MathMin" XMLName="MathMin" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="AbsoluteValue" XMLName="AbsoluteValue">
+		<Element Name="AbsoluteValue" XMLName="AbsoluteValue" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MathSqrt" XMLName="MathSqrt">
+		<Element Name="MathSqrt" XMLName="MathSqrt" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MathCeiling" XMLName="MathCeiling">
+		<Element Name="MathCeiling" XMLName="MathCeiling" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MathFloor" XMLName="MathFloor">
+		<Element Name="MathFloor" XMLName="MathFloor" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MathRound" XMLName="MathRound">
+		<Element Name="MathRound" XMLName="MathRound" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MathTruncate" XMLName="MathTruncate">
+		<Element Name="MathTruncate" XMLName="MathTruncate" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MatchCos" XMLName="MathCos">
+		<Element Name="MatchCos" XMLName="MathCos" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MathSin" XMLName="MathSin">
+		<Element Name="MathSin" XMLName="MathSin" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="MathTan" XMLName="MathTan">
+		<Element Name="MathTan" XMLName="MathTan" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="Addition" XMLName="Addition">
+		<Element Name="Addition" XMLName="Addition" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="-1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="Multiplication" XMLName="Multiplication">
+		<Element Name="Multiplication" XMLName="Multiplication" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="-1">
 				NumberExpression
 			</ContentBlock>
 		</Element>
 		<Element Name="GetPrimarySource"  XMLName="GetPrimarySource"/>
-		<Element Name="GetSourceColumn"  XMLName="GetSourceColumn">
+		<Element Name="GetSourceColumn"  XMLName="GetSourceColumn" NamespacePrefix="op">
 			<Attribute Name="EntityProperty" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
 		</Element>
-		<Element Name="GetSourceTable"  XMLName="GetSourceTable">
+		<Element Name="GetSourceTable"  XMLName="GetSourceTable" NamespacePrefix="op">
 			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
 		</Element>
 		<Element Name="GetSourceValue" XMLName="GetValue">
@@ -263,25 +263,25 @@
 		<Element Name="GetEntityValue" XMLName="GetValue">
 			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
 		</Element>
-		<Element Name="Condition" XMLName="Condition">
+		<Element Name="Condition" XMLName="Condition" NamespacePrefix="op">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				BooleanOperator
 			</ContentBlock>
 		</Element>
-		<Element Name="AndConditions" XMLName="AndConditions">
+		<Element Name="AndConditions" XMLName="AndConditions" NamespacePrefix="op">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="2" MaxSize="-1">
 				BooleanOperator,AndConditions,OrConditions
 			</ContentBlock>
 		</Element>
-		<Element Name="OrConditions" XMLName="OrConditions">
+		<Element Name="OrConditions" XMLName="OrConditions" NamespacePrefix="op">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="2" MaxSize="-1">
 				BooleanOperator,AndConditions,OrConditions
 			</ContentBlock>
 		</Element>
-		<Element Name="If" XMLName="If">
+		<Element Name="If" XMLName="If" NamespacePrefix="cs">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Conditions
 			</ContentBlock>
@@ -289,7 +289,7 @@
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="ElseIf" XMLName="ElseIf">
+		<Element Name="ElseIf" XMLName="ElseIf" NamespacePrefix="cs">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Conditions
 			</ContentBlock>
@@ -297,7 +297,7 @@
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="Else" XMLName="Else">
+		<Element Name="Else" XMLName="Else" NamespacePrefix="cs">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
@@ -313,7 +313,7 @@
 				Else
 			</ContentBlock>
 		</Element>
-		<Element Name="SwitchCase" XMLName="SwitchCase">
+		<Element Name="SwitchCase" XMLName="SwitchCase" NamespacePrefix="cs">
 			<ContentBlock MinSize="1" MaxSize="1">
 				InputParameter
 			</ContentBlock>
@@ -324,59 +324,59 @@
 				Default
 			</ContentBlock>
 		</Element>
-		<Element Name="InputParameter" XMLName="InputParameter">
+		<Element Name="InputParameter" XMLName="InputParameter" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="Case" XMLName="Case">
+		<Element Name="Case" XMLName="Case" NamespacePrefix="op">
 			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="Default" XMLName="Default">
+		<Element Name="Default" XMLName="Default" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="IsNull" XMLName="IsNull">
+		<Element Name="IsNull" XMLName="IsNull" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="IsNumber" XMLName="IsNumber">
+		<Element Name="IsNumber" XMLName="IsNumber" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="IsNotNull" XMLName="IsNotNull">
+		<Element Name="IsNotNull" XMLName="IsNotNull" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringContains" XMLName="StringContains">
+		<Element Name="StringContains" XMLName="StringContains" NamespacePrefix="op">
 			<Attribute Name="Value" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringEndsWith" XMLName="StringEndsWith">
+		<Element Name="StringEndsWith" XMLName="StringEndsWith" NamespacePrefix="op">
 			<Attribute Name="Value" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringStartsWith" XMLName="StringStartsWith">
+		<Element Name="StringStartsWith" XMLName="StringStartsWith" NamespacePrefix="op">
 			<Attribute Name="Value" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="IsInConcreteModel" XMLName="IsInConcreteModel">
+		<Element Name="IsInConcreteModel" XMLName="IsInConcreteModel" NamespacePrefix="op">
 			<Attribute Name="CIMClassName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
@@ -386,73 +386,73 @@
 		<Element Name="ContainsProperty" XMLName="ContainsProperty">
 			<Attribute Name="PropertyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 		</Element>
-		<Element Name="StringIsNullOrEmpty" XMLName="StringNullOrEmpty">
+		<Element Name="StringIsNullOrEmpty" XMLName="StringIsNullOrEmpty" NamespacePrefix="op">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="StringIsNullOrWhiteSpace" XMLName="StringNullOrWhiteSpace">
+		<Element Name="StringIsNullOrWhiteSpace" XMLName="StringIsNullOrWhiteSpace" NamespacePrefix="op">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="AreEqual" XMLName="AreEqual">
+		<Element Name="AreEqual" XMLName="AreEqual" NamespacePrefix="op">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="2" MaxSize="-1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="IsSourceElement" XMLName="IsSourceElement">
+		<Element Name="IsSourceElement" XMLName="IsSourceElement" NamespacePrefix="op">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="IsFalse" XMLName="IsFalse">
+		<Element Name="IsFalse" XMLName="IsFalse" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression,Function,BooleanOperator
 			</ContentBlock>
 		</Element>
-		<Element Name="IsTrue" XMLName="IsTrue">
+		<Element Name="IsTrue" XMLName="IsTrue" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression,Function,BooleanOperator
 			</ContentBlock>
 		</Element>
-		<Element Name="GreaterThan" XMLName="GreaterThan">
+		<Element Name="GreaterThan" XMLName="GreaterThan" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="GreaterThanOrEqual" XMLName="GreaterThanOrEqual">
+		<Element Name="GreaterThanOrEqual" XMLName="GreaterThanOrEqual" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="LessThan" XMLName="LessThan">
+		<Element Name="LessThan" XMLName="LessThan" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="LessThanOrEqual" XMLName="LessThanOrEqual">
+		<Element Name="LessThanOrEqual" XMLName="LessThanOrEqual" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
 				NumberExpression
 			</ContentBlock>
 		</Element>
-		<Element Name="Log" XMLName="Log">
+		<Element Name="Log" XMLName="Log" NamespacePrefix="op">
 			<Attribute Name="LogLevel" IsRequired="false" ValueType="STRING" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="Report" XMLName="Report">
+		<Element Name="Report" XMLName="Report" NamespacePrefix="op">
 			<Attribute Name="ErrorCode" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 			<ContentBlock MinSize="0" MaxSize="1">
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="ProjectCustomOperator" XMLName="ProjectCustomOperator">
+		<Element Name="ProjectCustomOperator" XMLName="ProjectCustomOperator" NamespacePrefix="op">
 			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">

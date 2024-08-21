@@ -68,10 +68,10 @@ namespace XMLCodeGenerator.Model.Elements
         }
         public static ElementModel GetElementModelByXMLElement(XmlElement xmlElement)
         {
-            if (xmlElement.Name.Equals("Function"))
-                if (!xmlElement.ParentNode.Name.Equals("FunctionDefinitions"))
+            if (xmlElement.LocalName.Equals("Function"))
+                if (!xmlElement.ParentNode.LocalName.Equals("FunctionDefinitions"))
                     return GetFunctionModelByName(xmlElement.GetAttribute("Name"));
-            var list = ElementModels.Where(x => x.XMLName.Equals(xmlElement.Name)).ToList();
+            var list = ElementModels.Where(x => x.XMLName.Equals(xmlElement.LocalName)).ToList();
             if (list.Count == 1)
                 return list[0];
             var list2 = list.Where(x => x.ContentBlocks.Count > 0 ? xmlElement.ChildNodes.Count > 0 : xmlElement.ChildNodes.Count == 0).ToList();

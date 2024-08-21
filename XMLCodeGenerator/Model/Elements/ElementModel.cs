@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Xceed.Wpf.Toolkit;
 
 namespace XMLCodeGenerator.Model.Elements
 {
@@ -13,6 +14,7 @@ namespace XMLCodeGenerator.Model.Elements
         public string XMLName { get; set; }
         public List<ContentBlockModel> ContentBlocks { get; set; }
         public List<AttributeModel> Attributes { get; set; }
+        public string NamespacePrefix { get; set; } = null;
         protected ElementModel() { }
         public ElementModel(XmlNode node)
         {
@@ -20,7 +22,7 @@ namespace XMLCodeGenerator.Model.Elements
             Attributes = new();
             Name = node.Attributes["Name"]?.InnerText;
             XMLName = node.Attributes["XMLName"]?.InnerText;
-
+            NamespacePrefix = node.Attributes["NamespacePrefix"]?.InnerText;
             foreach (XmlNode attributeNode in node.SelectNodes("Attribute"))
                 Attributes.Add(new AttributeModel(attributeNode));
 
@@ -32,6 +34,26 @@ namespace XMLCodeGenerator.Model.Elements
             if (model is FunctionModel functionModel)
                 return ContentBlocks.Where(x => x.ElementModels.Contains(ElementModelProvider.GetElementModelByName("Function"))).ToList().FirstOrDefault();
             return ContentBlocks.Where(x => x.ElementModels.Contains(model)).ToList().FirstOrDefault();
+        }
+        public static string IncreaseNamespaceLevel(string ns)
+        {
+            string newns = "";
+            int i = 0;
+            while (i < ns.Length)
+            {
+                if (!Char.IsDigit(ns[i]))
+                    newns += ns[i];
+                else break;
+                i++;
+            }
+            if(i== ns.Length)
+                newns += "1";
+            else
+            {
+                int number= int.Parse(ns.Substring(i)) + 1;
+                newns+= number.ToString();
+            }
+            return newns;
         }
         public void SetContent(Dictionary<string, List<ElementModel>> elementTypes)
         {

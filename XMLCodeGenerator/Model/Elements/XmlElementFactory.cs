@@ -9,7 +9,8 @@ namespace XMLCodeGenerator.Model.Elements
 {
     public static class XmlElementFactory
     {
-        public static XmlElement GetXmlElement(Element element, XmlDocument doc = null)
+        public static Dictionary<string, string> Namespaces = new();
+        public static XmlElement GetXmlElement(Element element, XmlDocument doc = null, XmlNode parentXmlElement = null, string parentName = null)
         {
             if (element.Model.XMLName.Equals("val"))
                 return null;
@@ -19,13 +20,31 @@ namespace XMLCodeGenerator.Model.Elements
                 if (element.Model.XMLName.Length == 0)
                     return null;
             }
-            XmlElement node = doc.CreateElement(element.Model.XMLName);
+            string prefix ="";
+            if (parentXmlElement != null)
+            {
+                prefix = ElementModelProvider.GetElementModelByName(parentName).NamespacePrefix;
+                if (prefix != null && prefix.Length > 0)
+                {
+                    if (parentXmlElement.Prefix.StartsWith(prefix))
+                        prefix = ElementModel.IncreaseNamespaceLevel(parentXmlElement.Prefix);
+                    if (!Namespaces.ContainsKey(prefix))
+                        Namespaces.Add(prefix, "http://example.com/" + prefix);
+                }
+            }
+            XmlElement node = null;
+            if (prefix== null)
+                node = doc.CreateElement(element.Model.XMLName);
+            else if (Namespaces.ContainsKey(prefix) && prefix.Length > 0) 
+                node = doc.CreateElement(prefix, element.Model.XMLName, Namespaces[prefix]);
+            else
+                node = doc.CreateElement(element.Model.XMLName);
             foreach (var attr in element.Model.Attributes)
                 node.SetAttribute(attr.Name, element.AttributeValues[element.Model.Attributes.IndexOf(attr)]);
-            appendChildNodes(element, doc, node);
+            appendChildNodes(element, doc, node, element.Model.Name);
             return node;
         }
-        private static void appendChildNodes(Element element, XmlDocument doc, XmlNode node)
+        private static void appendChildNodes(Element element, XmlDocument doc, XmlNode node, string parentName)
         {
             if (element.ChildElements.Count == 1)
             {
@@ -38,9 +57,9 @@ namespace XMLCodeGenerator.Model.Elements
             foreach (var child in element.ChildElements)
             {
                 if (child.Model.XMLName.Length > 0)
-                    node.AppendChild(GetXmlElement(child, doc));
+                    node.AppendChild(GetXmlElement(child, doc, node, parentName));
                 else
-                    appendChildNodes(child, doc, node);
+                    appendChildNodes(child, doc, node, element.Model.Name);
             }
         }
         public static Element GetElement(XmlElement xmlElement, ContentBlockModel parentBlock = null)

@@ -187,6 +187,7 @@ namespace XMLCodeGenerator.ViewModel
         public void AddNewChildElement(ElementModel model)
         {
             List<ElementModel> list;
+            string ns = Element.Model.NamespacePrefix;
             Element newElement = new Element(model, Element.Model.GetSuitableContentBlockForChildModel(model));
             for (int i = 0; i < Element.ChildElements.Count; i++)
             {

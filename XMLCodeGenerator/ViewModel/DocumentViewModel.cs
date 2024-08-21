@@ -124,6 +124,8 @@ namespace XMLCodeGenerator.ViewModel
             rootElement.AppendChild(XmlElementFactory.GetXmlElement(FunctionDefinitions.Element, xmlDoc));
             rootElement.AppendChild(XmlElementFactory.GetXmlElement(CimClasses.Element, xmlDoc));
             xmlDoc.AppendChild(rootElement);
+            foreach (var ns in XmlElementFactory.Namespaces.Keys)
+                xmlDoc.DocumentElement.SetAttribute("xmlns:" + ns, XmlElementFactory.Namespaces[ns]);
             HasUnsavedChanges = false;
             return xmlDoc;
         }
