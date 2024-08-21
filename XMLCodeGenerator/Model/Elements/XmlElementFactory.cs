@@ -48,8 +48,11 @@ namespace XMLCodeGenerator.Model.Elements
             Element element = new Element();
             element.Model = ElementModelProvider.GetElementModelByXMLElement(xmlElement);
             element.ParentContentBlock = parentBlock;
+            foreach(var attrmodel in element.Model.Attributes)
+                element.AttributeValues.Add(attrmodel.DefaultValue);
             foreach (XmlAttribute attr in xmlElement.Attributes)
-                element.AttributeValues.Add(attr.Value);
+                element.AttributeValues[element.Model.Attributes.IndexOf(element.Model.Attributes.FirstOrDefault(a=>a.Name.Equals(attr.Name)))] = attr.Value;
+
             addChildren(xmlElement, element);
             return element;
         }

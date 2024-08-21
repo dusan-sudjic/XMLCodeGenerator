@@ -24,7 +24,7 @@ namespace XMLCodeGenerator.Model.Elements
             var editableText = node.Attributes["Editable"]?.InnerText;
             switch (ValueType)
             {
-                case ValueType.STRING: { DefaultValue = "null"; break; }
+                case ValueType.STRING: { DefaultValue = ""; break; }
                 case ValueType.INTEGER: { DefaultValue = "0"; break; }
                 case ValueType.BOOLEAN: { DefaultValue = "false"; break; }
                 default: {DefaultValue = "unexpected value"; break;}
