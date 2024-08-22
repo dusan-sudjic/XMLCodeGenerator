@@ -2,7 +2,7 @@
 <Model>
 	<Types>
 		<Type Name="Element">
-			CimProperty,Report,Log,Constant,SetDefault,Function,GetSourceValue,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,IfBlock,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,IsNull,IsNumber,IsNotNull,StringContains,StringEndsWith,StringStartsWith,IsInConcreteModel,ContainsProperty,StringIsNullOrEmpty,StringIsNullOrWhiteSpace,AreEqual,IsSourceElement,IsFalse,IsTrue,GreaterThan,GreaterThanOrEqual,LessThan,LessThanOrEqual,Condition,AndConditions,OrConditions,ProjectCustomOperator
+			CimProperty,CimRelationship,Report,Log,Constant,SetDefault,Function,GetSourceValue,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,IfBlock,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,IsNull,IsNumber,IsNotNull,StringContains,StringEndsWith,StringStartsWith,IsInConcreteModel,ContainsProperty,StringIsNullOrEmpty,StringIsNullOrWhiteSpace,AreEqual,IsSourceElement,IsFalse,IsTrue,GreaterThan,GreaterThanOrEqual,LessThan,LessThanOrEqual,Condition,AndConditions,OrConditions,ProjectCustomOperator
 		</Type>
 		<Type Name="Expression">
 			Constant,Log,Report,SetDefault,GetSourceValue,Function,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,IfBlock,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,ProjectCustomOperator
@@ -72,7 +72,7 @@
 			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE_CLASS"/>
 			<Attribute Name="source" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
 			<ContentBlock MinSize="0" MaxSize="-1">
-				CimProperty,Function
+				CimProperty,CimRelationship,Function
 			</ContentBlock>
 		</Element>
 		<Element Name="FunctionDefinition" XMLName="Function" NamespacePrefix="fn">
@@ -85,6 +85,13 @@
 			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Editable="false" Input="USER_INPUT"/>
 		</Element>
 		<Element Name="CimProperty" XMLName="CimProperty" NamespacePrefix="cp">
+			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE_PROPERTY"/>
+			<Attribute Name="mandatory" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
+			<ContentBlock MinSize="1" MaxSize="1">
+				Expression
+			</ContentBlock>
+		</Element>
+		<Element Name="CimRelationship" XMLName="CimRelationship" NamespacePrefix="cr">
 			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE_PROPERTY"/>
 			<Attribute Name="mandatory" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
 			<ContentBlock MinSize="1" MaxSize="1">

@@ -134,7 +134,7 @@ namespace XMLCodeGenerator.ViewModel
         {
             get
             {
-                if (Element.Model.Name.Equals("CimClass") || Element.Model.Name.Equals("CimProperty") 
+                if (Element.Model.Name.Equals("CimClass") || Element.Model.Name.Equals("CimProperty") || Element.Model.Name.Equals("CimRelationship")
                     || Element.Model.Name.Equals("FunctionDefinition") || Element.Model.Name.Equals("PreProcessProcedure") || Element.Model.Name.Equals("RewritingProcedure"))
                     return "[" + Attributes[0].Value + "]";
                 if (Element.Model is FunctionModel functionModel)
