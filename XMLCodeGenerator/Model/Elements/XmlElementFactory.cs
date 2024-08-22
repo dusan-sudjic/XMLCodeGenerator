@@ -20,7 +20,29 @@ namespace XMLCodeGenerator.Model.Elements
                 if (element.Model.XMLName.Length == 0)
                     return null;
             }
-            string prefix ="";
+            string prefix = FindNamespacePrefix(parentXmlElement, parentName);
+            XmlElement node = CreateNode(element, doc, prefix);
+            foreach (var attr in element.Model.Attributes)
+                node.SetAttribute(attr.Name, element.AttributeValues[element.Model.Attributes.IndexOf(attr)]);
+            appendChildNodes(element, doc, node, element.Model.Name);
+            return node;
+        }
+
+        private static XmlElement CreateNode(Element element, XmlDocument doc, string prefix)
+        {
+            XmlElement node = null;
+            if (prefix == null)
+                node = doc.CreateElement(element.Model.XMLName);
+            else if (Namespaces.ContainsKey(prefix) && prefix.Length > 0)
+                node = doc.CreateElement(prefix, element.Model.XMLName, Namespaces[prefix]);
+            else
+                node = doc.CreateElement(element.Model.XMLName);
+            return node;
+        }
+
+        private static string FindNamespacePrefix(XmlNode parentXmlElement, string parentName)
+        {
+            string prefix = null;
             if (parentXmlElement != null)
             {
                 prefix = ElementModelProvider.GetElementModelByName(parentName).NamespacePrefix;
@@ -32,18 +54,9 @@ namespace XMLCodeGenerator.Model.Elements
                         Namespaces.Add(prefix, "http://example.com/" + prefix);
                 }
             }
-            XmlElement node = null;
-            if (prefix== null)
-                node = doc.CreateElement(element.Model.XMLName);
-            else if (Namespaces.ContainsKey(prefix) && prefix.Length > 0) 
-                node = doc.CreateElement(prefix, element.Model.XMLName, Namespaces[prefix]);
-            else
-                node = doc.CreateElement(element.Model.XMLName);
-            foreach (var attr in element.Model.Attributes)
-                node.SetAttribute(attr.Name, element.AttributeValues[element.Model.Attributes.IndexOf(attr)]);
-            appendChildNodes(element, doc, node, element.Model.Name);
-            return node;
+            return prefix;
         }
+
         private static void appendChildNodes(Element element, XmlDocument doc, XmlNode node, string parentName)
         {
             if (element.ChildElements.Count == 1)
