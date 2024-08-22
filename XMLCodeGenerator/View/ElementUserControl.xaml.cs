@@ -87,7 +87,14 @@ namespace XMLCodeGenerator.View
         private void DeleteElement_Click(object sender, RoutedEventArgs e)
         {
             if (Element.Element.Model.Name.Equals("FunctionDefinition"))
+            {
+                if (!Element.FunctionCalls.Split("c")[0].Trim().Equals("0"))
+                {
+                    MessageBox.Show("This function cant be deleted because its still used in document.");
+                    return;
+                }
                 MainWindow.RemoveFunctionDefinition(Element);
+            }
             else
             {
                 if (Element.IsRemovable)

@@ -154,8 +154,8 @@ namespace XMLCodeGenerator.ViewModel
             {
                 if (Element.Model.Name.Equals("FunctionDefinition"))
                 {
-                    string calls = ElementModelProvider.GetFunctionModelByName(Attributes[0].Value).CallsCounter.ToString();
-                    return "  " + calls + (calls[calls.Length - 1]=='1'?" call":" calls");
+                    int calls = ElementModelProvider.GetFunctionModelByName(Attributes[0].Value).CallsCounter;
+                    return "  " + calls.ToString() + (calls==1 ?" call":" calls");
                 }
                 else return "";
             }
@@ -198,6 +198,7 @@ namespace XMLCodeGenerator.ViewModel
             if (Element.Model is FunctionModel fun)
             {
                 ElementModelProvider.AddFunctionCall(fun.FunctionName);
+                MainWindow.UpdateFunctionCallsCounter(fun.FunctionName);
             }
         }
         public void SetReplacable()
@@ -243,6 +244,7 @@ namespace XMLCodeGenerator.ViewModel
             if (this.Element.Model is FunctionModel)
             {
                 ElementModelProvider.DeleteFunctionCall((Element.Model as FunctionModel).FunctionName);
+                MainWindow.UpdateFunctionCallsCounter(Element.AttributeValues[0]);
             }
             Parent.ChildViewModels.Remove(this);
             Parent.Element.ChildElements.Remove(this.Element);
@@ -256,6 +258,7 @@ namespace XMLCodeGenerator.ViewModel
             if(this.Element.Model is FunctionModel) 
             {
                 ElementModelProvider.DeleteFunctionCall((Element.Model as FunctionModel).FunctionName);
+                MainWindow.UpdateFunctionCallsCounter(Element.AttributeValues[0]);
             }
             int index = Parent.ChildViewModels.IndexOf(this);
             Element newElement = new Element(newElementModel, Element.ParentContentBlock);

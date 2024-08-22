@@ -176,6 +176,8 @@ namespace XMLCodeGenerator.ViewModel
             ElementModelProvider.RenameFunction(oldName, newName);
             foreach (var c in CimClasses.ChildViewModels)
                 c.RenameFunction(oldName, newName);
+            foreach(var f in FunctionDefinitions.ChildViewModels)
+                f.RenameFunction(oldName, newName);
         }
         public void RemoveFunctionDefinition(ElementViewModel functionDefinition)
         {

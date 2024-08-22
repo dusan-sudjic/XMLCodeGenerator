@@ -68,13 +68,11 @@ namespace XMLCodeGenerator.Model.Elements
         {
             FunctionModel fm = FunctionModels[functionName];
             fm.CallsCounter++;
-            MainWindow.UpdateFunctionCallsCounter(functionName);
         }
         public static void DeleteFunctionCall(string functionName)
         {
             FunctionModel fm = FunctionModels[functionName];
             fm.CallsCounter--;
-            MainWindow.UpdateFunctionCallsCounter(functionName);
         }
         public static ElementModel GetElementModelByName(string name)
         {
