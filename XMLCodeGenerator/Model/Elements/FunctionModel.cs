@@ -9,9 +9,11 @@ namespace XMLCodeGenerator.Model.Elements
     public class FunctionModel : ElementModel
     {
         public string FunctionName { get; private set; }
+        public int CallsCounter { get; set; }
         public FunctionModel(string functionName) : base()
         {
             FunctionName = functionName;
+            CallsCounter = 0;
             Name = "FunctionCall";
             XMLName = "Function";
             ContentBlocks = new();

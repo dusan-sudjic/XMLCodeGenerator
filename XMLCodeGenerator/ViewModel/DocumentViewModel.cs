@@ -135,6 +135,11 @@ namespace XMLCodeGenerator.ViewModel
             CimClasses.AddNewChildElement(ElementModelProvider.GetElementModelByName("CimClass"));
             UpdateMovable(CimClasses);
         }
+        public void UpdateFunctionCallsCounte(string functionName)
+        {
+            ElementViewModel vm = FunctionDefinitions.ChildViewModels.FirstOrDefault(c => c.Attributes[0].Value.Equals(functionName));
+            vm.OnPropertyChanged("FunctionCalls");
+        }
         public void AddPreprocessProcedure()
         {
             PreProcessProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("PreProcessProcedure"));

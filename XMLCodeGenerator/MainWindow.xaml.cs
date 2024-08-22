@@ -83,6 +83,10 @@ namespace XMLCodeGenerator
         {
             xmlPreviewControl.XmlElements = new List<XmlElement> { XmlElementFactory.GetXmlElement(element.Element) };
         }
+        public static void UpdateFunctionCallsCounter(string functionName)
+        {
+            Document.UpdateFunctionCallsCounte(functionName);
+        }
         private void AddNewCimFunction()
         {
             CreateNewFunctionWindow window = new CreateNewFunctionWindow();

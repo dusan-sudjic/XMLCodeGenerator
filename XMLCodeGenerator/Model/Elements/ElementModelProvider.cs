@@ -59,8 +59,22 @@ namespace XMLCodeGenerator.Model.Elements
         }
         public static void RenameFunction(string functionName, string newName)
         {
+            int calls = FunctionModels[functionName].CallsCounter;
             FunctionModels.Remove(functionName);
             FunctionModels.Add(newName, new FunctionModel(newName));
+            FunctionModels[newName].CallsCounter = calls;
+        }
+        public static void AddFunctionCall(string functionName)
+        {
+            FunctionModel fm = FunctionModels[functionName];
+            fm.CallsCounter++;
+            MainWindow.UpdateFunctionCallsCounter(functionName);
+        }
+        public static void DeleteFunctionCall(string functionName)
+        {
+            FunctionModel fm = FunctionModels[functionName];
+            fm.CallsCounter--;
+            MainWindow.UpdateFunctionCallsCounter(functionName);
         }
         public static ElementModel GetElementModelByName(string name)
         {

@@ -147,6 +147,24 @@ namespace XMLCodeGenerator.ViewModel
                 OnPropertyChanged();
             }
         }
+        private string _functionCalls;
+        public string FunctionCalls
+        {
+            get
+            {
+                if (Element.Model.Name.Equals("FunctionDefinition"))
+                {
+                    string calls = ElementModelProvider.GetFunctionModelByName(Attributes[0].Value).CallsCounter.ToString();
+                    return "  " + calls + (calls[calls.Length - 1]=='1'?" call":" calls");
+                }
+                else return "";
+            }
+            set
+            {
+                _functionCalls = value;
+                OnPropertyChanged();
+            }
+        }
         private ObservableCollection<ElementViewModel> _childViewModels;
         public ObservableCollection<ElementViewModel> ChildViewModels
         {
@@ -177,6 +195,10 @@ namespace XMLCodeGenerator.ViewModel
             foreach (var attribute in element.Model.Attributes)
                 Attributes.Add(new AttributeViewModel(attribute, element.AttributeValues[element.Model.Attributes.IndexOf(attribute)], this));
             SetRemovableForChildren();
+            if (Element.Model is FunctionModel fun)
+            {
+                ElementModelProvider.AddFunctionCall(fun.FunctionName);
+            }
         }
         public void SetReplacable()
         {
@@ -218,6 +240,10 @@ namespace XMLCodeGenerator.ViewModel
         }
         public void DeleteElement()
         {
+            if (this.Element.Model is FunctionModel)
+            {
+                ElementModelProvider.DeleteFunctionCall((Element.Model as FunctionModel).FunctionName);
+            }
             Parent.ChildViewModels.Remove(this);
             Parent.Element.ChildElements.Remove(this.Element);
             Parent.SetRemovableForChildren();
@@ -227,6 +253,10 @@ namespace XMLCodeGenerator.ViewModel
         }
         public void ReplaceElement(ElementModel newElementModel)
         {
+            if(this.Element.Model is FunctionModel) 
+            {
+                ElementModelProvider.DeleteFunctionCall((Element.Model as FunctionModel).FunctionName);
+            }
             int index = Parent.ChildViewModels.IndexOf(this);
             Element newElement = new Element(newElementModel, Element.ParentContentBlock);
             Parent.ChildViewModels[index] = new ElementViewModel(newElement, Parent);

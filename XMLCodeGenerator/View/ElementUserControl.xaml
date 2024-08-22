@@ -100,6 +100,7 @@
                     <TextBlock Grid.Column="0" Cursor="Hand" Height="24" MouseLeftButtonDown="XMLPreview_Click" Margin="5" VerticalAlignment="Bottom" Padding="0 3 0 0">
                         <Run Text="{Binding Name}"/>
                         <Run Text="{Binding AdditionalInfo}" FontWeight="Bold" />
+                        <Run Text="{Binding FunctionCalls}" Foreground="CornflowerBlue" FontStyle="Italic"/>
                     </TextBlock>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0 0 0 0" HorizontalAlignment="Left" Height="25" x:Name="AttributesContainer" Visibility="{Binding IsUnextendableAndHasEditableAttributes, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ItemsControl x:Name="itemsControlUnextendedAttributes" ItemsSource="{Binding Attributes}">
