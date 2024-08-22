@@ -28,6 +28,8 @@ namespace XMLCodeGenerator.View
                 this.Title = "Rename function";
                 label.Content = "Enter a new name for function " + this.oldName;
             }
+            Name = oldName;
+            textBox.Text = oldName;
             textBox.Focus();
         }
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
