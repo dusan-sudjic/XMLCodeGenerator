@@ -26,13 +26,15 @@ namespace XMLCodeGenerator.View
         WatermarkTextBox searchTextBox { get; set; }
         List<ProviderElement> ProviderElements { get; set; }
         public bool MultiSelect { get; set; } = false;
-        public ProviderWindow(Model.Elements.InputType type, ElementViewModel element)
+        public AttributeViewModel Attribute { get; set; }
+        public ProviderWindow(AttributeViewModel attribute)
         {
             InitializeComponent();
             ProviderElements = new List<ProviderElement>();
             DataContext = this;
             ValuesListBox = (ListBox)this.FindName("listBox");
-            switch (type) 
+            Attribute = attribute;
+            switch (attribute.InputType) 
             {
                 case Model.Elements.InputType.CIM_PROFILE_CLASS: 
                     {
@@ -42,7 +44,7 @@ namespace XMLCodeGenerator.View
                     }
                 case Model.Elements.InputType.CIM_PROFILE_PROPERTY: 
                     {
-                        string className = element.Parent.Attributes[0].Value;
+                        string className = attribute.Element.Parent.Attributes[0].Value;
                         CimProfileClass cl = MainWindow.CimProfileClasses.Where(c => c.Name == className).FirstOrDefault();
                         if (cl == null)
                         {
@@ -65,7 +67,7 @@ namespace XMLCodeGenerator.View
                     }
                 case Model.Elements.InputType.SOURCE_PROVIDER_ATTRIBUTE: 
                     {
-                        string entityName = element.Parent.Attributes[0].Value;
+                        string entityName = attribute.Element.Parent.Attributes[0].Value;
                         SourceProviderEntity cl = MainWindow.SourceProviderEntities.Where(c => c.Name == entityName).FirstOrDefault();
                         foreach (var c in cl.Attributes)
                             ProviderElements.Add(c);
@@ -77,6 +79,29 @@ namespace XMLCodeGenerator.View
             ValuesListBox.SelectedIndex = MultiSelect ? -1 : 0;
             searchTextBox = (WatermarkTextBox)this.FindName("search");
             searchTextBox.Focus();
+            selectDefaultValues();
+        }
+        private void selectDefaultValues()
+        {
+            string[] values = MultiSelect ? Attribute.Value.Split(',') : [Attribute.Value];
+            values = values.Select(v => v.Trim()).ToArray();
+            ValuesListBox.SelectionMode= MultiSelect?SelectionMode.Multiple:SelectionMode.Single;
+            foreach(var choice in ValuesListBox.Items)
+            {
+                ProviderElement pe = choice as ProviderElement;
+                if (values.Any(v => v.Equals(pe.Name)))
+                {
+                    if (MultiSelect)
+                    {
+                        ValuesListBox.SelectedItems.Add(choice);
+                    }
+                    else
+                    {
+                        ValuesListBox.SelectedItem = choice;
+                        return;
+                    }
+                }
+            }
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
@@ -142,12 +167,14 @@ namespace XMLCodeGenerator.View
                 SelectedValue = "";
                 foreach(ProviderElement provider in ValuesListBox.SelectedItems)
                     SelectedValue = SelectedValue + provider.Name + (ValuesListBox.SelectedItems.IndexOf(provider)==ValuesListBox.SelectedItems.Count-1 ? "" : ", ");
+                Attribute.Value = SelectedValue;
                 this.DialogResult = true;
             }
             else if (ValuesListBox.SelectedItem != null)
             {
                 var provider = ValuesListBox.SelectedItem as ProviderElement;
                 SelectedValue = provider.Name;
+                Attribute.Value = SelectedValue;
                 this.DialogResult = true;
             }
             else
