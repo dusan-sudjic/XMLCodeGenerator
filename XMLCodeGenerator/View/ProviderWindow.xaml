@@ -10,11 +10,14 @@
         Title="Choose value from providers" Height="400" Width="360" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <converters:BooleanToMultiselectConverter x:Key="BooleanToMultiselectConverter"/>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </Window.Resources>
     <StackPanel>
         <Label Width="100">Search values</Label>
         <xctk:WatermarkTextBox Width="160" x:Name="search" Watermark="Search" Margin="10 0 10 10" TextChanged="TextChanged"></xctk:WatermarkTextBox>
-        <ListBox x:Name="listBox" SelectionMode="{Binding MultiSelect, Converter={StaticResource BooleanToMultiselectConverter}}" Height="240" ></ListBox>
+        <ListBox x:Name="listBox" SelectionMode="{Binding MultiSelect, Converter={StaticResource BooleanToMultiselectConverter}}" Visibility="{Binding Tabs, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Height="240" ></ListBox>
+        <TabControl x:Name="TabControl" Visibility="{Binding Tabs, Converter={StaticResource BooleanToVisibilityConverter}}" Height="240"></TabControl>
         <Button Content="Select" Click="OKButton_Click" Margin="10" Width="100"/>
     </StackPanel>
 </Window>

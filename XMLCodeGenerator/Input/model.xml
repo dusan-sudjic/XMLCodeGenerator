@@ -265,10 +265,10 @@
 			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
 		</Element>
 		<Element Name="GetSourceValue" XMLName="GetValue">
-			<Attribute Name="SourceName" IsRequired="true" ValueType="STRING" Input="CIM_PROFILE_CLASS"/>
+			<Attribute Name="SourceName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ATTRIBUTE"/>
 		</Element>
 		<Element Name="GetEntityValue" XMLName="GetValue">
-			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ENTITY"/>
+			<Attribute Name="EntityName" IsRequired="true" ValueType="STRING" Input="SOURCE_PROVIDER_ATTRIBUTE"/>
 		</Element>
 		<Element Name="Condition" XMLName="Condition" NamespacePrefix="op">
 			<Attribute Name="InverseLogic" IsRequired="false" ValueType="BOOLEAN" Input="USER_INPUT"/>
