@@ -208,7 +208,8 @@ namespace XMLCodeGenerator
                     Assembly assembly = Assembly.LoadFrom(filePath);
                     Type[] types = assembly.GetTypes();
                     foreach (Type type in types)
-                        CimProfileClasses.Add(new CimProfileClass(type));
+                        if(!type.IsAbstract)
+                            CimProfileClasses.Add(new CimProfileClass(type));
                     IsCimProfileImported = true;
                 }
                 catch (Exception ex)
