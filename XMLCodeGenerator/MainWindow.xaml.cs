@@ -195,7 +195,7 @@ namespace XMLCodeGenerator
         }
         public void ImportCimProfile(object sender, RoutedEventArgs e)
         {
-            CimProfileClasses.Clear();
+            CimProfileClasses.Clear();   
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "DLL Files (*.dll)|*.dll";
 

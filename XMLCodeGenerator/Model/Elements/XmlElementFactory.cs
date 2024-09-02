@@ -29,14 +29,12 @@ namespace XMLCodeGenerator.Model.Elements
         }
 
         private static XmlElement CreateNode(Element element, XmlDocument doc, string prefix)
-        {
+        {//refaktorisi
             XmlElement node = null;
-            if (prefix == null)
+            if (String.IsNullOrEmpty(prefix))
                 node = doc.CreateElement(element.Model.XMLName);
-            else if (Namespaces.ContainsKey(prefix) && prefix.Length > 0)
-                node = doc.CreateElement(prefix, element.Model.XMLName, Namespaces[prefix]);
             else
-                node = doc.CreateElement(element.Model.XMLName);
+                node = doc.CreateElement(prefix, element.Model.XMLName, Namespaces[prefix]);
             return node;
         }
 
