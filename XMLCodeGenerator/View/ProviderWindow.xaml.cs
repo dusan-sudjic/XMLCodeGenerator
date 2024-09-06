@@ -23,43 +23,41 @@ namespace XMLCodeGenerator.View
 {
     public partial class ProviderWindow : Window, INotifyPropertyChanged
     {
-        private bool tabs;
-        public bool Tabs
-        {
-            get => tabs;
+        public List<ProviderElement> ProviderElements { get; set; }
+        public ObservableCollection<SourceProviderEntity> Entities { get; set; }
+        private bool _multiSelect;
+        public bool MultiSelect { 
+            get => _multiSelect;
             set
             {
-                if (value != tabs)
+                if(value!=_multiSelect)
                 {
-                    tabs = value;
+                    _multiSelect = value;
                     OnPropertyChanged();
                 }
             }
         }
-        public ListBox ValuesListBox { get; set; }
-        WatermarkTextBox searchTextBox { get; set; }
-        List<ProviderElement> ProviderElements { get; set; }
-        public bool MultiSelect { get; set; } = false;
         public AttributeViewModel Attribute { get; set; }
+        public SourceProviderEntity SelectedEntity { get; set; }
+        public bool ChoosingAttribute { get; set; }
         public ProviderWindow(AttributeViewModel attribute)
         {
             InitializeComponent();
-            ProviderElements = new List<ProviderElement>();
             DataContext = this;
-            ValuesListBox = (ListBox)this.FindName("listBox");
+            ProviderElements = new();
+            ChoosingAttribute = false;
             Attribute = attribute;
+            search.Focus();
+            MultiSelect = false;
             switch (attribute.InputType) 
             {
                 case Model.Elements.InputType.CIM_PROFILE_CLASS: 
                     {
-                        Tabs = false;
-                        foreach (var c in MainWindow.CimProfileClasses)
-                            ProviderElements.Add(c);
+                        ProviderElements.AddRange(MainWindow.CimProfileClasses);
                         break; 
                     }
                 case Model.Elements.InputType.CIM_PROFILE_PROPERTY: 
                     {
-                        Tabs = false;
                         string className = attribute.Element.Parent.Attributes[0].Value;
                         CimProfileClass cl = MainWindow.CimProfileClasses.Where(c => c.Name == className).FirstOrDefault();
                         if (cl == null)
@@ -70,69 +68,52 @@ namespace XMLCodeGenerator.View
                                         ProviderElements.Add(p);
                             break;
                         }
-                        foreach (var c in cl.Properties)
-                            ProviderElements.Add(c);
+                        ProviderElements.AddRange(cl.Properties);
                         break; 
                     }
                 case Model.Elements.InputType.SOURCE_PROVIDER_ENTITY: 
                     {
-                        Tabs = false;
                         MultiSelect = true;
-                        foreach (var c in MainWindow.SourceProviderEntities)
-                            ProviderElements.Add(c);
+                        ProviderElements.AddRange(MainWindow.SourceProviderEntities);
                         break; 
                     }
                 case Model.Elements.InputType.SOURCE_PROVIDER_ATTRIBUTE: 
                     {
-                        Tabs = true;
+                        ChoosingAttribute = true;
+                        Entities = new();
                         string[] values = FindValuesFromCimClass(attribute.Element);
                         List<SourceProviderEntity> entities;
                         if (values != null)
                             entities = MainWindow.SourceProviderEntities.Where(c => values.Any(v => v.Equals(c.Name))).ToList();
                         else
                             entities = MainWindow.SourceProviderEntities;
-                        TabControl tabControl = (TabControl)this.FindName("TabControl");
                         foreach(var e in entities)
-                        {
-                            ListBox lb = new ListBox();
-                            lb.ItemsSource = e.Attributes;
-                            TabItem item = new TabItem
-                            {
-                                Header = e.Name,
-                                Content = lb
-                            };
-                            tabControl.Items.Add(item);
-                        }
+                            Entities.Add(e);
+                        EntitiesComboBox.Focus();
                         break; 
                     }
                 default: break;
             }
-            if (!Tabs)
-            {
-                ValuesListBox.ItemsSource = ProviderElements;
-                ValuesListBox.SelectedIndex = MultiSelect ? -1 : 0;
-                selectDefaultValues();
-            }
-            searchTextBox = (WatermarkTextBox)this.FindName("search");
-            searchTextBox.Focus();
+            listBox.ItemsSource = ProviderElements;
+            listBox.SelectedIndex = MultiSelect ? -1 : 0;
+            listBox.SelectionMode = MultiSelect ? SelectionMode.Multiple : SelectionMode.Single;
+            selectDefaultValues();
         }
         private void selectDefaultValues()
         {
-            string[] values = MultiSelect ? Attribute.Value.Split(',') : [Attribute.Value];
-            values = values.Select(v => v.Trim()).ToArray();
-            ValuesListBox.SelectionMode= MultiSelect?SelectionMode.Multiple:SelectionMode.Single;
-            foreach(var choice in ValuesListBox.Items)
+            string[] values = MultiSelect ? Attribute.Value.Split(',').Select(v=> v.Trim()).ToArray() : [Attribute.Value];
+            foreach(var choice in listBox.Items)
             {
                 ProviderElement pe = choice as ProviderElement;
                 if (values.Any(v => v.Equals(pe.Name)))
                 {
                     if (MultiSelect)
                     {
-                        ValuesListBox.SelectedItems.Add(choice);
+                        listBox.SelectedItems.Add(choice);
                     }
                     else
                     {
-                        ValuesListBox.SelectedItem = choice;
+                        listBox.SelectedItem = choice;
                         return;
                     }
                 }
@@ -159,31 +140,31 @@ namespace XMLCodeGenerator.View
 
         private void OnDownArrowPressed()
         {
-            if (ValuesListBox.SelectedIndex == -1)
+            if (listBox.SelectedIndex == -1)
             {
-                ValuesListBox.SelectedIndex = 0;
+                listBox.SelectedIndex = 0;
                 return;
             }
-            if (ValuesListBox.SelectedIndex == ValuesListBox.Items.Count - 1)
+            if (listBox.SelectedIndex == listBox.Items.Count - 1)
             {
-                ValuesListBox.SelectedIndex = 0;
+                listBox.SelectedIndex = 0;
                 return;
             }
-            ValuesListBox.SelectedIndex++;
+            listBox.SelectedIndex++;
         }
         private void OnUpArrowPressed()
         {
-            if (ValuesListBox.SelectedIndex == -1)
+            if (listBox.SelectedIndex == -1)
             {
-                ValuesListBox.SelectedIndex = ValuesListBox.Items.Count - 1;
+                listBox.SelectedIndex = listBox.Items.Count - 1;
                 return;
             }
-            if (ValuesListBox.SelectedIndex == 0)
+            if (listBox.SelectedIndex == 0)
             {
-                ValuesListBox.SelectedIndex = ValuesListBox.Items.Count - 1;
+                listBox.SelectedIndex = listBox.Items.Count - 1;
                 return;
             }
-            ValuesListBox.SelectedIndex--;
+            listBox.SelectedIndex--;
         }
         public void OKButton_Click(object sender, RoutedEventArgs e)
         {
@@ -192,57 +173,41 @@ namespace XMLCodeGenerator.View
 
         private void Select()
         {
-            if (!Tabs)
+            if (MultiSelect)
             {
-                if (MultiSelect)
+                if (listBox.SelectedItems.Count == 0)
                 {
-                    if (ValuesListBox.SelectedItems.Count == 0)
-                    {
-                        System.Windows.MessageBox.Show("Please select values.");
-                        return;
-                    }
-                    string selectedValue = "";
-                    foreach (ProviderElement provider in ValuesListBox.SelectedItems)
-                        selectedValue = selectedValue + provider.Name + (ValuesListBox.SelectedItems.IndexOf(provider) == ValuesListBox.SelectedItems.Count - 1 ? "" : ", ");
-                    Attribute.Value = selectedValue;
-                    this.DialogResult = true;
+                    System.Windows.MessageBox.Show("Please select values.");
+                    return;
                 }
-                else if (ValuesListBox.SelectedItem != null)
-                {
-                    var provider = ValuesListBox.SelectedItem as ProviderElement;
-                    Attribute.Value = provider.Name;
-                    this.DialogResult = true;
-                }
-                else
-                {
-                    System.Windows.MessageBox.Show("Please select an option.");
-                }
+                string selectedValue = "";
+                foreach (ProviderElement provider in listBox.SelectedItems)
+                    selectedValue = selectedValue + provider.Name + (listBox.SelectedItems.IndexOf(provider) == listBox.SelectedItems.Count - 1 ? "" : ", ");
+                Attribute.Value = selectedValue;
+                this.DialogResult = true;
+            }
+            else if (listBox.SelectedItem != null)
+            {
+                Attribute.Value = (listBox.SelectedItem as ProviderElement).Name;
+                this.DialogResult = true;
             }
             else
             {
-                TabControl tabControl = (TabControl)this.FindName("TabControl");
-                var provider = (tabControl.SelectedContent as ListBox).SelectedItem as ProviderElement;
-                if (provider == null)
-                {
-                    System.Windows.MessageBox.Show("Please select an option.");
-                    return;
-                }
-                Attribute.Value = provider.Name;
-                this.DialogResult = true;
+                System.Windows.MessageBox.Show("Please select an option.");
             }
         }
-
         public void TextChanged(object sender, TextChangedEventArgs e)
         {
-            List<ProviderElement> newList = new();
-            foreach (var s in ProviderElements)
-            {
-                if (s.Name.ToLower().Contains(searchTextBox.Text.ToLower()))
-                    newList.Add(s);
-            }
-            ValuesListBox.ItemsSource = newList;
-            if (ValuesListBox.SelectedIndex == -1) ValuesListBox.SelectedIndex = 0;
+            filter();
         }
+
+        private void filter()
+        {
+            List<ProviderElement> newList = ProviderElements.Where(s=>s.Name.ToLower().Contains(search.Text.ToLower())).ToList();
+            listBox.ItemsSource = newList;
+            if (listBox.SelectedIndex == -1) listBox.SelectedIndex = 0;
+        }
+
         private string[] FindValuesFromCimClass(ElementViewModel vm)
         {
             if (vm.Parent == null)
@@ -256,6 +221,18 @@ namespace XMLCodeGenerator.View
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void EntitySelected(object sender, SelectionChangedEventArgs e)
+        {
+            ProviderElements.Clear();
+            if (SelectedEntity == null)
+                return;
+            ProviderElements.AddRange(SelectedEntity.Attributes);
+            filter();
+            listBox.SelectedIndex = MultiSelect ? -1 : 0;
+            selectDefaultValues();
+            search.Focus();
         }
     }
 }

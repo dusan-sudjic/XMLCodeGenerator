@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:XMLCodeGenerator.Converters"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:controls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
         PreviewKeyDown="Window_KeyDown"
-        Title="Choose value from providers" Height="400" Width="360" WindowStartupLocation="CenterScreen">
+        Title="Choose value from providers" Width="360" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <converters:BooleanToMultiselectConverter x:Key="BooleanToMultiselectConverter"/>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -15,9 +16,20 @@
     </Window.Resources>
     <StackPanel>
         <Label Width="100">Search values</Label>
+        <StackPanel Orientation="Horizontal" Margin="20 10 20 10" Visibility="{Binding ChoosingAttribute, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Label Margin="0 0 25 0">Select entity:</Label>
+            <controls:AutoCompleteComboBox
+                x:Name="EntitiesComboBox"
+                Width="200"
+                Height="25"
+                IsEditable="True"
+                ItemsSource="{Binding Entities}"
+                SelectedItem="{Binding SelectedEntity, Mode=TwoWay}"
+                SelectionChanged="EntitySelected"
+                />
+        </StackPanel>
         <xctk:WatermarkTextBox Width="160" x:Name="search" Watermark="Search" Margin="10 0 10 10" TextChanged="TextChanged"></xctk:WatermarkTextBox>
-        <ListBox x:Name="listBox" SelectionMode="{Binding MultiSelect, Converter={StaticResource BooleanToMultiselectConverter}}" Visibility="{Binding Tabs, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Height="240" ></ListBox>
-        <TabControl x:Name="TabControl" Visibility="{Binding Tabs, Converter={StaticResource BooleanToVisibilityConverter}}" Height="240"></TabControl>
+        <ListBox x:Name="listBox" ItemsSource="{Binding ProviderElements}" SelectionMode="{Binding MultiSelect, Mode=TwoWay, Converter={StaticResource BooleanToMultiselectConverter}}" Visibility="{Binding Tabs, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Height="240" ></ListBox>
         <Button Content="Select" Click="OKButton_Click" Margin="10" Width="100"/>
     </StackPanel>
 </Window>

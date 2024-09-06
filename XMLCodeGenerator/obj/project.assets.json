@@ -2,57 +2,73 @@
   "version": 3,
   "targets": {
     "net8.0-windows7.0": {
-      "Extended.Wpf.Toolkit/4.6.0": {
+      "DotNetKit.Wpf.AutoCompleteComboBox/1.6.0": {
         "type": "package",
         "compile": {
-          "lib/net5.0/Xceed.Wpf.AvalonDock.NET5.dll": {},
-          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Aero.NET5.dll": {},
-          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Metro.NET5.dll": {},
-          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.VS2010.NET5.dll": {},
-          "lib/net5.0/Xceed.Wpf.Toolkit.NET5.dll": {}
+          "lib/net6.0-windows7.0/DotNetKit.Wpf.AutoCompleteComboBox.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net5.0/Xceed.Wpf.AvalonDock.NET5.dll": {},
-          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Aero.NET5.dll": {},
-          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Metro.NET5.dll": {},
-          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.VS2010.NET5.dll": {},
-          "lib/net5.0/Xceed.Wpf.Toolkit.NET5.dll": {}
+          "lib/net6.0-windows7.0/DotNetKit.Wpf.AutoCompleteComboBox.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WPF"
+        ]
+      },
+      "Extended.Wpf.Toolkit/4.6.1": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Aero.dll": {},
+          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Metro.dll": {},
+          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.VS2010.dll": {},
+          "lib/net5.0/Xceed.Wpf.AvalonDock.dll": {},
+          "lib/net5.0/Xceed.Wpf.Toolkit.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Aero.dll": {},
+          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Metro.dll": {},
+          "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.VS2010.dll": {},
+          "lib/net5.0/Xceed.Wpf.AvalonDock.dll": {},
+          "lib/net5.0/Xceed.Wpf.Toolkit.dll": {}
         },
         "resource": {
-          "lib/net5.0/cs-CZ/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/cs-CZ/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "cs-CZ"
           },
-          "lib/net5.0/de/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/de/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "de"
           },
-          "lib/net5.0/es/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/es/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "es"
           },
-          "lib/net5.0/fr/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/fr/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "fr"
           },
-          "lib/net5.0/hu/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/hu/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "hu"
           },
-          "lib/net5.0/it/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/it/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "it"
           },
-          "lib/net5.0/ja-JP/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/ja-JP/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "ja-JP"
           },
-          "lib/net5.0/pt-BR/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/pt-BR/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "pt-BR"
           },
-          "lib/net5.0/ro/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/ro/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "ro"
           },
-          "lib/net5.0/ru/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/ru/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "ru"
           },
-          "lib/net5.0/sv/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/sv/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "sv"
           },
-          "lib/net5.0/zh-Hans/Xceed.Wpf.AvalonDock.NET5.resources.dll": {
+          "lib/net5.0/zh-Hans/Xceed.Wpf.AvalonDock.resources.dll": {
             "locale": "zh-Hans"
           }
         }
@@ -76,17 +92,33 @@
     }
   },
   "libraries": {
-    "Extended.Wpf.Toolkit/4.6.0": {
-      "sha512": "W67USjczMau4R5g8aU9/knYpCqnFurZ/kmzXnSvqxhC9YR3KaUTT2L+95WWoL1u9qlQ48U6ORP9s6I6x9/yW4Q==",
+    "DotNetKit.Wpf.AutoCompleteComboBox/1.6.0": {
+      "sha512": "n9NCG0uQWE710nKaskwzgz9cvoxD50M2iQtH6ktIehlR9u3IHrXJl0DWBurB9j3dDUoKk76riJ+KHcUEocvACw==",
       "type": "package",
-      "path": "extended.wpf.toolkit/4.6.0",
+      "path": "dotnetkit.wpf.autocompletecombobox/1.6.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "dotnetkit.wpf.autocompletecombobox.1.6.0.nupkg.sha512",
+        "dotnetkit.wpf.autocompletecombobox.nuspec",
+        "lib/net462/DotNetKit.Wpf.AutoCompleteComboBox.dll",
+        "lib/net462/DotNetKit.Wpf.AutoCompleteComboBox.xml",
+        "lib/net6.0-windows7.0/DotNetKit.Wpf.AutoCompleteComboBox.dll",
+        "lib/net6.0-windows7.0/DotNetKit.Wpf.AutoCompleteComboBox.xml"
+      ]
+    },
+    "Extended.Wpf.Toolkit/4.6.1": {
+      "sha512": "LZlLLGZP08mJufT/rjCiURP0owr34ZuAvcyzk5xgsvSMiKJRQvK7oaWUP7IXONE4BwCXREwKhtl34nUS8+RGQg==",
+      "type": "package",
+      "path": "extended.wpf.toolkit/4.6.1",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE.txt",
         "Xceed_Logo_Retina-400x400.png",
-        "extended.wpf.toolkit.4.6.0.nupkg.sha512",
+        "extended.wpf.toolkit.4.6.1.nupkg.sha512",
         "extended.wpf.toolkit.nuspec",
         "lib/net40/Xceed.Wpf.AvalonDock.Themes.Aero.dll",
         "lib/net40/Xceed.Wpf.AvalonDock.Themes.Metro.dll",
@@ -106,23 +138,23 @@
         "lib/net40/ru/Xceed.Wpf.AvalonDock.resources.dll",
         "lib/net40/sv/Xceed.Wpf.AvalonDock.resources.dll",
         "lib/net40/zh-Hans/Xceed.Wpf.AvalonDock.resources.dll",
-        "lib/net5.0/Xceed.Wpf.AvalonDock.NET5.dll",
-        "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Aero.NET5.dll",
-        "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Metro.NET5.dll",
-        "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.VS2010.NET5.dll",
-        "lib/net5.0/Xceed.Wpf.Toolkit.NET5.dll",
-        "lib/net5.0/cs-CZ/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/de/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/es/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/fr/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/hu/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/it/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/ja-JP/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/pt-BR/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/ro/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/ru/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/sv/Xceed.Wpf.AvalonDock.NET5.resources.dll",
-        "lib/net5.0/zh-Hans/Xceed.Wpf.AvalonDock.NET5.resources.dll",
+        "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Aero.dll",
+        "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.Metro.dll",
+        "lib/net5.0/Xceed.Wpf.AvalonDock.Themes.VS2010.dll",
+        "lib/net5.0/Xceed.Wpf.AvalonDock.dll",
+        "lib/net5.0/Xceed.Wpf.Toolkit.dll",
+        "lib/net5.0/cs-CZ/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/de/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/es/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/fr/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/hu/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/it/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/ja-JP/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/pt-BR/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/ro/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/ru/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/sv/Xceed.Wpf.AvalonDock.resources.dll",
+        "lib/net5.0/zh-Hans/Xceed.Wpf.AvalonDock.resources.dll",
         "tools/install.ps1"
       ]
     },
@@ -151,7 +183,8 @@
   },
   "projectFileDependencyGroups": {
     "net8.0-windows7.0": [
-      "Extended.Wpf.Toolkit >= 4.6.0",
+      "DotNetKit.Wpf.AutoCompleteComboBox >= 1.6.0",
+      "Extended.Wpf.Toolkit >= 4.6.1",
       "Microsoft.Xaml.Behaviors.Wpf >= 1.1.122"
     ]
   },
@@ -204,9 +237,13 @@
       "net8.0-windows7.0": {
         "targetAlias": "net8.0-windows",
         "dependencies": {
+          "DotNetKit.Wpf.AutoCompleteComboBox": {
+            "target": "Package",
+            "version": "[1.6.0, )"
+          },
           "Extended.Wpf.Toolkit": {
             "target": "Package",
-            "version": "[4.6.0, )"
+            "version": "[4.6.1, )"
           },
           "Microsoft.Xaml.Behaviors.Wpf": {
             "target": "Package",
