@@ -76,7 +76,7 @@ namespace XMLCodeGenerator.Model.Elements
         }
         public static ElementModel GetElementModelByName(string name)
         {
-            return ElementModels.FirstOrDefault(x => x.Name.Equals(name));
+            return ElementModels.FirstOrDefault(x => x.Name.Equals(name) || name.Equals(x.FirstInContentBlockName));
         }
         public static ElementModel GetElementModelByXMLElement(XmlElement xmlElement)
         {
@@ -92,10 +92,16 @@ namespace XMLCodeGenerator.Model.Elements
             var list3 = list.Where(x => x.Attributes.All(a => xmlElement.GetAttributeNode(a.Name) != null)).ToList();
             if (list3.Count == 1)
                 return list3[0];
-            var model = FunctionModels[xmlElement.GetAttribute("Name")];
-            if (model == null)
+            if (!FunctionModels.ContainsKey(xmlElement.GetAttribute("Name")))
                 return null;
-            return model;
+            return FunctionModels[xmlElement.GetAttribute("Name")];
+        }
+        public static ElementModel GetElementModelByFirstInContentBlockName(string name)
+        {
+            ElementModel m = ElementModels.FirstOrDefault(e => e.FirstInContentBlockName!=null && e.FirstInContentBlockName.Equals(name));
+            if (m == null)
+                m = null;
+            return m;
         }
         public static void AddNewFunctionDefinition(string functionName)
         {

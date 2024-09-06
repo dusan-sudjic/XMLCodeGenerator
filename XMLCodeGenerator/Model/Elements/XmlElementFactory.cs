@@ -12,29 +12,29 @@ namespace XMLCodeGenerator.Model.Elements
         public static Dictionary<string, string> Namespaces = new();
         public static XmlElement GetXmlElement(Element element, XmlDocument doc = null, XmlNode parentXmlElement = null, string parentName = null)
         {
-            if (element.Model.XMLName.Equals("val"))
+            if (element.XMLName.Equals("val"))
                 return null;
             if (doc == null)
             {
                 doc = new XmlDocument();
-                if (element.Model.XMLName.Length == 0)
+                if (element.XMLName.Length == 0)
                     return null;
             }
             string prefix = FindNamespacePrefix(parentXmlElement, parentName);
             XmlElement node = CreateNode(element, doc, prefix);
             foreach (var attr in element.Model.Attributes)
                 node.SetAttribute(attr.Name, element.AttributeValues[element.Model.Attributes.IndexOf(attr)]);
-            appendChildNodes(element, doc, node, element.Model.Name);
+            appendChildNodes(element, doc, node, element.Name);
             return node;
         }
 
         private static XmlElement CreateNode(Element element, XmlDocument doc, string prefix)
-        {//refaktorisi
+        {
             XmlElement node = null;
             if (String.IsNullOrEmpty(prefix))
-                node = doc.CreateElement(element.Model.XMLName);
+                node = doc.CreateElement(element.XMLName);
             else
-                node = doc.CreateElement(prefix, element.Model.XMLName, Namespaces[prefix]);
+                node = doc.CreateElement(prefix, element.XMLName, Namespaces[prefix]);
             return node;
         }
 
@@ -59,7 +59,7 @@ namespace XMLCodeGenerator.Model.Elements
         {
             if (element.ChildElements.Count == 1)
             {
-                if (element.ChildElements[0].Model.XMLName.Equals("val"))
+                if (element.ChildElements[0].XMLName.Equals("val"))
                 {
                     node.InnerText = element.ChildElements[0].AttributeValues[0];
                     return;
@@ -67,22 +67,26 @@ namespace XMLCodeGenerator.Model.Elements
             }
             foreach (var child in element.ChildElements)
             {
-                if (child.Model.XMLName.Length > 0)
+                if (child.XMLName.Length > 0)
                     node.AppendChild(GetXmlElement(child, doc, node, parentName));
                 else
-                    appendChildNodes(child, doc, node, element.Model.Name);
+                    appendChildNodes(child, doc, node, element.Name);
             }
         }
-        public static Element GetElement(XmlElement xmlElement, ContentBlockModel parentBlock = null)
+        public static Element GetElement(XmlElement xmlElement, ContentBlockModel parentBlock = null, ContentBlockModel previousContentBlock = null)
         {
             Element element = new Element();
             element.Model = ElementModelProvider.GetElementModelByXMLElement(xmlElement);
+            if(element.Model==null && parentBlock != null && parentBlock != previousContentBlock)
+            {
+                element.Model = ElementModelProvider.GetElementModelByFirstInContentBlockName(xmlElement.LocalName);
+                element.setFirstInContentBlock();
+            }
             element.ParentContentBlock = parentBlock;
             foreach(var attrmodel in element.Model.Attributes)
                 element.AttributeValues.Add(attrmodel.DefaultValue);
             foreach (XmlAttribute attr in xmlElement.Attributes)
                 element.AttributeValues[element.Model.Attributes.IndexOf(element.Model.Attributes.FirstOrDefault(a=>a.Name.Equals(attr.Name)))] = attr.Value;
-
             addChildren(xmlElement, element);
             return element;
         }
@@ -103,6 +107,8 @@ namespace XMLCodeGenerator.Model.Elements
             foreach (XmlElement childXmlElement in nodes)
             {
                 ElementModel childModel = ElementModelProvider.GetElementModelByXMLElement(childXmlElement);
+                if (childModel == null)
+                    childModel = ElementModelProvider.GetElementModelByFirstInContentBlockName(childXmlElement.LocalName);
                 ContentBlockModel parentContentBlock = element.Model.GetSuitableContentBlockForChildModel(childModel);
                 if (parentContentBlock == null)
                 {
@@ -116,7 +122,10 @@ namespace XMLCodeGenerator.Model.Elements
                 }
                 else
                 {
-                    Element childElement = GetElement(childXmlElement, parentContentBlock);
+                    ContentBlockModel previousContentBlock = null;
+                    if(element.ChildElements.Count > 0)
+                        previousContentBlock = element.ChildElements.Last().ParentContentBlock;
+                    Element childElement = GetElement(childXmlElement, parentContentBlock, previousContentBlock);
                     element.ChildElements.Add(childElement);
                 }
             }

@@ -160,14 +160,14 @@ namespace XMLCodeGenerator
             if (openFileDialog.ShowDialog() == true)
             {
                 string filePath = openFileDialog.FileName;
-                try
-                {
+                //try
+                //{
                     Document.LoadFromXmlDocument(filePath);
-                }
-                catch(Exception e)
-                {
-                    MessageBox.Show(e.Message);
-                }
+                //}
+                //catch(Exception e)
+                //{
+                //    MessageBox.Show(e.Message);
+                //}
             }
         }
         public void ExecuteExportToXmlCommand(object parameter)

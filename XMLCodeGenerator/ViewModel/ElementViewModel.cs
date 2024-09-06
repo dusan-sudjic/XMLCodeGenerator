@@ -15,8 +15,11 @@ namespace XMLCodeGenerator.ViewModel
 {
     public class ElementViewModel : INotifyPropertyChanged
     {
-        public string XML_Name { get => Element.Model.XMLName; set { } }
-        public string Name { get => Element.Model.Name; set { } }
+        public string XML_Name {
+            get => Element.XMLName;
+            set { } 
+        }
+        public string Name { get => Element.Name; set { } }
         public bool HasAttributes { get => Element.Model.Attributes.Count > 0; }
         public bool HasEditableAttributes { get => Element.Model.Attributes.Where(a => a.Editable).ToList().Count > 0; }
         public bool IsUnextendableAndHasEditableAttributes { get => !IsExtendable && HasEditableAttributes; }
@@ -134,8 +137,8 @@ namespace XMLCodeGenerator.ViewModel
         {
             get
             {
-                if (Element.Model.Name.Equals("CimClass") || Element.Model.Name.Equals("CimProperty") || Element.Model.Name.Equals("CimRelationship")
-                    || Element.Model.Name.Equals("FunctionDefinition") || Element.Model.Name.Equals("PreProcessProcedure") || Element.Model.Name.Equals("RewritingProcedure"))
+                if (Element.Name.Equals("CimClass") || Element.Name.Equals("CimProperty") || Element.Name.Equals("CimRelationship")
+                    || Element.Name.Equals("FunctionDefinition") || Element.Name.Equals("PreProcessProcedure") || Element.Name.Equals("RewritingProcedure"))
                     return "[" + Attributes[0].Value + "]";
                 if (Element.Model is FunctionModel functionModel)
                     return "[" + functionModel.FunctionName + "]";
@@ -152,7 +155,7 @@ namespace XMLCodeGenerator.ViewModel
         {
             get
             {
-                if (Element.Model.Name.Equals("FunctionDefinition"))
+                if (Element.Name.Equals("FunctionDefinition"))
                 {
                     int calls = ElementModelProvider.GetFunctionModelByName(Attributes[0].Value).CallsCounter;
                     return "  " + calls.ToString() + (calls==1 ?" call":" calls");
@@ -182,7 +185,7 @@ namespace XMLCodeGenerator.ViewModel
             Element = element;
             Parent = parent;
             HasRoomForNewChildElement = ElementModelProvider.GetModelsForNewChildElement(Element).Count > 0;
-            IsRemovable = XML_Name.Equals("CimClass") || Element.Model.Name.Equals("FunctionDefinition");
+            IsRemovable = XML_Name.Equals("CimClass") || Element.Name.Equals("FunctionDefinition");
             IsReplacable = ElementModelProvider.GetReplacableModelsForElement(Element) != null;
             Attributes = new();
             var list = ElementModelProvider.GetModelsForNewChildElement(Element);
@@ -199,6 +202,25 @@ namespace XMLCodeGenerator.ViewModel
             {
                 ElementModelProvider.AddFunctionCall(fun.FunctionName);
                 MainWindow.UpdateFunctionCallsCounter(fun.FunctionName);
+            }
+        }
+        public void RenameFirstElementsInContentBlocks()
+        {
+            ContentBlockModel previousContentBlock = null;
+            foreach(var c in ChildViewModels)
+            {
+                if (c.Element.ParentContentBlock != previousContentBlock)
+                {
+                    c.Element.setFirstInContentBlock();
+                    previousContentBlock = c.Element.ParentContentBlock;
+                }
+                else
+                {
+                    c.Element.Name = c.Element.Model.Name;
+                    c.Element.XMLName = c.Element.Model.XMLName;
+                }
+                c.OnPropertyChanged("Name");
+                c.OnPropertyChanged("XMLName");
             }
         }
         public void SetReplacable()
@@ -218,6 +240,7 @@ namespace XMLCodeGenerator.ViewModel
                     continue;
                 else if (Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) > Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
                 {
+                    newElement.setFirstInContentBlock();
                     Element.ChildElements.Insert(i, newElement);
                     ChildViewModels.Insert(i, new ElementViewModel(newElement, this));
                 }
@@ -252,6 +275,7 @@ namespace XMLCodeGenerator.ViewModel
             var list = ElementModelProvider.GetModelsForNewChildElement(Element);
             Parent.DefaultNewChild = list.Count == 1 ? list[0] : null;
             RefreshMovable();
+            Parent.RenameFirstElementsInContentBlocks();
         }
         public void ReplaceElement(ElementModel newElementModel)
         {
@@ -266,10 +290,11 @@ namespace XMLCodeGenerator.ViewModel
             Parent.Element.ChildElements[index] = Parent.ChildViewModels[index].Element;
             var list = ElementModelProvider.GetModelsForNewChildElement(Element);
             Parent.DefaultNewChild = list.Count == 1 ? list[0] : null;
+            Parent.RenameFirstElementsInContentBlocks();
         }
         public void RenameFunction(string oldName, string newName)
         {
-            if (Element.Model.Name.Equals("FunctionCall"))
+            if (Element.Name.Equals("FunctionCall"))
             {
                 if (Attributes[0].Value.Equals(oldName))
                 {
@@ -293,6 +318,7 @@ namespace XMLCodeGenerator.ViewModel
             var temp = Parent.Element.ChildElements[index];
             Parent.Element.ChildElements[index] = Parent.Element.ChildElements[index - 1];
             Parent.Element.ChildElements[index - 1] = temp;
+            Parent.RenameFirstElementsInContentBlocks();
             RefreshMovable();
         }
 
@@ -314,6 +340,7 @@ namespace XMLCodeGenerator.ViewModel
             var temp = Parent.Element.ChildElements[index];
             Parent.Element.ChildElements[index] = Parent.Element.ChildElements[index + 1];
             Parent.Element.ChildElements[index + 1] = temp;
+            Parent.RenameFirstElementsInContentBlocks();
             RefreshMovable();
         }
         private void Attributes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

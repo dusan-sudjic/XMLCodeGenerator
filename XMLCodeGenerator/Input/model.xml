@@ -288,15 +288,7 @@
 				BooleanOperator,AndConditions,OrConditions
 			</ContentBlock>
 		</Element>
-		<Element Name="If" XMLName="If" NamespacePrefix="cs">
-			<ContentBlock MinSize="1" MaxSize="1">
-				Conditions
-			</ContentBlock>
-			<ContentBlock MinSize="1" MaxSize="1">
-				Expression
-			</ContentBlock>
-		</Element>
-		<Element Name="ElseIf" XMLName="ElseIf" NamespacePrefix="cs">
+		<Element Name="ElseIf" XMLName="ElseIf" NamespacePrefix="cs" FirstInContentBlockName="If">
 			<ContentBlock MinSize="1" MaxSize="1">
 				Conditions
 			</ContentBlock>
@@ -310,10 +302,7 @@
 			</ContentBlock>
 		</Element>
 		<Element Name="IfBlock" XMLName="">
-			<ContentBlock MinSize="1" MaxSize="1">
-				If
-			</ContentBlock>
-			<ContentBlock MinSize="0" MaxSize="-1">
+			<ContentBlock MinSize="1" MaxSize="-1">
 				ElseIf
 			</ContentBlock>
 			<ContentBlock MinSize="0" MaxSize="1">

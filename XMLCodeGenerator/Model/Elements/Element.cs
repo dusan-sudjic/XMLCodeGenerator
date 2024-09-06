@@ -12,6 +12,17 @@ namespace XMLCodeGenerator.Model.Elements
 {
     public sealed class Element
     {
+        private string _name= null;
+        private string _xmlName= null;
+        public string Name {
+            get => _name == null ? Model.Name : _name;
+            set => _name = value;
+        }
+        public string XMLName
+        {
+            get => _xmlName == null ? Model.XMLName : _xmlName;
+            set => _xmlName = value;
+        }
         public List<Element> ChildElements { get; set; }
         public List<string> AttributeValues { get; set; }
         public ElementModel Model { get; set; }
@@ -20,6 +31,14 @@ namespace XMLCodeGenerator.Model.Elements
         {
             ChildElements = new List<Element>();
             AttributeValues = new List<string>();
+        }
+        public void setFirstInContentBlock()
+        {
+            if (Model.FirstInContentBlockName != null)
+            {
+                Name = Model.FirstInContentBlockName;
+                XMLName = Model.FirstInContentBlockName;
+            }
         }
         public Element(ElementModel model, ContentBlockModel parentContentBlock = null)
         {
@@ -32,7 +51,12 @@ namespace XMLCodeGenerator.Model.Elements
             ChildElements = new();
             foreach (var block in Model.ContentBlocks)
                 for (int i = 0; i < block.MinSize; i++)
-                    ChildElements.Add(new Element(block.GetDefaultElementModel(), block));
+                {
+                    Element newElement = new Element(block.GetDefaultElementModel(), block);
+                    if (i==0)
+                        newElement.setFirstInContentBlock();
+                    ChildElements.Add(newElement);
+                }
             ParentContentBlock = parentContentBlock;
         }
         public override string ToString()

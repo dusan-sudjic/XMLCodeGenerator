@@ -12,6 +12,7 @@ namespace XMLCodeGenerator.Model.Elements
     {
         public string Name { get; set; }
         public string XMLName { get; set; }
+        public string FirstInContentBlockName { get; private set; }
         public List<ContentBlockModel> ContentBlocks { get; set; }
         public List<AttributeModel> Attributes { get; set; }
         public string NamespacePrefix { get; set; } = null;
@@ -23,6 +24,7 @@ namespace XMLCodeGenerator.Model.Elements
             Name = node.Attributes["Name"]?.InnerText;
             XMLName = node.Attributes["XMLName"]?.InnerText;
             NamespacePrefix = node.Attributes["NamespacePrefix"]?.InnerText;
+            FirstInContentBlockName = node.Attributes["FirstInContentBlockName"]?.InnerText;
             foreach (XmlNode attributeNode in node.SelectNodes("Attribute"))
                 Attributes.Add(new AttributeModel(attributeNode));
 
