@@ -40,6 +40,11 @@ namespace XMLCodeGenerator.Model.Elements
                 XMLName = Model.FirstInContentBlockName;
             }
         }
+        public void resetToModelsNames()
+        {
+            Name = Model.Name;
+            XMLName = Model.XMLName;
+        }
         public Element(ElementModel model, ContentBlockModel parentContentBlock = null)
         {
             Model = model;

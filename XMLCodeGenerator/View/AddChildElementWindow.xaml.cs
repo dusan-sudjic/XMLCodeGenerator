@@ -52,7 +52,7 @@ namespace XMLCodeGenerator.View
             FunctionsListBox.ItemsSource = SupportedFunctionCalls;
             ElementsListBox.SelectedIndex = 0;
             FunctionsListBox.SelectedIndex = 0;
-            this.Title = replacement ? "Replace " + Element.XML_Name: "Add child element to " + Element.XML_Name;
+            this.Title = replacement ? "Replace " + Element.XMLName: "Add child element to " + Element.XMLName;
             searchTextBox = (WatermarkTextBox)this.FindName("search");
             searchTextBox.Focus();
         }

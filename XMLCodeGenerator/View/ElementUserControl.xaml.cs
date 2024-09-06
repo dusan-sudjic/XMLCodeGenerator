@@ -26,7 +26,7 @@ namespace XMLCodeGenerator.View
     public partial class ElementUserControl : UserControl, INotifyPropertyChanged
     {
         private UIElement _draggedElement;
-        public string XML_Name { get { return Element.XML_Name; } set { } }
+        public string XML_Name { get { return Element.XMLName; } set { } }
         private int _originalIndex;
         public ElementViewModel Element { get => DataContext as ElementViewModel; }
         public ElementUserControl()

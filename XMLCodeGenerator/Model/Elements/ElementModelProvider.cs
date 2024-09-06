@@ -98,10 +98,7 @@ namespace XMLCodeGenerator.Model.Elements
         }
         public static ElementModel GetElementModelByFirstInContentBlockName(string name)
         {
-            ElementModel m = ElementModels.FirstOrDefault(e => e.FirstInContentBlockName!=null && e.FirstInContentBlockName.Equals(name));
-            if (m == null)
-                m = null;
-            return m;
+            return ElementModels.FirstOrDefault(e => e.FirstInContentBlockName!=null && e.FirstInContentBlockName.Equals(name));
         }
         public static void AddNewFunctionDefinition(string functionName)
         {
