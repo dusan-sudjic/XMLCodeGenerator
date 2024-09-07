@@ -76,7 +76,11 @@ namespace XMLCodeGenerator.Model.Elements
         }
         public static ElementModel GetElementModelByName(string name)
         {
-            return ElementModels.FirstOrDefault(x => x.Name.Equals(name) || name.Equals(x.FirstInContentBlockName));
+            ElementModel model = ElementModels.FirstOrDefault(x => x.Name.Equals(name));
+            if(model==null)
+                return ElementModels.FirstOrDefault(x => name.Equals(x.FirstInContentBlockName));
+            else 
+                return model;
         }
         public static ElementModel GetElementModelByXMLElement(XmlElement xmlElement)
         {

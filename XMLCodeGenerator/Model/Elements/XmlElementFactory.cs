@@ -24,7 +24,7 @@ namespace XMLCodeGenerator.Model.Elements
             XmlElement node = CreateNode(element, doc, prefix);
             foreach (var attr in element.Model.Attributes)
                 node.SetAttribute(attr.Name, element.AttributeValues[element.Model.Attributes.IndexOf(attr)]);
-            appendChildNodes(element, doc, node, element.Name);
+            appendChildNodes(element, doc, node, element.Model.Name);
             return node;
         }
 
@@ -70,7 +70,7 @@ namespace XMLCodeGenerator.Model.Elements
                 if (child.XMLName.Length > 0)
                     node.AppendChild(GetXmlElement(child, doc, node, parentName));
                 else
-                    appendChildNodes(child, doc, node, element.Name);
+                    appendChildNodes(child, doc, node, element.Model.Name);
             }
         }
         public static Element GetElement(XmlElement xmlElement, ContentBlockModel parentBlock = null, ContentBlockModel previousContentBlock = null)

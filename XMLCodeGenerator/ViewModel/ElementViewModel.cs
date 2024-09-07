@@ -17,6 +17,9 @@ namespace XMLCodeGenerator.ViewModel
     {
         public string XMLName { get => Element.XMLName; set { } }
         public string Name { get => Element.Name; set { } }
+        public bool IsWrapperElement { get => String.IsNullOrEmpty(XMLName); set { } }
+        public bool IsExtendableAndIsNotWrapperElement { get => IsExtendable && !IsWrapperElement; set { } }
+        public bool IsExtendedAndIsNotWrapperElement { get => IsExtended && !IsWrapperElement; set { } }
         public ContentBlockModel ParentContentBlock { get => Element.ParentContentBlock; }
         public bool HasAttributes { get => Element.Model.Attributes.Count > 0; }
         public bool HasEditableAttributes { get => Element.Model.Attributes.Where(a => a.Editable).ToList().Count > 0; }
@@ -379,6 +382,7 @@ namespace XMLCodeGenerator.ViewModel
                 OnPropertyChanged(nameof(HasRoomForNewChildElement));
                 OnPropertyChanged(nameof(IsExtendedAndHasAttributes));
                 OnPropertyChanged(nameof(IsExtendedAndHasEditableAttributes));
+                OnPropertyChanged(nameof(IsExtendedAndIsNotWrapperElement));
             }
             if (!propertyName.Contains("IsExtended") && !propertyName.Contains("Room"))
                 MainWindow.Document.HasUnsavedChanges = true;

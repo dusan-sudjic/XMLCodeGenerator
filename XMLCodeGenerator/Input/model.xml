@@ -2,10 +2,10 @@
 <Model>
 	<Types>
 		<Type Name="Element">
-			CimProperty,CimRelationship,Report,Log,Constant,SetDefault,Function,GetSourceValue,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,IfBlock,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,IsNull,IsNumber,IsNotNull,StringContains,StringEndsWith,StringStartsWith,IsInConcreteModel,ContainsProperty,StringIsNullOrEmpty,StringIsNullOrWhiteSpace,AreEqual,IsSourceElement,IsFalse,IsTrue,GreaterThan,GreaterThanOrEqual,LessThan,LessThanOrEqual,Condition,AndConditions,OrConditions,ProjectCustomOperator
+			CimProperty,CimRelationship,Report,Log,Constant,SetDefault,Function,GetSourceValue,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,If,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,IsNull,IsNumber,IsNotNull,StringContains,StringEndsWith,StringStartsWith,IsInConcreteModel,ContainsProperty,StringIsNullOrEmpty,StringIsNullOrWhiteSpace,AreEqual,IsSourceElement,IsFalse,IsTrue,GreaterThan,GreaterThanOrEqual,LessThan,LessThanOrEqual,Condition,AndConditions,OrConditions,ProjectCustomOperator
 		</Type>
 		<Type Name="Expression">
-			Constant,Log,Report,SetDefault,GetSourceValue,Function,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,IfBlock,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,ProjectCustomOperator
+			Constant,Log,Report,SetDefault,GetSourceValue,Function,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,If,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,ProjectCustomOperator
 		</Type>
 		<Type Name="NumberExpression">
 			Constant,GetSourceValue,Function,GetEntityValue,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication
@@ -301,7 +301,7 @@
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="IfBlock" XMLName="">
+		<Element Name="If" XMLName="">
 			<ContentBlock MinSize="1" MaxSize="-1">
 				ElseIf
 			</ContentBlock>
