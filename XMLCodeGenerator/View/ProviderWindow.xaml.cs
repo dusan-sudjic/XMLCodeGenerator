@@ -234,5 +234,10 @@ namespace XMLCodeGenerator.View
             selectDefaultValues();
             search.Focus();
         }
+        private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Select();
+        }
+
     }
 }

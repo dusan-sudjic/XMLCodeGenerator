@@ -8,7 +8,7 @@
         xmlns:controls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
         PreviewKeyDown="Window_KeyDown"
-        Title="Choose value from providers" Width="360" WindowStartupLocation="CenterScreen">
+        Title="Choose value from providers" Height="425" Width="360" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <converters:BooleanToMultiselectConverter x:Key="BooleanToMultiselectConverter"/>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -29,7 +29,12 @@
                 />
         </StackPanel>
         <xctk:WatermarkTextBox Width="160" x:Name="search" Watermark="Search" Margin="10 0 10 10" TextChanged="TextChanged"></xctk:WatermarkTextBox>
-        <ListBox x:Name="listBox" ItemsSource="{Binding ProviderElements}" SelectionMode="{Binding MultiSelect, Mode=TwoWay, Converter={StaticResource BooleanToMultiselectConverter}}" Visibility="{Binding Tabs, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Height="240" ></ListBox>
+        <ListBox x:Name="listBox" 
+             ItemsSource="{Binding ProviderElements}" 
+             SelectionMode="{Binding MultiSelect, Mode=TwoWay, Converter={StaticResource BooleanToMultiselectConverter}}" 
+             Visibility="{Binding Tabs, Converter={StaticResource InverseBooleanToVisibilityConverter}}" 
+             Height="240" 
+             MouseDoubleClick="listBox_MouseDoubleClick" />
         <Button Content="Select" Click="OKButton_Click" Margin="10" Width="100"/>
     </StackPanel>
 </Window>
