@@ -8,7 +8,10 @@
         xmlns:controls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
         PreviewKeyDown="Window_KeyDown"
-        Title="Choose value from providers" Height="425" Width="360" WindowStartupLocation="CenterScreen">
+        Title="Choose value from providers" Width="360" WindowStartupLocation="CenterScreen"
+        Height="Auto"                
+        SizeToContent="Height"
+        MinHeight="200"  >
     <Window.Resources>
         <converters:BooleanToMultiselectConverter x:Key="BooleanToMultiselectConverter"/>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

@@ -90,6 +90,17 @@ namespace XMLCodeGenerator.View
                         foreach(var e in entities)
                             Entities.Add(e);
                         EntitiesComboBox.Focus();
+                        if (Entities.Any())
+                        {
+                            SelectedEntity = entities[0];
+                            foreach (var e in Entities)
+                                if (e.Attributes.FirstOrDefault(a => a.Name.Equals(Attribute.Value)) != null)
+                                {
+                                    SelectedEntity = e;
+                                    break;
+                                }
+                            ProviderElements.AddRange(SelectedEntity.Attributes);
+                        }
                         break; 
                     }
                 default: break;
