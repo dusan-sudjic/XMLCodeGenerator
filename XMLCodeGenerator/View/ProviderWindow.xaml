@@ -19,8 +19,7 @@
     </Window.Resources>
     <StackPanel>
         <Label Width="100">Search values</Label>
-        <StackPanel Orientation="Horizontal" Margin="20 10 20 10" Visibility="{Binding ChoosingAttribute, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Label Margin="0 0 25 0">Select entity:</Label>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding ChoosingAttribute, Converter={StaticResource BooleanToVisibilityConverter}}">
             <controls:AutoCompleteComboBox
                 x:Name="EntitiesComboBox"
                 Width="200"
@@ -28,16 +27,36 @@
                 IsEditable="True"
                 ItemsSource="{Binding Entities}"
                 SelectedItem="{Binding SelectedEntity, Mode=TwoWay}"
-                SelectionChanged="EntitySelected"
+                Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 />
         </StackPanel>
-        <xctk:WatermarkTextBox Width="160" x:Name="search" Watermark="Search" Margin="10 0 10 10" TextChanged="TextChanged"></xctk:WatermarkTextBox>
+        <xctk:WatermarkTextBox Width="160" x:Name="search" Visibility="{Binding ChoosingAttribute, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Watermark="Search" Margin="10 0 10 10" TextChanged="TextChanged"></xctk:WatermarkTextBox>
         <ListBox x:Name="listBox" 
              ItemsSource="{Binding ProviderElements}" 
              SelectionMode="{Binding MultiSelect, Mode=TwoWay, Converter={StaticResource BooleanToMultiselectConverter}}" 
-             Visibility="{Binding Tabs, Converter={StaticResource InverseBooleanToVisibilityConverter}}" 
              Height="240" 
-             MouseDoubleClick="listBox_MouseDoubleClick" />
+             Width="340"
+             MouseDoubleClick="listBox_MouseDoubleClick">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding Name}" FontSize="12"/>
+                        <TextBlock FontSize="8"
+                                   MaxWidth="330"
+                                   Margin="0 1 0 0"
+                                   TextWrapping="WrapWithOverflow"
+                                   Foreground="Gray" 
+                                   Visibility="{Binding DataContext.ChoosingAttribute, 
+                                         RelativeSource={RelativeSource AncestorType=Window}, 
+                                         Converter={StaticResource BooleanToVisibilityConverter}, 
+                                         UpdateSourceTrigger=PropertyChanged}"> 
+                            <Run>Included in: </Run>
+                            <Run Text="{Binding IncludedInEntitiesLabel}"></Run>
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Button Content="Select" Click="OKButton_Click" Margin="10" Width="100"/>
     </StackPanel>
 </Window>

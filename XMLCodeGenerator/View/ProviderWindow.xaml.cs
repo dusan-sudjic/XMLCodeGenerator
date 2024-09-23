@@ -37,15 +37,39 @@ namespace XMLCodeGenerator.View
                 }
             }
         }
+        private string _searchText;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (_searchText != value)
+                {
+                    _searchText = value;
+                    OnPropertyChanged(nameof(SearchText));
+                    filter();
+                }
+            }
+        }
         public AttributeViewModel Attribute { get; set; }
         public SourceProviderEntity SelectedEntity { get; set; }
-        public bool ChoosingAttribute { get; set; }
+        private bool choosingAttribute = false;
+        public bool ChoosingAttribute {
+            get => choosingAttribute;
+            set 
+            {
+                if (value != choosingAttribute)
+                {
+                    choosingAttribute = value;
+                    OnPropertyChanged();
+                }            
+            } 
+        }
         public ProviderWindow(AttributeViewModel attribute)
         {
             InitializeComponent();
             DataContext = this;
             ProviderElements = new();
-            ChoosingAttribute = false;
             Attribute = attribute;
             search.Focus();
             MultiSelect = false;
@@ -92,26 +116,32 @@ namespace XMLCodeGenerator.View
                         EntitiesComboBox.Focus();
                         if (Entities.Any())
                         {
-                            SelectedEntity = entities[0];
-                            foreach (var e in Entities)
-                                if (e.Attributes.FirstOrDefault(a => a.Name.Equals(Attribute.Value)) != null)
+                            foreach(var ent in Entities)
+                            {
+                                foreach(var attr in ent.Attributes)
                                 {
-                                    SelectedEntity = e;
-                                    break;
+                                    ProviderElement existingAttribute = ProviderElements.FirstOrDefault(a => a.Name.Equals(attr.Name));
+                                    if (existingAttribute == null)
+                                    {
+                                        attr.IncludedInEntities.Add(ent);
+                                        ProviderElements.Add(attr);
+                                    }
+                                    else
+                                        (existingAttribute as SourceProviderAttribute).IncludedInEntities.Add(ent);
                                 }
-                            ProviderElements.AddRange(SelectedEntity.Attributes);
+                            }
                         }
                         break; 
                     }
                 default: break;
             }
             listBox.ItemsSource = ProviderElements;
-            listBox.SelectedIndex = MultiSelect ? -1 : 0;
             listBox.SelectionMode = MultiSelect ? SelectionMode.Multiple : SelectionMode.Single;
             selectDefaultValues();
         }
         private void selectDefaultValues()
         {
+            listBox.SelectedIndex = MultiSelect ? -1 : 0;
             string[] values = MultiSelect ? Attribute.Value.Split(',').Select(v=> v.Trim()).ToArray() : [Attribute.Value];
             foreach(var choice in listBox.Items)
             {
@@ -214,9 +244,10 @@ namespace XMLCodeGenerator.View
 
         private void filter()
         {
-            List<ProviderElement> newList = ProviderElements.Where(s=>s.Name.ToLower().Contains(search.Text.ToLower())).ToList();
+            string parameter = ChoosingAttribute ? SearchText.ToLower() : search.Text.ToLower();
+            List<ProviderElement> newList = ProviderElements.Where(s=> parameter.Split(" ").All(p=>s.ToString().ToLower().Contains(p))).ToList();
             listBox.ItemsSource = newList;
-            if (listBox.SelectedIndex == -1) listBox.SelectedIndex = 0;
+            selectDefaultValues();
         }
 
         private string[] FindValuesFromCimClass(ElementViewModel vm)
@@ -234,17 +265,17 @@ namespace XMLCodeGenerator.View
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void EntitySelected(object sender, SelectionChangedEventArgs e)
-        {
-            ProviderElements.Clear();
-            if (SelectedEntity == null)
-                return;
-            ProviderElements.AddRange(SelectedEntity.Attributes);
-            filter();
-            listBox.SelectedIndex = MultiSelect ? -1 : 0;
-            selectDefaultValues();
-            search.Focus();
-        }
+        //private void EntitySelected(object sender, SelectionChangedEventArgs e)
+        //{
+        //    ProviderElements.Clear();
+        //    if (SelectedEntity == null)
+        //        return;
+        //    ProviderElements.AddRange(SelectedEntity.Attributes);
+        //    filter();
+        //    listBox.SelectedIndex = MultiSelect ? -1 : 0;
+        //    selectDefaultValues();
+        //    search.Focus();
+        //}
         private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Select();

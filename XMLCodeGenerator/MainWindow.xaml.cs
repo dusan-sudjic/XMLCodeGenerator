@@ -240,7 +240,7 @@ namespace XMLCodeGenerator
                             string name = personNode.SelectSingleNode("Name")?.InnerText.Trim();
                             SourceProviderEntity entity = new SourceProviderEntity(name);
                             foreach (XmlNode attributeNode in personNode.SelectNodes("EntityAttribute"))
-                                entity.Attributes.Add(new SourceProviderAttribute(attributeNode.Attributes["Name"]?.Value, name));
+                                entity.Attributes.Add(new SourceProviderAttribute(attributeNode.Attributes["Name"]?.Value));
                             SourceProviderEntities.Add(entity);
                         }
                         isSourceProviderImported = true;

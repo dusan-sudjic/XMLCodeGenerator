@@ -8,10 +8,21 @@ namespace XMLCodeGenerator.Model.ProvidersConfig
 {
     public class SourceProviderAttribute : ProviderElement
     {
-        public string EntityName { get; init; }
-        public SourceProviderAttribute(string name, string entityName) : base(name) 
+        public SourceProviderAttribute(string name) : base(name) {}
+        public HashSet<SourceProviderEntity> IncludedInEntities { get; set; } = new();
+        public string IncludedInEntitiesLabel
         {
-            EntityName = entityName;
+            get {
+                string ret = "";
+                foreach (var ent in IncludedInEntities)
+                    ret += ent.Name + ", ";
+                return ret.Substring(0, ret.Length - 2);
+            }
+            set { }
+        }
+        public override string ToString()
+        {
+            return Name + " " + IncludedInEntitiesLabel;
         }
     }
 }
