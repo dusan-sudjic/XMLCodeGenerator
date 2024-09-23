@@ -17,9 +17,9 @@ namespace XMLCodeGenerator.ViewModel
     {
         public string XMLName { get => Element.XMLName; set { } }
         public string Name { get => Element.Name; set { } }
-        public bool IsWrapperElement { get => String.IsNullOrEmpty(XMLName); set { } }
-        public bool IsExtendableAndIsNotWrapperElement { get => IsExtendable && !IsWrapperElement; set { } }
-        public bool IsExtendedAndIsNotWrapperElement { get => IsExtended && !IsWrapperElement; set { } }
+        public bool IsNotWrapperElement { get =>!String.IsNullOrEmpty(XMLName); set { } }
+        public bool IsExtendedAndIsNotWrapperElement { get => IsNotWrapperElement && IsExtended; set { } }
+        public bool IsExtendableAndIsNotWrapperElement { get=> IsExtendable && IsNotWrapperElement; set { } }
         public ContentBlockModel ParentContentBlock { get => Element.ParentContentBlock; }
         public bool HasAttributes { get => Element.Model.Attributes.Count > 0; }
         public bool HasEditableAttributes { get => Element.Model.Attributes.Where(a => a.Editable).ToList().Count > 0; }

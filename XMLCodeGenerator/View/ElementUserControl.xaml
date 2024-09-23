@@ -78,7 +78,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel ToolTip="{Binding Name}" x:Name="SidePanel" Visibility="{Binding IsExtendableAndIsNotWrapperElement, Converter={StaticResource BooleanToVisibilityConverter}}" Width="20" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <ToggleButton x:Name="ToggleButton" Cursor="Hand" Content="-" Visibility="{Binding IsExtendable, Converter={StaticResource BooleanToVisibilityConverter}}" FontWeight="Bold" Width="20" Height="20" Margin="0 5 0 0" Click="ToggleButton_Click" FontSize="10" Padding="0"/>
+                <ToggleButton x:Name="ToggleButton" Cursor="Hand" Content="-" FontWeight="Bold" Width="20" Height="20" Margin="0 5 0 0" Click="ToggleButton_Click" FontSize="10" Padding="0"/>
             </StackPanel>
             <Grid Name="MainGrid" ToolTip="{Binding Name}" Grid.Column="1" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
@@ -97,14 +97,10 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Cursor="Hand" Height="24"  Visibility="{Binding IsWrapperElement, Converter={StaticResource InverseBooleanToVisibilityConverter}}"  MouseLeftButtonDown="XMLPreview_Click" Margin="5" VerticalAlignment="Bottom" Padding="0 3 0 0">
+                    <TextBlock Grid.Column="0" Cursor="Hand" Height="24" Visibility="{Binding IsNotWrapperElement, Converter={StaticResource BooleanToVisibilityConverter}}" MouseLeftButtonDown="XMLPreview_Click" Margin="5" VerticalAlignment="Bottom" Padding="0 3 0 0">
                         <Run Text="{Binding Name}"/>
                         <Run Text="{Binding AdditionalInfo}" FontWeight="Bold" />
                         <Run Text="{Binding FunctionCalls}" Foreground="CornflowerBlue" FontStyle="Italic"/>
-                    </TextBlock>
-                    <TextBlock Grid.Column="0" Height="24" FontStyle="Italic" Foreground="Gray" Visibility="{Binding IsWrapperElement, Converter={StaticResource BooleanToVisibilityConverter}}"  Margin="5" VerticalAlignment="Bottom" Padding="0 3 0 0">
-                        <Run Text="Wrapper element for"/>
-                        <Run Text="{Binding Name}"/>
                     </TextBlock>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0 0 0 0" HorizontalAlignment="Left" Height="25" x:Name="AttributesContainer" Visibility="{Binding IsUnextendableAndHasEditableAttributes, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ItemsControl x:Name="itemsControlUnextendedAttributes" ItemsSource="{Binding Attributes}">
@@ -204,13 +200,9 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
-                <Label x:Name="EndLabel" Visibility="{Binding IsExtendedAndIsNotWrapperElement, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Grid.Row="3" Content="{Binding Name}" Padding="0 0 5 0" HorizontalAlignment="Right" VerticalAlignment="Bottom"></Label>
-                <Label x:Name="EndLabelWrapper" Visibility="{Binding IsWrapperElement, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Grid.Row="3" FontStyle="Italic" Foreground="Gray" Padding="0 0 5 0" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                    <TextBlock>
-                        <Run Text="Wrapper element for"/>
-                        <Run Text="{Binding Name}"/>
-                    </TextBlock>
-                </Label>
+                <StackPanel Height="10" Grid.Row="3" Visibility="{Binding IsExtended, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Label x:Name="EndLabel" Visibility="{Binding IsNotWrapperElement, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Content="{Binding Name}" Padding="0 0 5 0" HorizontalAlignment="Right" VerticalAlignment="Top"></Label>
+                </StackPanel>
             </Grid>
         </Grid>
     </Border>
