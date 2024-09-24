@@ -41,7 +41,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding Name}" FontSize="12"/>
+                        <TextBlock Text="{Binding DisplayedName}" FontSize="12"/>
                         <TextBlock FontSize="8"
                                    MaxWidth="330"
                                    Margin="0 1 0 0"

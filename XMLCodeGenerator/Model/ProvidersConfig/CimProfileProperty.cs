@@ -14,10 +14,11 @@ namespace XMLCodeGenerator.Model.ProvidersConfig
         {
             Type = type;
             ClassName = className;
+            DisplayedName = $"{ClassName}.{Name} : {Type}";
         }
         public override string ToString()
         {
-            return $"{Name} : {Type}";
+            return $"{ClassName}.{Name}";
         }
     }
 }

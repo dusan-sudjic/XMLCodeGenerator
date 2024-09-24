@@ -35,8 +35,11 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
-        public DocumentViewModel() { }
-        public void setup()
+        public DocumentViewModel() 
+        {
+            ElementModelProvider.LoadModel();
+        }
+        public void Setup()
         {
             CimClasses = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("CimClasses")));
             FunctionDefinitions = new ElementViewModel(new Element(ElementModelProvider.GetElementModelByName("FunctionDefinitions")));

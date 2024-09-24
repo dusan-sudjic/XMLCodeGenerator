@@ -19,10 +19,7 @@ namespace XMLCodeGenerator.Model.ProvidersConfig
             foreach (var property in type.GetProperties())
                 if(!property.Name.EndsWith("HasValue") && !(property.Name.StartsWith("Is") && property.Name.EndsWith("Mandatory")) && !property.Name.EndsWith("Prefix"))
                     Properties.Add(new CimProfileProperty(property.Name, property.PropertyType.Name, Name));
-        }
-        public override string ToString()
-        {
-            return $"{Name} (inherits from {InheritedClass})";
+            DisplayedName = $"{Name} (inherits from {InheritedClass})";
         }
     }
 }

@@ -8,7 +8,7 @@ namespace XMLCodeGenerator.Model.ProvidersConfig
 {
     public class SourceProviderAttribute : ProviderElement
     {
-        public SourceProviderAttribute(string name) : base(name) {}
+        public SourceProviderAttribute(string name) : base(name) { }
         public HashSet<SourceProviderEntity> IncludedInEntities { get; set; } = new();
         public string IncludedInEntitiesLabel
         {

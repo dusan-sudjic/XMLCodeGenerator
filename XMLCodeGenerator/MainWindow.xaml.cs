@@ -15,52 +15,23 @@ namespace XMLCodeGenerator
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public static List<CimProfileClass> CimProfileClasses = new();
-        public static List<SourceProviderEntity> SourceProviderEntities = new();
-        private bool _isCimProfileImported;
-        public bool IsCimProfileImported
-        { 
-            get => _isCimProfileImported; 
-            set { 
-                if(value!= _isCimProfileImported) 
-                {
-                    _isCimProfileImported = value;
-                    OnPropertyChanged();
-                }
-            } 
-        }
-        private bool _isSourceProviderImported;
-        public bool isSourceProviderImported
-        {
-            get => _isSourceProviderImported;
-            set
-            {
-                if (value != _isSourceProviderImported)
-                {
-                    _isSourceProviderImported = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public static ProvidersViewModel ProvidersViewModel { get; set; } = new();
         public static XmlPreviewUserControl xmlPreviewControl { get; set; }
         public ICommand AddClassCommand { get; set; }
         public ICommand ExportToXmlCommand { get; set; }
         public ICommand OpenExistingFileCommand { get; set; }
         public ICommand OpenNewProjectCommand { get; set; }
-        public static DocumentViewModel Document { get; set; }
+        public static DocumentViewModel Document { get; set; } = new();
         public MainWindow()
         {
             InitializeComponent();
-            ElementModelProvider.LoadModel();
-            Document = new DocumentViewModel();
-            Document.setup();
+            Document.Setup();
             AddClassCommand = new RelayCommand(ExecuteAddNewCimClassCommand);
             ExportToXmlCommand = new RelayCommand(ExecuteExportToXmlCommand);
             OpenExistingFileCommand = new RelayCommand(ExecuteOpenExistingFileCommand);
             OpenNewProjectCommand = new RelayCommand(ExecuteOpenNewProjectCommand);
-            IsCimProfileImported = false;
             xmlPreviewControl = (XmlPreviewUserControl)this.FindName("xmlPreview");
-            this.DataContext = this;
+            DataContext = this;
         }
 
         public void ExportToXml(object sender, RoutedEventArgs e)
@@ -160,14 +131,14 @@ namespace XMLCodeGenerator
             if (openFileDialog.ShowDialog() == true)
             {
                 string filePath = openFileDialog.FileName;
-                //try
-                //{
+                try
+                {
                     Document.LoadFromXmlDocument(filePath);
-                //}
-                //catch(Exception e)
-                //{
-                //    MessageBox.Show(e.Message);
-                //}
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
             }
         }
         public void ExecuteExportToXmlCommand(object parameter)
@@ -195,64 +166,33 @@ namespace XMLCodeGenerator
         }
         public void ImportCimProfile(object sender, RoutedEventArgs e)
         {
-            CimProfileClasses.Clear();   
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "DLL Files (*.dll)|*.dll";
 
             if (openFileDialog.ShowDialog() == true)
             {
-                string filePath = openFileDialog.FileName;
-
-                try
-                {
-                    Assembly assembly = Assembly.LoadFrom(filePath);
-                    Type[] types = assembly.GetTypes();
-                    foreach (Type type in types)
-                        if(!type.IsAbstract)
-                            CimProfileClasses.Add(new CimProfileClass(type));
-                    IsCimProfileImported = true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error loading classes from file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                ProvidersViewModel.CimProfilePath = openFileDialog.FileName;
+                LoadCimProfile();
             }
+        }
+        public static void LoadCimProfile()
+        {
+            ProvidersViewModel.LoadCimProfile();
         }
         public void ImportSourceProvider(object sender, RoutedEventArgs e)
         {
-            SourceProviderEntities.Clear();
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "XML Files (*.xml)|*.xml";
 
             if (openFileDialog.ShowDialog() == true)
             {
-                string filePath = openFileDialog.FileName;
-                try
-                {
-                    XmlDocument xmlDoc = new XmlDocument();
-                    xmlDoc.Load(filePath);
-                    XmlNodeList entitityNodes = xmlDoc.SelectNodes("//Entity");
-
-                    if (entitityNodes != null)
-                    {
-                        foreach (XmlNode personNode in entitityNodes)
-                        {
-                            string name = personNode.SelectSingleNode("Name")?.InnerText.Trim();
-                            SourceProviderEntity entity = new SourceProviderEntity(name);
-                            foreach (XmlNode attributeNode in personNode.SelectNodes("EntityAttribute"))
-                                entity.Attributes.Add(new SourceProviderAttribute(attributeNode.Attributes["Name"]?.Value));
-                            SourceProviderEntities.Add(entity);
-                        }
-                        isSourceProviderImported = true;
-                    }
-                    else
-                        MessageBox.Show("No <Entity> elements found in the XML document.");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error loading or processing XML file: {ex.Message}");
-                }
+                ProvidersViewModel.SourceProviderPath = openFileDialog.FileName;
+                LoadSourceProvider();
             }
+        }
+        public static void LoadSourceProvider()
+        {
+            ProvidersViewModel.LoadSourceProvider();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

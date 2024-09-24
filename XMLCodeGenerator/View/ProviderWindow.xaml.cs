@@ -75,19 +75,19 @@ namespace XMLCodeGenerator.View
             {
                 case Model.Elements.InputType.CIM_PROFILE_CLASS: 
                     {
-                        ProviderElements.AddRange(MainWindow.CimProfileClasses);
+                        MainWindow.LoadCimProfile();
+                        ProviderElements.AddRange(MainWindow.ProvidersViewModel.CimProfileClasses);
                         break; 
                     }
                 case Model.Elements.InputType.CIM_PROFILE_PROPERTY: 
                     {
+                        MainWindow.LoadCimProfile();
                         string className = attribute.Element.Parent.Attributes[0].Value;
-                        CimProfileClass cl = MainWindow.CimProfileClasses.Where(c => c.Name == className).FirstOrDefault();
+                        CimProfileClass cl = MainWindow.ProvidersViewModel.CimProfileClasses.Where(c => c.Name == className).FirstOrDefault();
                         if (cl == null)
                         {
-                            foreach (var c in MainWindow.CimProfileClasses)
-                                foreach (var p in c.Properties)
-                                    if (ProviderElements.Where(e => e.Name.Equals(p.Name)).ToList().Count == 0)
-                                        ProviderElements.Add(p);
+                            foreach (var c in MainWindow.ProvidersViewModel.CimProfileClasses)
+                                ProviderElements.AddRange(c.Properties);
                             break;
                         }
                         ProviderElements.AddRange(cl.Properties);
@@ -95,19 +95,21 @@ namespace XMLCodeGenerator.View
                     }
                 case Model.Elements.InputType.SOURCE_PROVIDER_ENTITY: 
                     {
+                        MainWindow.LoadSourceProvider();
                         MultiSelect = true;
-                        ProviderElements.AddRange(MainWindow.SourceProviderEntities);
+                        ProviderElements.AddRange(MainWindow.ProvidersViewModel.SourceProviderEntities);
                         break; 
                     }
                 case Model.Elements.InputType.SOURCE_PROVIDER_ATTRIBUTE: 
                     {
+                        MainWindow.LoadSourceProvider();
                         ChoosingAttribute = true;
                         string[] values = FindValuesFromCimClass(attribute.Element);
                         List<SourceProviderEntity> entities;
                         if (values != null)
-                            entities = MainWindow.SourceProviderEntities.Where(c => values.Any(v => v.Equals(c.Name))).ToList();
+                            entities = MainWindow.ProvidersViewModel.SourceProviderEntities.Where(c => values.Any(v => v.Equals(c.Name))).ToList();
                         else
-                            entities = MainWindow.SourceProviderEntities;
+                            entities = MainWindow.ProvidersViewModel.SourceProviderEntities;
                         if (entities.Any())
                         {
                             foreach(var ent in entities)
@@ -240,9 +242,7 @@ namespace XMLCodeGenerator.View
         {
             string parameter = ChoosingAttribute ? SearchText.ToLower() : search.Text.ToLower();
             List<ProviderElement> newList = ProviderElements
-                .Where(s=> 
-                    parameter.Split(" ").All(p=>s.ToString().ToLower().Contains(p))
-                 )
+                .Where(s=> parameter.Split(" ").All(p=>s.ToString().ToLower().Contains(p)))
                 .ToList();
             listBox.ItemsSource = newList;
             selectDefaultValues();

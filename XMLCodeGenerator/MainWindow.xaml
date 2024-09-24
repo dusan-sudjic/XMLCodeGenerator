@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:XMLCodeGenerator" xmlns:local1="clr-namespace:XMLCodeGenerator.View"
-        xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:behaviors="clr-namespace:XMLCodeGenerator.Behaviors"
+        xmlns:local1="clr-namespace:XMLCodeGenerator.View"
         mc:Ignorable="d"
         xmlns:view="clr-namespace:XMLCodeGenerator.View"
         Title="Element mapping"
@@ -95,12 +94,12 @@
                 </Menu>
                 <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Orientation="Horizontal">
                     <StackPanel Orientation="Horizontal">
-                        <Button VerticalAlignment="Bottom" Cursor="Hand" Click="ImportSourceProvider" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding isSourceProviderImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Source provider not imported</Button>
-                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding isSourceProviderImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Source provider imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Click="ImportSourceProvider" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding ProvidersViewModel.isSourceProviderImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Source provider not imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding ProvidersViewModel.isSourceProviderImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Source provider imported</Button>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Button VerticalAlignment="Bottom" Cursor="Hand" Click="ImportCimProfile" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding IsCimProfileImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Cim pofile not imported</Button>
-                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding IsCimProfileImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Cim profile imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Click="ImportCimProfile" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding ProvidersViewModel.IsCimProfileImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Cim pofile not imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding ProvidersViewModel.IsCimProfileImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Cim profile imported</Button>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
