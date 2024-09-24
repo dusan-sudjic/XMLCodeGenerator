@@ -23,8 +23,8 @@ namespace XMLCodeGenerator.View
 {
     public partial class ProviderWindow : Window, INotifyPropertyChanged
     {
-        public List<ProviderElement> ProviderElements { get; set; }
-        public ObservableCollection<SourceProviderEntity> Entities { get; set; }
+        public List<ProviderElement> ProviderElements { get; set; } = new();
+        public ObservableCollection<SourceProviderEntity> Entities { get; set; } = new();
         private bool _multiSelect;
         public bool MultiSelect { 
             get => _multiSelect;
@@ -69,9 +69,7 @@ namespace XMLCodeGenerator.View
         {
             InitializeComponent();
             DataContext = this;
-            ProviderElements = new();
             Attribute = attribute;
-            search.Focus();
             MultiSelect = false;
             switch (attribute.InputType) 
             {
@@ -104,19 +102,15 @@ namespace XMLCodeGenerator.View
                 case Model.Elements.InputType.SOURCE_PROVIDER_ATTRIBUTE: 
                     {
                         ChoosingAttribute = true;
-                        Entities = new();
                         string[] values = FindValuesFromCimClass(attribute.Element);
                         List<SourceProviderEntity> entities;
                         if (values != null)
                             entities = MainWindow.SourceProviderEntities.Where(c => values.Any(v => v.Equals(c.Name))).ToList();
                         else
                             entities = MainWindow.SourceProviderEntities;
-                        foreach(var e in entities)
-                            Entities.Add(e);
-                        EntitiesComboBox.Focus();
-                        if (Entities.Any())
+                        if (entities.Any())
                         {
-                            foreach(var ent in Entities)
+                            foreach(var ent in entities)
                             {
                                 foreach(var attr in ent.Attributes)
                                 {
@@ -131,10 +125,13 @@ namespace XMLCodeGenerator.View
                                 }
                             }
                         }
+                        foreach (var e in entities)
+                            Entities.Add(e);
                         break; 
                     }
                 default: break;
             }
+            search.Focus();
             listBox.ItemsSource = ProviderElements;
             listBox.SelectionMode = MultiSelect ? SelectionMode.Multiple : SelectionMode.Single;
             selectDefaultValues();
@@ -178,7 +175,6 @@ namespace XMLCodeGenerator.View
                 e.Handled = true;
             }
         }
-
         private void OnDownArrowPressed()
         {
             if (listBox.SelectedIndex == -1)
@@ -211,7 +207,6 @@ namespace XMLCodeGenerator.View
         {
             Select();
         }
-
         private void Select()
         {
             if (MultiSelect)
@@ -241,15 +236,17 @@ namespace XMLCodeGenerator.View
         {
             filter();
         }
-
         private void filter()
         {
             string parameter = ChoosingAttribute ? SearchText.ToLower() : search.Text.ToLower();
-            List<ProviderElement> newList = ProviderElements.Where(s=> parameter.Split(" ").All(p=>s.ToString().ToLower().Contains(p))).ToList();
+            List<ProviderElement> newList = ProviderElements
+                .Where(s=> 
+                    parameter.Split(" ").All(p=>s.ToString().ToLower().Contains(p))
+                 )
+                .ToList();
             listBox.ItemsSource = newList;
             selectDefaultValues();
         }
-
         private string[] FindValuesFromCimClass(ElementViewModel vm)
         {
             if (vm.Parent == null)
@@ -264,18 +261,6 @@ namespace XMLCodeGenerator.View
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        //private void EntitySelected(object sender, SelectionChangedEventArgs e)
-        //{
-        //    ProviderElements.Clear();
-        //    if (SelectedEntity == null)
-        //        return;
-        //    ProviderElements.AddRange(SelectedEntity.Attributes);
-        //    filter();
-        //    listBox.SelectedIndex = MultiSelect ? -1 : 0;
-        //    selectDefaultValues();
-        //    search.Focus();
-        //}
         private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Select();
