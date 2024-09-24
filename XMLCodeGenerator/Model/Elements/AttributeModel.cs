@@ -12,6 +12,7 @@ namespace XMLCodeGenerator.Model.Elements
         public string Name { get; set; }
         public ValueType ValueType { get; set; }
         public InputType InputType { get; set; }
+        public ValueMappingComponent ValueMappingComponent { get; set; } = ValueMappingComponent.NONE;
         public bool IsRequired { get; set; }
         public bool Editable { get; set; }
         public string DefaultValue {  get; set; }
@@ -20,6 +21,8 @@ namespace XMLCodeGenerator.Model.Elements
             Name = node.Attributes["Name"]?.InnerText;
             IsRequired = bool.Parse(node.Attributes["IsRequired"]?.InnerText);
             ValueType = (ValueType)Enum.Parse(typeof(ValueType), node.Attributes["ValueType"]?.InnerText);
+            if(node.Attributes["ValueMappingComponent"]!=null)
+                ValueMappingComponent = (ValueMappingComponent)Enum.Parse(typeof(ValueMappingComponent), node.Attributes["ValueMappingComponent"]?.InnerText);
             InputType = (InputType)Enum.Parse(typeof(InputType), node.Attributes["Input"]?.InnerText);
             var editableText = node.Attributes["Editable"]?.InnerText;
             switch (ValueType)
@@ -54,5 +57,9 @@ namespace XMLCodeGenerator.Model.Elements
     public enum InputType
     {
         USER_INPUT, SOURCE_PROVIDER_ENTITY, SOURCE_PROVIDER_ATTRIBUTE, CIM_PROFILE_CLASS, CIM_PROFILE_PROPERTY
+    }
+    public enum ValueMappingComponent
+    {
+        NONE, CLASS, ASSEMBLY, FOLDER_STRUCTURE
     }
 }

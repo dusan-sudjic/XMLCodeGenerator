@@ -16,6 +16,7 @@ namespace XMLCodeGenerator.Model.Elements
         public List<ContentBlockModel> ContentBlocks { get; set; }
         public List<AttributeModel> Attributes { get; set; }
         public string NamespacePrefix { get; set; } = null;
+        public string MappingInterface { get; set; } = null;
         protected ElementModel() { }
         public ElementModel(XmlNode node)
         {
@@ -24,6 +25,7 @@ namespace XMLCodeGenerator.Model.Elements
             Name = node.Attributes["Name"]?.InnerText;
             XMLName = node.Attributes["XMLName"]?.InnerText;
             NamespacePrefix = node.Attributes["NamespacePrefix"]?.InnerText;
+            MappingInterface = node.Attributes["MappingInterface"]?.InnerText;
             FirstInContentBlockName = node.Attributes["FirstInContentBlockName"]?.InnerText;
             foreach (XmlNode attributeNode in node.SelectNodes("Attribute"))
                 Attributes.Add(new AttributeModel(attributeNode));

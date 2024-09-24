@@ -107,9 +107,31 @@ namespace XMLCodeGenerator
             else if (tab.SelectedIndex == 1)
                 AddNewCimFunction();
             else if (tab.SelectedIndex == 2)
-                Document.AddPreprocessProcedure();
+            {
+                ElementViewModel newElement = Document.AddPreprocessProcedure();
+                if (newElement.Element.Model.MappingInterface != null)
+                {
+                    MessageBoxResult result = MessageBox.Show("Do you want to map this element to a class?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        MappingClassesWindow mappingWindow = new MappingClassesWindow(newElement);
+                        mappingWindow.ShowDialog();
+                    }
+                }
+            }
             else if (tab.SelectedIndex == 3)
-                Document.AddRewritingProcedure();
+            {
+                ElementViewModel newElement = Document.AddRewritingProcedure();
+                if (newElement.Element.Model.MappingInterface != null)
+                {
+                    MessageBoxResult result = MessageBox.Show("Do you want to map this element to a class?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        MappingClassesWindow mappingWindow = new MappingClassesWindow(newElement);
+                        mappingWindow.ShowDialog();
+                    }
+                }
+            }
         }
         public void ExecuteOpenExistingFileCommand(object parameter)
         {

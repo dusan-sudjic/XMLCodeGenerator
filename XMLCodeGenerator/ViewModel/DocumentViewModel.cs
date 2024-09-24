@@ -143,15 +143,17 @@ namespace XMLCodeGenerator.ViewModel
             ElementViewModel vm = FunctionDefinitions.ChildViewModels.FirstOrDefault(c => c.Attributes[0].Value.Equals(functionName));
             vm.OnPropertyChanged("FunctionCalls");
         }
-        public void AddPreprocessProcedure()
+        public ElementViewModel AddPreprocessProcedure()
         {
-            PreProcessProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("PreProcessProcedure"));
+            ElementViewModel ret = PreProcessProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("PreProcessProcedure"));
             UpdateMovable(PreProcessProcedures);
+            return ret;
         }
-        public void AddRewritingProcedure()
+        public ElementViewModel AddRewritingProcedure()
         {
-            RewritingProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("RewritingProcedure"));
+            ElementViewModel ret = RewritingProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("RewritingProcedure"));
             UpdateMovable(RewritingProcedures);
+            return ret;
         }
         public void AddFunctionDefinition(string name)
         {

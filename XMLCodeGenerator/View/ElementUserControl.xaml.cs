@@ -62,8 +62,17 @@ namespace XMLCodeGenerator.View
             AddChildElementWindow window = new AddChildElementWindow(Element, true);
             if (window.ShowDialog() == true)
             {
-                Element.ReplaceElement(window.SelectedElement);
+                var newElement = Element.ReplaceElement(window.SelectedElement);
                 SetButtons();
+                if(newElement.Element.Model.MappingInterface != null)
+                {
+                    MessageBoxResult result = MessageBox.Show("Do you want to map this element to a class?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        MappingClassesWindow mappingWindow = new MappingClassesWindow(newElement);
+                        mappingWindow.ShowDialog();
+                    }
+                }
             }
         }
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
@@ -110,17 +119,28 @@ namespace XMLCodeGenerator.View
         }
         private void AddChildElement_Click(object sender, RoutedEventArgs e)
         {
+            ElementModel chosenModel = null;
             if (Element.DefaultNewChild == null)
             {
                 AddChildElementWindow window = new AddChildElementWindow(Element);
                 if (window.ShowDialog() == true)
-                    Element.AddNewChildElement(window.SelectedElement);
+                    chosenModel = window.SelectedElement;
             }
             else
             {
-                Element.AddNewChildElement(Element.DefaultNewChild);
+                chosenModel = Element.DefaultNewChild;
             }
+            ElementViewModel newElement = Element.AddNewChildElement(chosenModel);
             SetButtons();
+            if (newElement.Element.Model.MappingInterface != null)
+            {
+                MessageBoxResult result = MessageBox.Show("Do you want to map this element to a class?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    MappingClassesWindow mappingWindow = new MappingClassesWindow(newElement);
+                    mappingWindow.ShowDialog();
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

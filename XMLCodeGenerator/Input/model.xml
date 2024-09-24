@@ -33,18 +33,18 @@
 				RewritingProcedure
 			</ContentBlock>
 		</Element>
-		<Element Name="PreProcessProcedure" XMLName="PreProcessProcedure">
-			<Attribute Name="ClassName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
-			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
-			<Attribute Name="AdditionalFolderStructure" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+		<Element Name="PreProcessProcedure" XMLName="PreProcessProcedure" MappingInterface="IMappingPreProcessorProcedure">
+			<Attribute Name="ClassName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="CLASS"/>
+			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="ASSEMBLY"/>
+			<Attribute Name="AdditionalFolderStructure" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="FOLDER_STRUCTURE"/>
 			<ContentBlock MinSize="0" MaxSize="1">
 				Parameters
 			</ContentBlock>
 		</Element>
-		<Element Name="RewritingProcedure" XMLName="RewritingProcedure">
-			<Attribute Name="ClassName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
-			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
-			<Attribute Name="AdditionalFolderStructure" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+		<Element Name="RewritingProcedure" XMLName="RewritingProcedure" MappingInterface="IMappingRewritingProcedure">
+			<Attribute Name="ClassName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="CLASS"/>
+			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="ASSEMBLY"/>
+			<Attribute Name="AdditionalFolderStructure" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="FOLDER_STRUCTURE"/>
 			<ContentBlock MinSize="0" MaxSize="1">
 				Parameters
 			</ContentBlock>
@@ -448,9 +448,9 @@
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="ProjectCustomOperator" XMLName="ProjectCustomOperator" NamespacePrefix="op">
-			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
-			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+		<Element Name="ProjectCustomOperator" XMLName="ProjectCustomOperator" NamespacePrefix="op" MappingInterface="IOperator">
+			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="CLASS"/>
+			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="ASSEMBLY"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>

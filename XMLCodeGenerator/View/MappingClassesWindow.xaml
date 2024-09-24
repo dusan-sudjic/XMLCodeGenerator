@@ -1,0 +1,25 @@
+﻿<Window x:Class="XMLCodeGenerator.View.MappingClassesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:XMLCodeGenerator.View"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="Choose class for mapping" Height="400" Width="360" WindowStartupLocation="CenterScreen">
+    <StackPanel>
+        <GroupBox Header="Path to dll file" Margin="10">
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label x:Name="PathLabel" Content="{Binding FilePath}" Foreground="Gray" HorizontalAlignment="Left" Grid.Column="0"/>
+                <Button Click="ChooseDllFile_Click" HorizontalAlignment="Right" Grid.Column="1">Choose</Button>
+            </Grid>
+        </GroupBox>
+        <xctk:WatermarkTextBox Width="160" x:Name="search" Watermark="Search" Margin="10 0 10 10"></xctk:WatermarkTextBox>
+        <ListBox x:Name="listBox" SelectionMode="Single" Height="220" ItemsSource="{Binding Classes}" SelectedItem="{Binding SelectedClass}"></ListBox>
+        <Button Content="Select" Click="OKButton_Click" Margin="10" Width="100"/>
+    </StackPanel>
+</Window>

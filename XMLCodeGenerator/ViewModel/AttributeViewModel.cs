@@ -41,6 +41,18 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
+        public Model.Elements.ValueMappingComponent ValueMappingComponent
+        { 
+            get => Attribute.ValueMappingComponent;
+            set
+            {
+                if(value!= Attribute.ValueMappingComponent)
+                {
+                    Attribute.ValueMappingComponent = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public InputType InputType
         { 
             get => Attribute.InputType;
