@@ -33,7 +33,7 @@
 				RewritingProcedure
 			</ContentBlock>
 		</Element>
-		<Element Name="PreProcessProcedure" XMLName="PreProcessProcedure" MappingInterface="IMappingPreProcessorProcedure">
+		<Element Name="PreProcessProcedure" XMLName="PreProcessProcedure" ClassMappingEnabled="true">
 			<Attribute Name="ClassName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="CLASS"/>
 			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="ASSEMBLY"/>
 			<Attribute Name="AdditionalFolderStructure" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="FOLDER_STRUCTURE"/>
@@ -41,7 +41,7 @@
 				Parameters
 			</ContentBlock>
 		</Element>
-		<Element Name="RewritingProcedure" XMLName="RewritingProcedure" MappingInterface="IMappingRewritingProcedure">
+		<Element Name="RewritingProcedure" XMLName="RewritingProcedure" ClassMappingEnabled="true">
 			<Attribute Name="ClassName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="CLASS"/>
 			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="ASSEMBLY"/>
 			<Attribute Name="AdditionalFolderStructure" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="FOLDER_STRUCTURE"/>
@@ -448,7 +448,7 @@
 				Expression
 			</ContentBlock>
 		</Element>
-		<Element Name="ProjectCustomOperator" XMLName="ProjectCustomOperator" NamespacePrefix="op" MappingInterface="IOperator">
+		<Element Name="ProjectCustomOperator" XMLName="ProjectCustomOperator" NamespacePrefix="op" ClassMappingEnabled="true">
 			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="CLASS"/>
 			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="ASSEMBLY"/>
 			<ContentBlock MinSize="1" MaxSize="1">

@@ -27,6 +27,7 @@ namespace XMLCodeGenerator.ViewModel
         public bool IsExtendable { get => Element.Model.ContentBlocks.Count > 0; set { } }
         public bool IsExtendedAndHasAttributes { get => IsExtended && HasAttributes; set { } }
         public bool IsMovable { get => IsMovableUp || IsMovableDown; set { } }
+        public bool IsClassMappingEnabled { get => Element.Model.ClassMappingEnabled; set { } }
         public bool IsMovableUp { 
             get
             {

@@ -4,7 +4,9 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Xml;
+using System.Xml.Linq;
 using XMLCodeGenerator.Commands;
 using XMLCodeGenerator.Model.Elements;
 using XMLCodeGenerator.Model.ProvidersConfig;
@@ -74,6 +76,23 @@ namespace XMLCodeGenerator
                 }
             }
         }
+        public static string GetInterfaceBasedOnTabForElement(DependencyObject elementUC)
+        {
+            while (elementUC != null)
+            {
+                if (elementUC is TabControl tabItem)
+                {
+                    switch (tabItem.SelectedIndex)
+                    {
+                        case 2: return "IMappingPreProcessorProcedure";
+                        case 3: return "IMappingRewritingProcedure";
+                        default: return "IOperator";
+                    }
+                }
+                elementUC = VisualTreeHelper.GetParent(elementUC);
+            }
+            return null;
+        }
         public static void RenameFunction(string oldFunctionName, string newFunctionName)
         {
             Document.RenameFunction(oldFunctionName, newFunctionName);
@@ -107,31 +126,9 @@ namespace XMLCodeGenerator
             else if (tab.SelectedIndex == 1)
                 AddNewCimFunction();
             else if (tab.SelectedIndex == 2)
-            {
-                ElementViewModel newElement = Document.AddPreprocessProcedure();
-                if (newElement.Element.Model.MappingInterface != null)
-                {
-                    MessageBoxResult result = MessageBox.Show("Do you want to map this element to a class?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        MappingClassesWindow mappingWindow = new MappingClassesWindow(newElement);
-                        mappingWindow.ShowDialog();
-                    }
-                }
-            }
+                Document.AddPreprocessProcedure();
             else if (tab.SelectedIndex == 3)
-            {
-                ElementViewModel newElement = Document.AddRewritingProcedure();
-                if (newElement.Element.Model.MappingInterface != null)
-                {
-                    MessageBoxResult result = MessageBox.Show("Do you want to map this element to a class?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        MappingClassesWindow mappingWindow = new MappingClassesWindow(newElement);
-                        mappingWindow.ShowDialog();
-                    }
-                }
-            }
+                Document.AddRewritingProcedure();
         }
         public void ExecuteOpenExistingFileCommand(object parameter)
         {

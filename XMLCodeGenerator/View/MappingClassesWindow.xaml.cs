@@ -24,14 +24,16 @@ namespace XMLCodeGenerator.View
     {
         const string FILE_NOT_IMPORTED_MESSAGE = "File not imported.";
         public static string FilePath { get; set; } = FILE_NOT_IMPORTED_MESSAGE;
+        public string MappingInterface { get; set; }
         public ElementViewModel Element { get; set; }
         public ClassItem SelectedClass { get; set; }
         public ObservableCollection<ClassItem> Classes { get; set; } = new();
-        public MappingClassesWindow(ElementViewModel element)
+        public MappingClassesWindow(ElementViewModel element, string mappingInterface)
         {
             InitializeComponent();
             DataContext = this;
             Element = element;
+            MappingInterface = mappingInterface;
             if (!FilePath.Equals(FILE_NOT_IMPORTED_MESSAGE))
                 LoadClassItemsFromFile();
         }
@@ -55,10 +57,10 @@ namespace XMLCodeGenerator.View
                 Assembly assembly = Assembly.LoadFrom(FilePath);
                 Type[] types = assembly.GetTypes();
                 foreach (Type type in types)
-                    if (type.GetInterface(Element.Element.Model.MappingInterface) != null)
+                    if (type.GetInterface(MappingInterface) != null)
                         Classes.Add(new ClassItem
                         {
-                            AssemblyName = assembly.FullName,
+                            AssemblyName = type.Namespace,
                             ClassName = type.Name,
                             FolderStructure = type.FullName
                         });

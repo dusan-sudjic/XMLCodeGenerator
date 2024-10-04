@@ -64,15 +64,6 @@ namespace XMLCodeGenerator.View
             {
                 var newElement = Element.ReplaceElement(window.SelectedElement);
                 SetButtons();
-                if(newElement.Element.Model.MappingInterface != null)
-                {
-                    MessageBoxResult result = MessageBox.Show("Do you want to map this element to a class?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        MappingClassesWindow mappingWindow = new MappingClassesWindow(newElement);
-                        mappingWindow.ShowDialog();
-                    }
-                }
             }
         }
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
@@ -132,15 +123,6 @@ namespace XMLCodeGenerator.View
             }
             ElementViewModel newElement = Element.AddNewChildElement(chosenModel);
             SetButtons();
-            if (newElement.Element.Model.MappingInterface != null)
-            {
-                MessageBoxResult result = MessageBox.Show("Do you want to map this element to a class?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes)
-                {
-                    MappingClassesWindow mappingWindow = new MappingClassesWindow(newElement);
-                    mappingWindow.ShowDialog();
-                }
-            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -171,6 +153,16 @@ namespace XMLCodeGenerator.View
         private void MoveDown_Click(object sender, RoutedEventArgs e)
         {
             Element.MoveDown();
+        }
+
+        private void MapToClassButton_Click(object sender, RoutedEventArgs e)
+        {
+            string mappingInterface = MainWindow.GetInterfaceBasedOnTabForElement(this);
+            if (mappingInterface != null)
+            {
+                MappingClassesWindow window = new(Element, mappingInterface);
+                window.ShowDialog();
+            }
         }
     }
 
