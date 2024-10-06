@@ -71,6 +71,19 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
+        private bool _isHighlighted;
+        public bool IsHighlighted
+        {
+            get => _isHighlighted;
+            set
+            {
+                if (value != _isHighlighted)
+                {
+                    _isHighlighted = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         private bool _hasRoomForNewChildElement;
         public bool HasRoomForNewChildElement
         {
@@ -389,9 +402,35 @@ namespace XMLCodeGenerator.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             RefreshMovable();
         }
+        public List<ElementViewModel> SearchElement(string[] parameters, List<ElementViewModel> resultsSoFar = null, bool skip = false)
+        {
+            if (resultsSoFar == null) resultsSoFar = new List<ElementViewModel>();
+            if(!skip && IsNotWrapperElement && parameters.All(p => ToString().ToLower().Contains(p.ToLower())))
+            {
+                resultsSoFar.Add(this);
+            }
+            foreach(var child in ChildViewModels)
+            {
+                child.SearchElement(parameters, resultsSoFar);
+            }
+            return resultsSoFar;
+        }
+        public string ListedAttributes
+        {
+            get
+            {
+                string ret = "[";
+                foreach (var attr in Attributes)
+                    ret += attr.ToString() + ", ";
+                if (Attributes.Any())
+                    ret = ret.Substring(0, ret.Length - 2);
+                return ret + "]";
+            }
+            set { }
+        }
         public override string ToString()
         {
-            return XMLName;
+            return $"{Name}{ListedAttributes}";
         }
     }
 }

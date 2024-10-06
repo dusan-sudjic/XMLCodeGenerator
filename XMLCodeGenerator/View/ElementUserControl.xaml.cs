@@ -48,9 +48,9 @@ namespace XMLCodeGenerator.View
             else
                 addButton.ToolTip = "Add new element to " + Element.Name;
             var deleteButton = (Button)this.FindName("DeleteButton");
-            deleteButton.ToolTip = "Delete " + Element.ToString();
+            deleteButton.ToolTip = "Delete " + Element.XMLName;
             var replaceButton = (Button)this.FindName("ReplaceButton");
-            replaceButton.ToolTip = "Replace " + Element.ToString();
+            replaceButton.ToolTip = "Replace " + Element.XMLName;
             var toggleButton = (ToggleButton)this.FindName("ToggleButton");
             toggleButton.Content = Element.IsExtended ? "-" : "+";
             Border dock = (Border)this.FindName("Border");

@@ -241,5 +241,11 @@ namespace XMLCodeGenerator
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private void SearchDocument_Click(object sender, RoutedEventArgs e)
+        {
+            int selectedTabIndex = TabControl.SelectedIndex;
+            Document.SearchDocument(selectedTabIndex);
+        }
     }
 }

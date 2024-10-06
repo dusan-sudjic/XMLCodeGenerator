@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
@@ -35,6 +36,21 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
+        private string _searchParameter = "";
+        public string SearchParameter
+        {
+            get => _searchParameter;
+            set
+            {
+                if(value != _searchParameter)
+                {
+                    _searchParameter = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public ElementViewModel SelectedSearchResult { get; set; }
+        public ObservableCollection<ElementViewModel> SearchResults { get; set; } = new();
         public DocumentViewModel() 
         {
             ElementModelProvider.LoadModel();
@@ -164,7 +180,6 @@ namespace XMLCodeGenerator.ViewModel
             foreach (var c in CimClasses.ChildViewModels)
                 c.SetReplacable();
         }
-
         private void UpdateMovable(ElementViewModel vm)
         {
             foreach (var c in vm.ChildViewModels)
@@ -174,7 +189,6 @@ namespace XMLCodeGenerator.ViewModel
                 c.OnPropertyChanged("IsMovable");
             }
         }
-
         public void RenameFunction(string oldName, string newName)
         {
             FunctionDefinitions.ChildViewModels.First(x => x.Attributes[0].Value.Equals(oldName)).Attributes[0].Value = newName;
@@ -191,8 +205,33 @@ namespace XMLCodeGenerator.ViewModel
             foreach (var c in CimClasses.ChildViewModels)
                 c.SetReplacable();
         }
+        public void SearchDocument(int selectedTabIndex)
+        {
+            resetDocumentSearch();
+            List<ElementViewModel> results = new();
+            if (SearchParameter.Trim().Equals(",") || SearchParameter.Trim().Length == 0 || SearchParameter.Trim().Equals("[") || SearchParameter.Trim().Equals("]"))
+                return;
+            string[] parameters = SearchParameter.Split(' ');
+            switch (selectedTabIndex)
+            {
+                case 0: { results = CimClasses.SearchElement(parameters, skip: true); break; }
+                case 1: { results = FunctionDefinitions.SearchElement(parameters, skip: true); break; }
+                case 2: { results = PreProcessProcedures.SearchElement(parameters, skip: true); break; }
+                case 3: { results = RewritingProcedures.SearchElement(parameters, skip: true); break; }
+            }
+            foreach (var item in results)
+            {
+                item.IsHighlighted = true;
+                SearchResults.Add(item);
+            }
+        }
+        private void resetDocumentSearch()
+        {
+            foreach(var item in SearchResults)
+                item.IsHighlighted = false;
+            SearchResults.Clear();
+        }
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (!propertyName.Equals("HasUnsavedChanges"))

@@ -6,12 +6,13 @@
         xmlns:local1="clr-namespace:XMLCodeGenerator.View"
         mc:Ignorable="d"
         xmlns:view="clr-namespace:XMLCodeGenerator.View"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Element mapping"
         xmlns:converters="clr-namespace:XMLCodeGenerator.Converters"
         WindowStartupLocation="CenterScreen"
         Background="White"
         Loaded="Window_Loaded">
-        
+
     <Window.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
@@ -65,7 +66,7 @@
                         <MenuItem Header="Provider reader" Click="ImportCimProfile"/>
                         <Separator />
                         <MenuItem Header="Source provider" Click="ImportSourceProvider" />
-                        </MenuItem>
+                    </MenuItem>
                     <MenuItem Header="Edit">
                         <MenuItem Header="Cut" />
                         <MenuItem Header="Copy" />
@@ -196,33 +197,37 @@
                             <view:XmlPreviewUserControl x:Name="xmlPreview"/>
                         </ScrollViewer>
                     </TabItem>
+                    <TabItem Header="Search document">
+                        <Border BorderBrush="Black" BorderThickness="2" Margin="10" Padding="5">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0 10 0 0" Height="25" HorizontalAlignment="Center">
+                                    <Label>Enter keywords for search</Label>
+                                    <xctk:WatermarkTextBox Width="160" Text="{Binding Document.SearchParameter}" x:Name="search" Watermark="Search" Margin="10 0 10 0"></xctk:WatermarkTextBox>
+                                    <Button Height="25" Width="30" Background="CornflowerBlue" Foreground="White" Click="SearchDocument_Click" Cursor="Hand" Margin="0" VerticalAlignment="Top">🔍</Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 0">
+                                    <ListBox Height="280" Width="300" SelectedItem="{Binding Document.SelectedSearchResult}" ItemsSource="{Binding Document.SearchResults}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <Label Content="{Binding Name}" FontWeight="Bold" FontSize="10" Margin="0"></Label>
+                                                    <TextBlock Text="{Binding ListedAttributes}" MaxWidth="300" TextWrapping="WrapWithOverflow" Margin="0 -2 0 3" FontSize="9"></TextBlock>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                    <StackPanel Orientation="Vertical">
+                                        <Button Background="CornflowerBlue" Width="25" Foreground="White" Cursor="Hand">▲</Button>
+                                        <Button Background="CornflowerBlue" Foreground="White" Cursor="Hand">▼</Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </TabItem>
                 </TabControl>
             </Border>
         </Grid>
-        
+
     </Grid>
-    
+
 </Window>
-    
-    
-    <!--
-    Isprekidan border
-    <Border.BorderBrush>
-    <DrawingBrush TileMode="Tile" Viewport="0,0,8,8" ViewportUnits="Absolute">
-        <DrawingBrush.Drawing>
-            <GeometryDrawing>
-                <GeometryDrawing.Geometry>
-                    <GeometryGroup>
-                        <LineGeometry StartPoint="0,0"  EndPoint="4,0"/>
-                        <LineGeometry StartPoint="0,4" EndPoint="4,4"/>
-                        <LineGeometry StartPoint="0,0" EndPoint="0,4"/>
-                        <LineGeometry StartPoint="4,0" EndPoint="4,4"/>
-                    </GeometryGroup>
-                </GeometryDrawing.Geometry>
-                <GeometryDrawing.Pen>
-                    <Pen Brush="Red" Thickness="2" />
-                </GeometryDrawing.Pen>
-            </GeometryDrawing>
-        </DrawingBrush.Drawing>
-    </DrawingBrush>
-</Border.BorderBrush>-->
