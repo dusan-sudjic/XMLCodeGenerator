@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using XMLCodeGenerator.Model.ProvidersConfig;
 using XMLCodeGenerator.ViewModel;
 
 namespace XMLCodeGenerator.View
@@ -36,6 +25,8 @@ namespace XMLCodeGenerator.View
             MappingInterface = mappingInterface;
             if (!FilePath.Equals(FILE_NOT_IMPORTED_MESSAGE))
                 LoadClassItemsFromFile();
+            listBox.SelectedIndex = 0;
+            search.Focus();
         }
         
         private void ChooseDllFile_Click(object sender, RoutedEventArgs e)
@@ -72,7 +63,12 @@ namespace XMLCodeGenerator.View
         }
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach(var attr in Element.Attributes)
+            Select();
+        }
+
+        private void Select()
+        {
+            foreach (var attr in Element.Attributes)
             {
                 switch (attr.ValueMappingComponent)
                 {
@@ -96,10 +92,69 @@ namespace XMLCodeGenerator.View
             }
             this.DialogResult = true;
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Down)
+            {
+                OnDownArrowPressed();
+                e.Handled = true;
+            }
+            if (e.Key == Key.Up)
+            {
+                OnUpArrowPressed();
+                e.Handled = true;
+            }
+            if (e.Key == Key.Enter)
+            {
+                Select();
+                e.Handled = true;
+            }
+        }
+
+        private void OnDownArrowPressed()
+        {
+            if (listBox.SelectedIndex == -1)
+            {
+                listBox.SelectedIndex = 0;
+                return;
+            }
+            if (listBox.SelectedIndex == listBox.Items.Count - 1)
+            {
+                listBox.SelectedIndex = 0;
+                return;
+            }
+            listBox.SelectedIndex++;
+        }
+        private void OnUpArrowPressed()
+        {
+            if (listBox.SelectedIndex == -1)
+            {
+                listBox.SelectedIndex = listBox.Items.Count - 1;
+                return;
+            }
+            if (listBox.SelectedIndex == 0)
+            {
+                listBox.SelectedIndex = listBox.Items.Count - 1;
+                return;
+            }
+            listBox.SelectedIndex--;
+        }
+        public void TextChanged(object sender, TextChangedEventArgs e)
+        {
+            List<ClassItem> newList = new();
+            foreach (var s in Classes)
+            {
+                if (s.ClassName.ToLower().Contains(search.Text.ToLower()))
+                    newList.Add(s);
+            }
+            listBox.ItemsSource = newList;
+            if (listBox.SelectedIndex == -1) listBox.SelectedIndex = 0;
         }
         public class ClassItem
         {
