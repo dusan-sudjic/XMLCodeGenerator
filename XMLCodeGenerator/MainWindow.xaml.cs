@@ -247,5 +247,18 @@ namespace XMLCodeGenerator
             int selectedTabIndex = TabControl.SelectedIndex;
             Document.SearchDocument(selectedTabIndex);
         }
+
+        private void UpArrow_Click(object sender, RoutedEventArgs e)
+        {
+            Document.UpArrowClicked();
+        }
+        private void DownArrow_Click(object sender, RoutedEventArgs e)
+        {
+            Document.DownArrowClicked();
+        }
+        private void SearchDocument_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

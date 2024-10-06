@@ -206,7 +206,7 @@
                                     <Button Height="25" Width="30" Background="CornflowerBlue" Foreground="White" Click="SearchDocument_Click" Cursor="Hand" Margin="0" VerticalAlignment="Top">🔍</Button>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 0">
-                                    <ListBox Height="280" Width="300" SelectedItem="{Binding Document.SelectedSearchResult}" ItemsSource="{Binding Document.SearchResults}">
+                                    <ListBox x:Name="lb" Height="280" Width="300" SelectedItem="{Binding Document.SelectedSearchResult}" SelectionChanged="SearchDocument_SelectionChanged" ItemsSource="{Binding Document.SearchResults}">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
@@ -217,8 +217,8 @@
                                         </ListBox.ItemTemplate>
                                     </ListBox>
                                     <StackPanel Orientation="Vertical">
-                                        <Button Background="CornflowerBlue" Width="25" Foreground="White" Cursor="Hand">▲</Button>
-                                        <Button Background="CornflowerBlue" Foreground="White" Cursor="Hand">▼</Button>
+                                        <Button Background="CornflowerBlue" Width="25" Foreground="White" Cursor="Hand" Click="UpArrow_Click">▲</Button>
+                                        <Button Background="CornflowerBlue" Foreground="White" Cursor="Hand" Click="DownArrow_Click">▼</Button>
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>

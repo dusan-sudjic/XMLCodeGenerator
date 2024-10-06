@@ -397,7 +397,7 @@ namespace XMLCodeGenerator.ViewModel
                 OnPropertyChanged(nameof(IsExtendedAndHasEditableAttributes));
                 OnPropertyChanged(nameof(IsExtendedAndIsNotWrapperElement));
             }
-            if (!propertyName.Contains("IsExtended") && !propertyName.Contains("Room"))
+            if (!propertyName.Contains("IsExtended") && !propertyName.Contains("Room") && !propertyName.Equals("IsHighlighted"))
                 MainWindow.Document.HasUnsavedChanges = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             RefreshMovable();

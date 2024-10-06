@@ -49,7 +49,19 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
-        public ElementViewModel SelectedSearchResult { get; set; }
+        private ElementViewModel _selectedSearchResult = null;
+        public ElementViewModel SelectedSearchResult 
+        {
+            get => _selectedSearchResult;
+            set
+            {
+                if(value!= _selectedSearchResult)
+                {
+                    _selectedSearchResult = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public ObservableCollection<ElementViewModel> SearchResults { get; set; } = new();
         public DocumentViewModel() 
         {
@@ -231,11 +243,27 @@ namespace XMLCodeGenerator.ViewModel
                 item.IsHighlighted = false;
             SearchResults.Clear();
         }
+        public void DownArrowClicked()
+        {
+            if (!SearchResults.Any())
+                return;
+            if (SelectedSearchResult == null || SelectedSearchResult == SearchResults[SearchResults.Count - 1])
+                SelectedSearchResult = SearchResults[0];
+            else
+                SelectedSearchResult = SearchResults[SearchResults.IndexOf(SelectedSearchResult)+1];
+        }
+        public void UpArrowClicked()
+        {
+            if (!SearchResults.Any())
+                return;
+            if (SelectedSearchResult == null || SelectedSearchResult == SearchResults[0])
+                SelectedSearchResult = SearchResults[SearchResults.Count - 1];
+            else
+                SelectedSearchResult = SearchResults[SearchResults.IndexOf(SelectedSearchResult) - 1];
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (!propertyName.Equals("HasUnsavedChanges"))
-                HasUnsavedChanges = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
