@@ -27,6 +27,15 @@ namespace XMLCodeGenerator
         public ICommand OpenExistingFileCommand { get; set; }
         public ICommand OpenNewProjectCommand { get; set; }
         public static DocumentViewModel Document { get; set; } = new();
+        public static ItemsControl ItemsControlClasses { get; set; }
+        public static ItemsControl ItemsControlFunctions { get; set; }
+        public static ItemsControl ItemsControlPreprocess { get; set; }
+        public static ItemsControl ItemsControlRewriting { get; set; }
+        public static ScrollViewer CimClassesScrollViewer { get; set; }
+        public static ScrollViewer CimFunctionsScrollViewer { get; set; }
+        public static ScrollViewer PreprocessScrollViewer { get; set; }
+        public static ScrollViewer RewritingScrollViewer { get; set; }
+        public static int SelectedTabIndex { get; set; } = -1;
         public MainWindow()
         {
             InitializeComponent();
@@ -36,6 +45,14 @@ namespace XMLCodeGenerator
             OpenExistingFileCommand = new RelayCommand(ExecuteOpenExistingFileCommand);
             OpenNewProjectCommand = new RelayCommand(ExecuteOpenNewProjectCommand);
             xmlPreviewControl = (XmlPreviewUserControl)this.FindName("xmlPreview");
+            ItemsControlClasses = itemsControlClasses;
+            ItemsControlFunctions = itemsControlFunctions;
+            ItemsControlPreprocess = itemsControlPreprocess;
+            ItemsControlRewriting = itemsControlRewriting;
+            CimClassesScrollViewer = CimClassesScroll;
+            CimFunctionsScrollViewer = CimFunctionsScroll;
+            PreprocessScrollViewer = PreprocessScroll;
+            RewritingScrollViewer = RewritingScroll;
             DataContext = this;
         }
 
@@ -216,7 +233,6 @@ namespace XMLCodeGenerator
         {
             ProvidersViewModel.LoadSourceProvider();
         }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             MaximizeToWorkingArea();
@@ -238,112 +254,15 @@ namespace XMLCodeGenerator
             this.Topmost = true; 
             this.Topmost = false;
         }
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectedTabIndex = TabControl.SelectedIndex;
+        }
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        private void SearchDocument_Click(object sender, RoutedEventArgs e)
-        {
-            int selectedTabIndex = TabControl.SelectedIndex;
-            Document.SearchDocument(selectedTabIndex);
-        }
-
-        private void UpArrow_Click(object sender, RoutedEventArgs e)
-        {
-            Document.UpArrowClicked();
-        }
-        private void DownArrow_Click(object sender, RoutedEventArgs e)
-        {
-            Document.DownArrowClicked();
-        }
-        private void SearchDocument_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (Document.SelectedSearchResult == null)
-                return;
-            ItemsControl itemsControl = itemsControlClasses;
-            switch(TabControl.SelectedIndex)
-            {
-                case 1: { itemsControl = itemsControlFunctions; break; }
-                case 2: { itemsControl = itemsControlPreprocess; break; }
-                case 3: { itemsControl = itemsControlRewriting; break; }
-            }
-            scrollToElement(Document.SelectedSearchResult, itemsControl);
-        }
-        private void scrollToElement(ElementViewModel element, ItemsControl parent)
-        {
-            for (int i = 0; i < parent.Items.Count; i++)
-            {
-                var container = parent.ItemContainerGenerator.ContainerFromIndex(i) as ContentPresenter;
-                if (container != null)
-                {
-                    var elementUserControl = FindVisualChild<ElementUserControl>(container);
-                    if (elementUserControl != null)
-                    {
-                        if (elementUserControl.Element == element)
-                        {
-                            scrollToElementUserControl(elementUserControl);
-                            return;
-                        }
-                        scrollToElement(element, elementUserControl.itemsControlChildren);
-                    }
-                }
-            }
-        }
-        public static T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T childOfType)
-                {
-                    return childOfType;
-                }
-
-                T childOfChild = FindVisualChild<T>(child);
-                if (childOfChild != null)
-                {
-                    return childOfChild;
-                }
-            }
-            return null;
-        }
-
-        private void scrollToElementUserControl(FrameworkElement targetElement)
-        {
-            ScrollViewer scrollViewer = null;
-            switch (TabControl.SelectedIndex)
-            {
-                case 0: { scrollViewer = CimClassesScroll; break; }
-                case 1: { scrollViewer = CimFunctionsScroll; break; }
-                case 2: { scrollViewer = PreprocessScroll; break; }
-                case 3: { scrollViewer = RewritingScroll; break; }
-            }
-            GeneralTransform transform = targetElement.TransformToAncestor(scrollViewer);
-            Point targetPosition = transform.Transform(new Point(0, 0));
-            double spaceAbove = scrollViewer.ActualHeight/5;
-            double targetOffset = targetPosition.Y + scrollViewer.VerticalOffset - spaceAbove;
-            DoubleAnimation verticalAnimation = new DoubleAnimation
-            {
-                From = scrollViewer.VerticalOffset,
-                To = targetOffset,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                EasingFunction = new QuadraticEase()
-            };
-
-            Storyboard.SetTarget(verticalAnimation, scrollViewer);
-            Storyboard.SetTargetProperty(verticalAnimation, new PropertyPath(ScrollViewerBehavior.VerticalOffsetProperty));
-
-            Storyboard storyboard = new Storyboard();
-            storyboard.Children.Add(verticalAnimation);
-            storyboard.Begin();
-        }
-
-        private void ResetSearch_Click(object sender, RoutedEventArgs e)
-        {
-            Document.ResetSearch();
-        }
+        
     }
 }

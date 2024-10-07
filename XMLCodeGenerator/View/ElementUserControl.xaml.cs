@@ -25,9 +25,7 @@ namespace XMLCodeGenerator.View
 {
     public partial class ElementUserControl : UserControl, INotifyPropertyChanged
     {
-        private UIElement _draggedElement;
         public string XML_Name { get { return Element.XMLName; } set { } }
-        private int _originalIndex;
         public ElementViewModel Element { get => DataContext as ElementViewModel; }
         public ElementUserControl()
         {
@@ -39,7 +37,6 @@ namespace XMLCodeGenerator.View
             itemsControlChildren.ItemsSource = Element.ChildViewModels;
             SetButtons();
         }
-
         public void SetButtons()
         {
             var addButton = (Button)this.FindName("AddButton");
