@@ -17,10 +17,10 @@ namespace XMLCodeGenerator.Converters
             if (value is bool && (bool)value)
                 return new Thickness
                 {
-                    Left = 2,
-                    Right = 2,
-                    Top = 2,
-                    Bottom = 2,
+                    Left = 3,
+                    Right = 3,
+                    Top = 3,
+                    Bottom = 3,
                 };
             return new Thickness
             {

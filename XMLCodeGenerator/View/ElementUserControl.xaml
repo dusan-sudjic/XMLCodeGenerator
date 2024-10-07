@@ -73,7 +73,7 @@
         </Style>
     </UserControl.Resources>
     <!--22ADD8E6-->
-    <Border x:Name="Border" BorderBrush="{Binding IsHighlighted, Converter={StaticResource BoolToBrushConverter}}" BorderThickness="{Binding IsHighlighted, Converter={StaticResource BoolToThicknessConverter}}" Padding="5 0 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0 5 0 3" MinWidth="280" MaxWidth="2000">
+    <Border x:Name="Border" BorderBrush="{Binding IsHighlighted, Converter={StaticResource BoolToBrushConverter}}" BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToThicknessConverter}}" Padding="5 0 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0 5 0 3" MinWidth="280" MaxWidth="2000">
         <Grid Opacity="1.0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

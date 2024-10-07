@@ -71,6 +71,19 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (value != _isSelected)
+                {
+                    _isSelected = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         private bool _isHighlighted;
         public bool IsHighlighted
         {
@@ -80,6 +93,8 @@ namespace XMLCodeGenerator.ViewModel
                 if (value != _isHighlighted)
                 {
                     _isHighlighted = value;
+                    if (!value && IsSelected)
+                        IsSelected = false;
                     OnPropertyChanged();
                 }
             }
@@ -397,7 +412,7 @@ namespace XMLCodeGenerator.ViewModel
                 OnPropertyChanged(nameof(IsExtendedAndHasEditableAttributes));
                 OnPropertyChanged(nameof(IsExtendedAndIsNotWrapperElement));
             }
-            if (!propertyName.Contains("IsExtended") && !propertyName.Contains("Room") && !propertyName.Equals("IsHighlighted"))
+            if (!propertyName.Contains("IsExtended") && !propertyName.Contains("Room") && !propertyName.Equals("IsHighlighted") && !propertyName.Equals("IsSelected"))
                 MainWindow.Document.HasUnsavedChanges = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             RefreshMovable();

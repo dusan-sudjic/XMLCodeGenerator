@@ -49,6 +49,45 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
+        private string _searchWord = "";
+        public string SearchWord
+        {
+            get => _searchWord;
+            set
+            {
+                if(value != _searchWord)
+                {
+                    _searchWord = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private int _occurrencesOfSearchParameter = 0;
+        public int OccurrencesOfSearchParameter
+        {
+            get => _occurrencesOfSearchParameter;
+            set
+            {
+                if(value != _occurrencesOfSearchParameter)
+                {
+                    _occurrencesOfSearchParameter = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private bool _isSeacrhActive = false;
+        public bool IsSearchActive
+        {
+            get => _isSeacrhActive;
+            set
+            {
+                if(value != _isSeacrhActive)
+                {
+                    _isSeacrhActive = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         private ElementViewModel _selectedSearchResult = null;
         public ElementViewModel SelectedSearchResult 
         {
@@ -57,7 +96,11 @@ namespace XMLCodeGenerator.ViewModel
             {
                 if(value!= _selectedSearchResult)
                 {
+                    if(_selectedSearchResult != null) 
+                        _selectedSearchResult.IsSelected = false;
                     _selectedSearchResult = value;
+                    if (_selectedSearchResult != null)
+                        _selectedSearchResult.IsSelected = true;
                     OnPropertyChanged();
                 }
             }
@@ -236,12 +279,23 @@ namespace XMLCodeGenerator.ViewModel
                 item.IsHighlighted = true;
                 SearchResults.Add(item);
             }
+            IsSearchActive = true;
+            SearchWord = SearchParameter;
+            OccurrencesOfSearchParameter = SearchResults.Count;
         }
         private void resetDocumentSearch()
         {
             foreach(var item in SearchResults)
                 item.IsHighlighted = false;
             SearchResults.Clear();
+        }
+        public void ResetSearch()
+        {
+            resetDocumentSearch();
+            SearchParameter = "";
+            IsSearchActive = false;
+            SearchWord = "";
+            OccurrencesOfSearchParameter = 0;
         }
         public void DownArrowClicked()
         {
