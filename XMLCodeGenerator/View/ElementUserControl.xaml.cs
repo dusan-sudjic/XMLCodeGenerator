@@ -51,8 +51,8 @@ namespace XMLCodeGenerator.View
             var toggleButton = (ToggleButton)this.FindName("ToggleButton");
             toggleButton.Content = Element.IsExtended ? "-" : "+";
             Border dock = (Border)this.FindName("Border");
-            dock.HorizontalAlignment = Element.IsExtended ? HorizontalAlignment.Stretch: HorizontalAlignment.Left;
-            dock.HorizontalAlignment = !Element.IsExtendable ? HorizontalAlignment.Stretch: dock.HorizontalAlignment;
+            dock.HorizontalAlignment = Element.IsExtended ? HorizontalAlignment.Stretch : HorizontalAlignment.Left;
+            dock.HorizontalAlignment = !Element.IsExtendable ? HorizontalAlignment.Stretch : dock.HorizontalAlignment;
         }
         public void ReplaceElement()
         {
@@ -154,13 +154,21 @@ namespace XMLCodeGenerator.View
 
         private void MapToClassButton_Click(object sender, RoutedEventArgs e)
         {
-            string mappingInterface = MainWindow.GetInterfaceBasedOnTabForElement(this);
+            string mappingInterface = getMappingInterface();
             if (mappingInterface != null)
             {
                 MappingClassesWindow window = new(Element, mappingInterface);
                 window.ShowDialog();
             }
         }
+        private string getMappingInterface()
+        {
+            switch (MainWindow.Document.CurrentlyDisplayedTab)
+            {
+                case 2: return "IMappingPreProcessorProcedure";
+                case 3: return "IMappingRewritingProcedure";
+                default: return "IOperator";
+            }
+        }
     }
-
 }

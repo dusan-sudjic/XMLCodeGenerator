@@ -33,7 +33,7 @@ namespace XMLCodeGenerator.View
         }
         private void SearchDocument_Click(object sender, RoutedEventArgs e)
         {
-            int selectedTabIndex = MainWindow.SelectedTabIndex;
+            int selectedTabIndex = Document.CurrentlyDisplayedTab;
             SearchDocumentViewModel.SearchDocument(selectedTabIndex);
         }
 
@@ -51,7 +51,7 @@ namespace XMLCodeGenerator.View
             if (SearchDocumentViewModel.SelectedSearchResult == null)
                 return;
             ItemsControl itemsControl = MainWindow.ItemsControlClasses;
-            switch (MainWindow.SelectedTabIndex)
+            switch (Document.CurrentlyDisplayedTab)
             {
                 case 1: { itemsControl = MainWindow.ItemsControlFunctions; break; }
                 case 2: { itemsControl = MainWindow.ItemsControlPreprocess; break; }
@@ -71,7 +71,7 @@ namespace XMLCodeGenerator.View
                     {
                         if (elementUserControl.Element == element)
                         {
-                            scrollToElementUserControl(elementUserControl);
+                            MainWindow.ScrollToElementUserControl(elementUserControl);
                             return;
                         }
                         scrollToElement(element, elementUserControl.itemsControlChildren);
@@ -97,35 +97,7 @@ namespace XMLCodeGenerator.View
             }
             return null;
         }
-        private void scrollToElementUserControl(FrameworkElement targetElement)
-        {
-            ScrollViewer scrollViewer = null;
-            switch (MainWindow.SelectedTabIndex)
-            {
-                case 0: { scrollViewer = MainWindow.CimClassesScrollViewer; break; }
-                case 1: { scrollViewer = MainWindow.CimFunctionsScrollViewer; break; }
-                case 2: { scrollViewer = MainWindow.PreprocessScrollViewer; break; }
-                case 3: { scrollViewer = MainWindow.RewritingScrollViewer; break; }
-            }
-            GeneralTransform transform = targetElement.TransformToAncestor(scrollViewer);
-            Point targetPosition = transform.Transform(new Point(0, 0));
-            double spaceAbove = scrollViewer.ActualHeight / 5;
-            double targetOffset = targetPosition.Y + scrollViewer.VerticalOffset - spaceAbove;
-            DoubleAnimation verticalAnimation = new DoubleAnimation
-            {
-                From = scrollViewer.VerticalOffset,
-                To = targetOffset,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                EasingFunction = new QuadraticEase()
-            };
-
-            Storyboard.SetTarget(verticalAnimation, scrollViewer);
-            Storyboard.SetTargetProperty(verticalAnimation, new PropertyPath(ScrollViewerBehavior.VerticalOffsetProperty));
-
-            Storyboard storyboard = new Storyboard();
-            storyboard.Children.Add(verticalAnimation);
-            storyboard.Begin();
-        }
+        
         private void ResetSearch_Click(object sender, RoutedEventArgs e)
         {
             SearchDocumentViewModel.ResetSearch();

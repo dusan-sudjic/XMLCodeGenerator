@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using XMLCodeGenerator.Model.Elements;
+using XMLCodeGenerator.Model.ProvidersConfig;
 using XMLCodeGenerator.View;
 
 namespace XMLCodeGenerator.ViewModel
@@ -22,6 +23,7 @@ namespace XMLCodeGenerator.ViewModel
         public ElementViewModel FunctionDefinitions { get; set; }
         public ElementViewModel PreProcessProcedures { get; set; }
         public ElementViewModel RewritingProcedures { get; set; }
+        public int CurrentlyDisplayedTab { get; set; }
         public string OutputPath { get; set; }
         private bool _hasUnsavedChages;
         public bool HasUnsavedChanges

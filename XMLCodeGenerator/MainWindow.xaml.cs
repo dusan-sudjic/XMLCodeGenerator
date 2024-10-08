@@ -35,7 +35,6 @@ namespace XMLCodeGenerator
         public static ScrollViewer CimFunctionsScrollViewer { get; set; }
         public static ScrollViewer PreprocessScrollViewer { get; set; }
         public static ScrollViewer RewritingScrollViewer { get; set; }
-        public static int SelectedTabIndex { get; set; } = -1;
         public MainWindow()
         {
             InitializeComponent();
@@ -96,23 +95,6 @@ namespace XMLCodeGenerator
                 }
             }
         }
-        public static string GetInterfaceBasedOnTabForElement(DependencyObject elementUC)
-        {
-            while (elementUC != null)
-            {
-                if (elementUC is TabControl tabItem)
-                {
-                    switch (tabItem.SelectedIndex)
-                    {
-                        case 2: return "IMappingPreProcessorProcedure";
-                        case 3: return "IMappingRewritingProcedure";
-                        default: return "IOperator";
-                    }
-                }
-                elementUC = VisualTreeHelper.GetParent(elementUC);
-            }
-            return null;
-        }
         public static void RenameFunction(string oldFunctionName, string newFunctionName)
         {
             Document.RenameFunction(oldFunctionName, newFunctionName);
@@ -140,15 +122,13 @@ namespace XMLCodeGenerator
 
         public void ExecuteAddNewCimClassCommand(object parameter)
         {
-            TabControl tab = (TabControl)FindName("TabControl");
-            if (tab.SelectedIndex == 0)
-                Document.AddCimClass();
-            else if (tab.SelectedIndex == 1)
-                AddNewCimFunction();
-            else if (tab.SelectedIndex == 2)
-                Document.AddPreprocessProcedure();
-            else if (tab.SelectedIndex == 3)
-                Document.AddRewritingProcedure();
+            switch (Document.CurrentlyDisplayedTab)
+            {
+                case 0: { Document.AddCimClass(); return; }
+                case 1: { AddNewCimFunction(); return; }
+                case 2: { Document.AddPreprocessProcedure(); return; }
+                case 3: { Document.AddRewritingProcedure(); return; }
+            }
         }
         public void ExecuteOpenExistingFileCommand(object parameter)
         {
@@ -237,7 +217,6 @@ namespace XMLCodeGenerator
         {
             MaximizeToWorkingArea();
         }
-
         private void MaximizeToWorkingArea()
         {
             var workingArea = SystemParameters.WorkArea;
@@ -254,15 +233,43 @@ namespace XMLCodeGenerator
             this.Topmost = true; 
             this.Topmost = false;
         }
+        public static void ScrollToElementUserControl(FrameworkElement targetElement)
+        {
+            ScrollViewer scrollViewer = null;
+            switch (Document.CurrentlyDisplayedTab)
+            {
+                case 0: { scrollViewer = MainWindow.CimClassesScrollViewer; break; }
+                case 1: { scrollViewer = MainWindow.CimFunctionsScrollViewer; break; }
+                case 2: { scrollViewer = MainWindow.PreprocessScrollViewer; break; }
+                case 3: { scrollViewer = MainWindow.RewritingScrollViewer; break; }
+            }
+            GeneralTransform transform = targetElement.TransformToAncestor(scrollViewer);
+            Point targetPosition = transform.Transform(new Point(0, 0));
+            double spaceAbove = scrollViewer.ActualHeight / 5;
+            double targetOffset = targetPosition.Y + scrollViewer.VerticalOffset - spaceAbove;
+            DoubleAnimation verticalAnimation = new DoubleAnimation
+            {
+                From = scrollViewer.VerticalOffset,
+                To = targetOffset,
+                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                EasingFunction = new QuadraticEase()
+            };
+
+            Storyboard.SetTarget(verticalAnimation, scrollViewer);
+            Storyboard.SetTargetProperty(verticalAnimation, new PropertyPath(ScrollViewerBehavior.VerticalOffsetProperty));
+
+            Storyboard storyboard = new Storyboard();
+            storyboard.Children.Add(verticalAnimation);
+            storyboard.Begin();
+        }
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SelectedTabIndex = TabControl.SelectedIndex;
+            Document.CurrentlyDisplayedTab = TabControl.SelectedIndex;
         }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        
     }
 }
