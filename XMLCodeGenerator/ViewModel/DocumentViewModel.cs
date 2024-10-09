@@ -140,34 +140,36 @@ namespace XMLCodeGenerator.ViewModel
 
         public void AddCimClass()
         {
-            CimClasses.AddNewChildElement(ElementModelProvider.GetElementModelByName("CimClass"));
+            ElementViewModel newElement = CimClasses.AddNewChildElement(ElementModelProvider.GetElementModelByName("CimClass"));
             UpdateMovable(CimClasses);
+            MainWindow.ScrollToElement(newElement);
         }
         public void UpdateFunctionCallsCounte(string functionName)
         {
             ElementViewModel vm = FunctionDefinitions.ChildViewModels.FirstOrDefault(c => c.Attributes[0].Value.Equals(functionName));
             vm.OnPropertyChanged("FunctionCalls");
         }
-        public ElementViewModel AddPreprocessProcedure()
+        public void AddPreprocessProcedure()
         {
-            ElementViewModel ret = PreProcessProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("PreProcessProcedure"));
+            ElementViewModel newElement = PreProcessProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("PreProcessProcedure"));
             UpdateMovable(PreProcessProcedures);
-            return ret;
+            MainWindow.ScrollToElement(newElement);
         }
-        public ElementViewModel AddRewritingProcedure()
+        public void AddRewritingProcedure()
         {
-            ElementViewModel ret = RewritingProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("RewritingProcedure"));
+            ElementViewModel newElement = RewritingProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("RewritingProcedure"));
             UpdateMovable(RewritingProcedures);
-            return ret;
+            MainWindow.ScrollToElement(newElement);
         }
         public void AddFunctionDefinition(string name)
         {
-            FunctionDefinitions.AddNewChildElement(ElementModelProvider.GetElementModelByName("FunctionDefinition"));
+            var newElement = FunctionDefinitions.AddNewChildElement(ElementModelProvider.GetElementModelByName("FunctionDefinition"));
             FunctionDefinitions.ChildViewModels.Last().Attributes[0].Value = name;
             UpdateMovable(FunctionDefinitions);
             ElementModelProvider.AddNewFunctionDefinition(name);
             foreach (var c in CimClasses.ChildViewModels)
                 c.SetReplacable();
+            MainWindow.ScrollToElement(newElement);
         }
         private void UpdateMovable(ElementViewModel vm)
         {

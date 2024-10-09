@@ -45,9 +45,9 @@ namespace XMLCodeGenerator.View
             else
                 addButton.ToolTip = "Add new element to " + Element.Name;
             var deleteButton = (Button)this.FindName("DeleteButton");
-            deleteButton.ToolTip = "Delete " + Element.XMLName;
+            deleteButton.ToolTip = "Delete " + Element.Name;
             var replaceButton = (Button)this.FindName("ReplaceButton");
-            replaceButton.ToolTip = "Replace " + Element.XMLName;
+            replaceButton.ToolTip = "Replace " + Element.Name;
             var toggleButton = (ToggleButton)this.FindName("ToggleButton");
             toggleButton.Content = Element.IsExtended ? "-" : "+";
             Border dock = (Border)this.FindName("Border");
@@ -61,6 +61,7 @@ namespace XMLCodeGenerator.View
             {
                 var newElement = Element.ReplaceElement(window.SelectedElement);
                 SetButtons();
+                MainWindow.ScrollToElement(newElement);
             }
         }
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
@@ -70,7 +71,6 @@ namespace XMLCodeGenerator.View
             {
                 ((ToggleButton)sender).Content = "-";
                 dock.HorizontalAlignment = HorizontalAlignment.Stretch;
-                //dock.MaxWidth = 1220;
                 Element.IsExtended = true;
             }
             else
@@ -120,6 +120,7 @@ namespace XMLCodeGenerator.View
             }
             ElementViewModel newElement = Element.AddNewChildElement(chosenModel);
             SetButtons();
+            MainWindow.ScrollToElement(newElement);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

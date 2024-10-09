@@ -99,6 +99,20 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
+
+        private bool _isNew;
+        public bool IsNew
+        {
+            get => _isNew;
+            set
+            {
+                if (value != _isNew)
+                {
+                    _isNew = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         private bool _hasRoomForNewChildElement;
         public bool HasRoomForNewChildElement
         {

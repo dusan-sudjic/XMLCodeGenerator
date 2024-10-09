@@ -191,9 +191,9 @@
                       Background="DarkOrange"
                       ShowsPreview="True" />
             <Border  Grid.Column="2" Margin="0 5 1 10" Background="LightCyan" BorderThickness="2" BorderBrush="Black">
-                <TabControl>
+                <TabControl x:Name="rightTabControl">
                     <TabItem Header="XML Element Preview">
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto" Padding="6" MaxHeight="580">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" Padding="6" MaxHeight="575">
                             <view:XmlPreviewUserControl x:Name="xmlPreview"/>
                         </ScrollViewer>
                     </TabItem>

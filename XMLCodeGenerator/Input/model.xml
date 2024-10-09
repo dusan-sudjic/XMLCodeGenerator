@@ -2,13 +2,10 @@
 <Model>
 	<Types>
 		<Type Name="Element">
-			CimProperty,CimRelationship,Report,Log,Constant,SetDefault,Function,GetSourceValue,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,If,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,IsNull,IsNumber,IsNotNull,StringContains,StringEndsWith,StringStartsWith,IsInConcreteModel,ContainsProperty,StringIsNullOrEmpty,StringIsNullOrWhiteSpace,AreEqual,IsSourceElement,IsFalse,IsTrue,GreaterThan,GreaterThanOrEqual,LessThan,LessThanOrEqual,Condition,AndConditions,OrConditions,ProjectCustomOperator
+			CimProperty,Enum,CimRelationship,Report,Log,Constant,SetDefault,Function,GetSourceValue,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,If,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,IsNull,IsNumber,IsNotNull,StringContains,StringEndsWith,StringStartsWith,IsInConcreteModel,ContainsProperty,StringIsNullOrEmpty,StringIsNullOrWhiteSpace,AreEqual,IsSourceElement,IsFalse,IsTrue,GreaterThan,GreaterThanOrEqual,LessThan,LessThanOrEqual,Condition,AndConditions,OrConditions,ProjectCustomOperator
 		</Type>
 		<Type Name="Expression">
-			Constant,Log,Report,SetDefault,GetSourceValue,Function,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,If,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,ProjectCustomOperator
-		</Type>
-		<Type Name="NumberExpression">
-			Constant,GetSourceValue,Function,GetEntityValue,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication
+			Constant,Log,Enum,Report,SetDefault,GetSourceValue,Function,GetEntityValue,BreakInstanceCreation,BreakInstanceTypeCreation,StringConcatenate,StringRemove,StringSplit,Substring,StringToLower,StringToUpper,StringTrim,StringTrimEnd,StringTrimStart,StringIndexOf,StringLastIndexOf,StringLength,StringFormat,Substraction,MathPow,Division,MathMax,MathMin,AbsoluteValue,MathSqrt,MathCeiling,MathFloor,MathRound,MathTruncate,MatchCos,MathSin,MathTan,Addition,Multiplication,If,SwitchCase,GetPrimarySource,GetSourceColumn,GetSourceTable,ProjectCustomOperator
 		</Type>
 		<Type Name="BooleanOperator">
 			IsNull,IsNotNull,IsNumber,StringContains,StringEndsWith,StringStartsWith,IsInConcreteModel,ContainsProperty,StringIsNullOrEmpty,StringIsNullOrWhiteSpace,AreEqual,IsSourceElement,IsFalse,IsTrue,GreaterThan,GreaterThanOrEqual,LessThan,LessThanOrEqual
@@ -179,82 +176,82 @@
 		</Element>
 		<Element Name="Substraction" XMLName="Substraction" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MathPow" XMLName="MathPowe" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="Division" XMLName="Division" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MathMax" XMLName="MathMax" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MathMin" XMLName="MathMin" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="AbsoluteValue" XMLName="AbsoluteValue" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MathSqrt" XMLName="MathSqrt" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MathCeiling" XMLName="MathCeiling" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MathFloor" XMLName="MathFloor" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MathRound" XMLName="MathRound" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MathTruncate" XMLName="MathTruncate" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MatchCos" XMLName="MathCos" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MathSin" XMLName="MathSin" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="MathTan" XMLName="MathTan" NamespacePrefix="op">
 			<ContentBlock MinSize="1" MaxSize="1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="Addition" XMLName="Addition" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="-1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="Multiplication" XMLName="Multiplication" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="-1">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="GetPrimarySource"  XMLName="GetPrimarySource"/>
@@ -418,22 +415,22 @@
 		</Element>
 		<Element Name="GreaterThan" XMLName="GreaterThan" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="GreaterThanOrEqual" XMLName="GreaterThanOrEqual" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="LessThan" XMLName="LessThan" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="LessThanOrEqual" XMLName="LessThanOrEqual" NamespacePrefix="op">
 			<ContentBlock MinSize="2" MaxSize="2">
-				NumberExpression
+				Expression
 			</ContentBlock>
 		</Element>
 		<Element Name="Log" XMLName="Log" NamespacePrefix="op">
@@ -448,10 +445,16 @@
 				Expression
 			</ContentBlock>
 		</Element>
+		<Element Name="Enum" XMLName="Enum" NamespacePrefix="op">
+			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+			<ContentBlock MinSize="1" MaxSize="1">
+				Expression
+			</ContentBlock>
+		</Element>
 		<Element Name="ProjectCustomOperator" XMLName="ProjectCustomOperator" NamespacePrefix="op" ClassMappingEnabled="true">
 			<Attribute Name="Name" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="CLASS"/>
 			<Attribute Name="AssemblyName" IsRequired="true" ValueType="STRING" Input="USER_INPUT" ValueMappingComponent="ASSEMBLY"/>
-			<ContentBlock MinSize="1" MaxSize="1">
+			<ContentBlock MinSize="1" MaxSize="-1">
 				Expression
 			</ContentBlock>
 		</Element>

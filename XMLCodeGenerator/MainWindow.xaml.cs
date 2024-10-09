@@ -35,6 +35,7 @@ namespace XMLCodeGenerator
         public static ScrollViewer CimFunctionsScrollViewer { get; set; }
         public static ScrollViewer PreprocessScrollViewer { get; set; }
         public static ScrollViewer RewritingScrollViewer { get; set; }
+        private static TabControl RightTabControl { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -52,6 +53,7 @@ namespace XMLCodeGenerator
             CimFunctionsScrollViewer = CimFunctionsScroll;
             PreprocessScrollViewer = PreprocessScroll;
             RewritingScrollViewer = RewritingScroll;
+            RightTabControl = rightTabControl;
             DataContext = this;
         }
 
@@ -73,6 +75,7 @@ namespace XMLCodeGenerator
         }
         public static void BindElementToXMLPreview(ElementViewModel element)
         {
+            RightTabControl.SelectedIndex = 0;
             xmlPreviewControl.XmlElements = new List<XmlElement> { XmlElementFactory.GetXmlElement(element.Element) };
         }
         public static void UpdateFunctionCallsCounter(string functionName)
@@ -232,6 +235,66 @@ namespace XMLCodeGenerator
 
             this.Topmost = true; 
             this.Topmost = false;
+        }
+        public static async void ScrollToElement(ElementViewModel elementVM, bool isNewElement = true)
+        {
+            await Task.Delay(100);
+            Scroll(elementVM, GetItemsControl());
+            if (isNewElement)
+            {
+                elementVM.IsNew = true;
+                await Task.Delay(1300);
+                elementVM.IsNew = false;
+            }
+        }
+        private static ItemsControl GetItemsControl()
+        {
+            ItemsControl itemsControl = MainWindow.ItemsControlClasses;
+            switch (MainWindow.Document.CurrentlyDisplayedTab)
+            {
+                case 1: { itemsControl = MainWindow.ItemsControlFunctions; break; }
+                case 2: { itemsControl = MainWindow.ItemsControlPreprocess; break; }
+                case 3: { itemsControl = MainWindow.ItemsControlRewriting; break; }
+            }
+            return itemsControl;
+        }
+        private static void Scroll(ElementViewModel element, ItemsControl parent)
+        {
+            for (int i = 0; i < parent.Items.Count; i++)
+            {
+                var container = parent.ItemContainerGenerator.ContainerFromIndex(i) as ContentPresenter;
+                if (container != null)
+                {
+                    var elementUserControl = FindVisualChild<ElementUserControl>(container);
+                    if (elementUserControl != null)
+                    {
+                        if (elementUserControl.Element == element)
+                        {
+                            MainWindow.ScrollToElementUserControl(elementUserControl);
+                            return;
+                        }
+                        Scroll(element, elementUserControl.itemsControlChildren);
+                    }
+                }
+            }
+        }
+        public static T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T childOfType)
+                {
+                    return childOfType;
+                }
+
+                T childOfChild = FindVisualChild<T>(child);
+                if (childOfChild != null)
+                {
+                    return childOfChild;
+                }
+            }
+            return null;
         }
         public static void ScrollToElementUserControl(FrameworkElement targetElement)
         {
