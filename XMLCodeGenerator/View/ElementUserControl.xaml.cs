@@ -118,9 +118,12 @@ namespace XMLCodeGenerator.View
             {
                 chosenModel = Element.DefaultNewChild;
             }
-            ElementViewModel newElement = Element.AddNewChildElement(chosenModel);
-            SetButtons();
-            MainWindow.ScrollToElement(newElement);
+            if (chosenModel != null)
+            {
+                ElementViewModel newElement = Element.AddNewChildElement(chosenModel);
+                SetButtons();
+                MainWindow.ScrollToElement(newElement);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

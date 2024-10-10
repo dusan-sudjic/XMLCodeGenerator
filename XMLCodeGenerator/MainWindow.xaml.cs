@@ -186,36 +186,6 @@ namespace XMLCodeGenerator
                 MessageBox.Show($"Error saving XML file: {ex.Message}");
             }
         }
-        public void ImportCimProfile(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "DLL Files (*.dll)|*.dll";
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                ProvidersViewModel.CimProfilePath = openFileDialog.FileName;
-                LoadCimProfile();
-            }
-        }
-        public static void LoadCimProfile()
-        {
-            ProvidersViewModel.LoadCimProfile();
-        }
-        public void ImportSourceProvider(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "XML Files (*.xml)|*.xml";
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                ProvidersViewModel.SourceProviderPath = openFileDialog.FileName;
-                LoadSourceProvider();
-            }
-        }
-        public static void LoadSourceProvider()
-        {
-            ProvidersViewModel.LoadSourceProvider();
-        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             MaximizeToWorkingArea();

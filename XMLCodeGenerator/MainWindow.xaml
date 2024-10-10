@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local1="clr-namespace:XMLCodeGenerator.View"
+        xmlns:local="clr-namespace:XMLCodeGenerator"
         mc:Ignorable="d"
         xmlns:view="clr-namespace:XMLCodeGenerator.View"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -63,9 +64,11 @@
                         <MenuItem Header="Exit" />
                     </MenuItem>
                     <MenuItem Height="25" Header="Import">
-                        <MenuItem Header="Provider reader" Click="ImportCimProfile"/>
+                        <MenuItem Header="Cim profile" DataContext="{Binding ProviderViewModels}" Command="{Binding ImportCimProfileCommand}"/>
                         <Separator />
-                        <MenuItem Header="Source provider" Click="ImportSourceProvider" />
+                        <MenuItem Header="Source provider" DataContext="{Binding ProviderViewModels}" Command="{Binding ImportSourceProviderCommand}" />
+                        <Separator />
+                        <MenuItem Header="Enumeration mapping" DataContext="{Binding ProviderViewModels}" Command="{Binding ImportEnumerationMappingCommand}" />
                     </MenuItem>
                     <MenuItem Header="Edit">
                         <MenuItem Header="Cut" />
@@ -93,14 +96,18 @@
                         </MenuItem>
                     </MenuItem>
                 </Menu>
-                <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Orientation="Horizontal">
+                <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Orientation="Horizontal" DataContext="{Binding ProvidersViewModel}">
                     <StackPanel Orientation="Horizontal">
-                        <Button VerticalAlignment="Bottom" Cursor="Hand" Click="ImportSourceProvider" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding ProvidersViewModel.isSourceProviderImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Source provider not imported</Button>
-                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding ProvidersViewModel.isSourceProviderImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Source provider imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Command="{Binding ImportSourceProviderCommand}" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding isSourceProviderImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Source provider not imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding isSourceProviderImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Source provider imported</Button>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Button VerticalAlignment="Bottom" Cursor="Hand" Click="ImportCimProfile" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding ProvidersViewModel.IsCimProfileImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Cim pofile not imported</Button>
-                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding ProvidersViewModel.IsCimProfileImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Cim profile imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Command="{Binding ImportCimProfileCommand}" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding IsCimProfileImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Cim pofile not imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding IsCimProfileImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Cim profile imported</Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Command="{Binding ImportEnumerationMappingCommand}" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="DarkOrange" Height ="22" Background="LightGoldenrodYellow" FontWeight="Bold" Visibility="{Binding IsEnumerationMappingImported, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Foreground="DarkOrange" Width="200" Margin="0 0 5 5">🗙 Enumeration mapping not imported</Button>
+                        <Button VerticalAlignment="Bottom" Cursor="Hand" Opacity="0.8" Style="{StaticResource RoundedButton}" BorderBrush="CornflowerBlue" Height ="22" Background="LightCyan" FontWeight="Bold" Visibility="{Binding IsEnumerationMappingImported, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="CornflowerBlue" Width="200" Margin="0 0 5 5">✔️ Enumeration mapping imported</Button>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">

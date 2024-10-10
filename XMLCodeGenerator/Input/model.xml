@@ -446,7 +446,7 @@
 			</ContentBlock>
 		</Element>
 		<Element Name="Enum" XMLName="Enum" NamespacePrefix="op">
-			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="USER_INPUT"/>
+			<Attribute Name="name" IsRequired="true" ValueType="STRING" Input="ENUMERATION"/>
 			<ContentBlock MinSize="1" MaxSize="1">
 				Expression
 			</ContentBlock>

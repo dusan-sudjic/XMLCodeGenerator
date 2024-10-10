@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XMLCodeGenerator.Model.ProvidersConfig
 {
-    public abstract class ProviderElement
+    public class ProviderElement
     {
         public string Name { get; set; }
         public string DisplayedName { get; set; }

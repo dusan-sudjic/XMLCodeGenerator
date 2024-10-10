@@ -51,8 +51,7 @@ namespace XMLCodeGenerator.View
                 }
             }
         }
-        public AttributeViewModel Attribute { get; set; }
-        public SourceProviderEntity SelectedEntity { get; set; }
+
         private bool choosingAttribute = false;
         public bool ChoosingAttribute {
             get => choosingAttribute;
@@ -65,6 +64,7 @@ namespace XMLCodeGenerator.View
                 }            
             } 
         }
+        public AttributeViewModel Attribute { get; set; }
         public ProviderWindow(AttributeViewModel attribute)
         {
             InitializeComponent();
@@ -75,13 +75,13 @@ namespace XMLCodeGenerator.View
             {
                 case Model.Elements.InputType.CIM_PROFILE_CLASS: 
                     {
-                        MainWindow.LoadCimProfile();
+                        MainWindow.ProvidersViewModel.LoadCimProfile();
                         ProviderElements.AddRange(MainWindow.ProvidersViewModel.CimProfileClasses);
                         break; 
                     }
                 case Model.Elements.InputType.CIM_PROFILE_PROPERTY: 
                     {
-                        MainWindow.LoadCimProfile();
+                        MainWindow.ProvidersViewModel.LoadCimProfile();
                         string className = attribute.Element.Parent.Attributes[0].Value;
                         CimProfileClass cl = MainWindow.ProvidersViewModel.CimProfileClasses.Where(c => c.Name == className).FirstOrDefault();
                         if (cl == null)
@@ -95,14 +95,14 @@ namespace XMLCodeGenerator.View
                     }
                 case Model.Elements.InputType.SOURCE_PROVIDER_ENTITY: 
                     {
-                        MainWindow.LoadSourceProvider();
+                        MainWindow.ProvidersViewModel.LoadSourceProvider();
                         MultiSelect = true;
                         ProviderElements.AddRange(MainWindow.ProvidersViewModel.SourceProviderEntities);
                         break; 
                     }
                 case Model.Elements.InputType.SOURCE_PROVIDER_ATTRIBUTE: 
                     {
-                        MainWindow.LoadSourceProvider();
+                        MainWindow.ProvidersViewModel.LoadSourceProvider();
                         ChoosingAttribute = true;
                         string[] values = FindValuesFromCimClass(attribute.Element);
                         List<SourceProviderEntity> entities;
@@ -130,6 +130,13 @@ namespace XMLCodeGenerator.View
                         foreach (var e in entities)
                             Entities.Add(e);
                         break; 
+                    }
+                case Model.Elements.InputType.ENUMERATION:
+                    {
+                        MainWindow.ProvidersViewModel.LoadEnumerationMapping();
+                        MultiSelect = false;
+                        ProviderElements.AddRange(MainWindow.ProvidersViewModel.Enumerations);
+                        break;
                     }
                 default: break;
             }

@@ -27,7 +27,6 @@
                 IsEditable="True"
                 Focusable="True"
                 ItemsSource="{Binding Entities}"
-                SelectedItem="{Binding SelectedEntity, Mode=TwoWay}"
                 Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 />
         </StackPanel>
