@@ -12,6 +12,11 @@
              mc:Ignorable="d"
              x:Name="UC"
              >
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Copy element" Click="Copy_Click"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
     <UserControl.Resources>
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -71,6 +76,7 @@
         </Style>
     </UserControl.Resources>
     <Border x:Name="Border" Padding="5 0 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0 5 0 3" MinWidth="280" MaxWidth="2000">
+        
         <Border.Style>
             <Style TargetType="Border">
                 <Style.Triggers>
@@ -111,6 +117,7 @@
             </Style>
         </Border.Style>
         <Grid Opacity="1.0">
+            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>

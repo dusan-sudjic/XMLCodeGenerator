@@ -174,7 +174,6 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
-        public ElementModel DefaultNewChild { get; set; }
         public string AdditionalInfo
         {
             get
@@ -222,7 +221,6 @@ namespace XMLCodeGenerator.ViewModel
             IsReplacable = ElementModelProvider.GetReplacableModelsForElement(Element) != null;
             Attributes = new();
             var list = ElementModelProvider.GetModelsForNewChildElement(Element);
-            DefaultNewChild = list.Count == 1 ? list[0] : null;
             IsExtended = true;
             Attributes.CollectionChanged += Attributes_CollectionChanged;
             ChildViewModels = new();
@@ -254,10 +252,11 @@ namespace XMLCodeGenerator.ViewModel
             foreach (var child in ChildViewModels)
                 child.SetReplacable();
         }
-        public ElementViewModel AddNewChildElement(ElementModel model)
+        public ElementViewModel AddNewChildElement(ElementModel model = null, Element element = null)
         {
             List<ElementModel> list;
-            Element newElement = new Element(model, Element.Model.GetSuitableContentBlockForChildModel(model));
+            if(element!=null) element.ParentContentBlock = Element.Model.GetSuitableContentBlockForChildModel(element.Model);
+            Element newElement = element!=null ? element : new Element(model, Element.Model.GetSuitableContentBlockForChildModel(model));
             for (int i = 0; i < Element.ChildElements.Count; i++)
             {
                 if (Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) < Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
@@ -272,7 +271,6 @@ namespace XMLCodeGenerator.ViewModel
                 ChildViewModels.Insert(i, newElementViewModel);
                 SetRemovableForChildren();
                 list = ElementModelProvider.GetModelsForNewChildElement(Element);
-                DefaultNewChild = list.Count == 1 ? list[0] : null;
                 return newElementViewModel;
             }
             newElement.setFirstInContentBlock();
@@ -281,7 +279,6 @@ namespace XMLCodeGenerator.ViewModel
             ChildViewModels.Add(newElementVM);
             SetRemovableForChildren();
             list = ElementModelProvider.GetModelsForNewChildElement(Element);
-            DefaultNewChild = list.Count == 1 ? list[0] : null;
             return newElementVM;
         }
         public void DeleteElement()
@@ -295,7 +292,6 @@ namespace XMLCodeGenerator.ViewModel
             Parent.Element.ChildElements.Remove(Element);
             Parent.SetRemovableForChildren();
             var list = ElementModelProvider.GetModelsForNewChildElement(Element);
-            Parent.DefaultNewChild = list.Count == 1 ? list[0] : null;
             RefreshMovable();
             Parent.RenameFirstElementInContentBlock(ParentContentBlock);
         }
@@ -312,7 +308,6 @@ namespace XMLCodeGenerator.ViewModel
             Parent.ChildViewModels[index] = newElementViewModel;
             Parent.Element.ChildElements[index] = Parent.ChildViewModels[index].Element;
             var list = ElementModelProvider.GetModelsForNewChildElement(Element);
-            Parent.DefaultNewChild = list.Count == 1 ? list[0] : null;
             if (!Parent.ChildViewModels[index].IsMovableUp)
                 newElement.setFirstInContentBlock();
             return newElementViewModel;

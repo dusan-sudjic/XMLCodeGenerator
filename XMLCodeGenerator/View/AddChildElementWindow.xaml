@@ -16,14 +16,17 @@
     <StackPanel>
         <Label Width="100">Search elements</Label>
         <xctk:WatermarkTextBox Width="160" x:Name="search" Watermark="Search" Margin="10 0 10 10" TextChanged="TextChanged"></xctk:WatermarkTextBox>
-        <TabControl x:Name="tab">
-            <TabItem Header="Elements">
-                <ListBox x:Name="listBox" SelectionMode="Single" Height="240" ></ListBox>
-            </TabItem>
-            <TabItem Header="Functions" Visibility="{Binding SupportsFunctions, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ListBox x:Name="functionsListBox" SelectionMode="Single" Height="240"></ListBox>
-            </TabItem>
-        </TabControl>
+        <Grid Margin="5 0">
+            <TabControl x:Name="tab">
+                <TabItem Header="Elements">
+                    <ListBox x:Name="listBox" SelectionMode="Single" Height="240" ></ListBox>
+                </TabItem>
+                <TabItem Header="Functions" Visibility="{Binding SupportsFunctions, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ListBox x:Name="functionsListBox" SelectionMode="Single" Height="240"></ListBox>
+                </TabItem>
+            </TabControl>
+            <Button HorizontalAlignment="Right" Click="PasteElement_Click" Visibility="{Binding ClipboardNotEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Top" Height="21" Padding="10 0" Foreground="White" Background="CornflowerBlue" BorderThickness="0" Cursor="Hand" Content="{Binding PasteButtonLabel}"></Button>
+        </Grid>
         <Button Content="Select" Click="OKButton_Click" Margin="10" Width="100"/>
     </StackPanel>
 </Window>

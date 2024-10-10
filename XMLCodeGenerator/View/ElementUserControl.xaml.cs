@@ -1,23 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Linq;
-using XMLCodeGenerator.Behaviors;
 using XMLCodeGenerator.Model.Elements;
 using XMLCodeGenerator.ViewModel;
 
@@ -40,10 +25,7 @@ namespace XMLCodeGenerator.View
         public void SetButtons()
         {
             var addButton = (Button)this.FindName("AddButton");
-            if (Element.DefaultNewChild != null)
-                addButton.ToolTip = "Add " + Element.DefaultNewChild;
-            else
-                addButton.ToolTip = "Add new element to " + Element.Name;
+            addButton.ToolTip = "Add new element to " + Element.Name;
             var deleteButton = (Button)this.FindName("DeleteButton");
             deleteButton.ToolTip = "Delete " + Element.Name;
             var replaceButton = (Button)this.FindName("ReplaceButton");
@@ -107,25 +89,19 @@ namespace XMLCodeGenerator.View
         }
         private void AddChildElement_Click(object sender, RoutedEventArgs e)
         {
-            ElementModel chosenModel = null;
-            if (Element.DefaultNewChild == null)
+            AddChildElementWindow window = new AddChildElementWindow(Element);
+            if (window.ShowDialog() == true)
             {
-                AddChildElementWindow window = new AddChildElementWindow(Element);
-                if (window.ShowDialog() == true)
-                    chosenModel = window.SelectedElement;
-            }
-            else
-            {
-                chosenModel = Element.DefaultNewChild;
-            }
-            if (chosenModel != null)
-            {
-                ElementViewModel newElement = Element.AddNewChildElement(chosenModel);
+                ElementViewModel newElement;
+                if (window.ElementPasted)
+                    newElement = Element.AddNewChildElement(null, MainWindow.Document.Clipboard);
+                else if (window.SelectedElement != null)
+                    newElement = Element.AddNewChildElement(window.SelectedElement);
+                else return;
                 SetButtons();
                 MainWindow.ScrollToElement(newElement);
             }
         }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -154,6 +130,10 @@ namespace XMLCodeGenerator.View
         private void MoveDown_Click(object sender, RoutedEventArgs e)
         {
             Element.MoveDown();
+        }
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Document.Clipboard = Element.Element.Copy();
         }
 
         private void MapToClassButton_Click(object sender, RoutedEventArgs e)

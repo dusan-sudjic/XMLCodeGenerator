@@ -23,6 +23,7 @@ namespace XMLCodeGenerator.ViewModel
         public ElementViewModel FunctionDefinitions { get; set; }
         public ElementViewModel PreProcessProcedures { get; set; }
         public ElementViewModel RewritingProcedures { get; set; }
+        public Element Clipboard { get; set; }
         public int CurrentlyDisplayedTab { get; set; }
         public string OutputPath { get; set; }
         private bool _hasUnsavedChages;
@@ -137,7 +138,6 @@ namespace XMLCodeGenerator.ViewModel
             HasUnsavedChanges = false;
             return xmlDoc;
         }
-
         public void AddCimClass()
         {
             ElementViewModel newElement = CimClasses.AddNewChildElement(ElementModelProvider.GetElementModelByName("CimClass"));

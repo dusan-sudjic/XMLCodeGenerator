@@ -64,6 +64,17 @@ namespace XMLCodeGenerator.Model.Elements
                 }
             ParentContentBlock = parentContentBlock;
         }
+        public Element Copy()
+        {
+            Element ret = new Element();
+            ret.Model = Model;
+            ret.ParentContentBlock = ParentContentBlock;
+            foreach(var attr in AttributeValues)
+                ret.AttributeValues.Add(attr);
+            foreach (var child in ChildElements)
+                ret.ChildElements.Add(child.Copy());
+            return ret;
+        }
         public override string ToString()
         {
             if (Model.Name == "Function")

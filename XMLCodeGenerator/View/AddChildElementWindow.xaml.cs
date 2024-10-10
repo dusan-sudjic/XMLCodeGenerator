@@ -22,6 +22,10 @@ namespace XMLCodeGenerator.View
     public partial class AddChildElementWindow : Window
     {
         public bool SupportsFunctions { get; set; }
+        public bool ClipboardNotEmpty { get; set; }
+        public string PasteButtonLabel { get; set; }
+        public bool ElementPasted { get; set; } = false;
+        public Element CopiedElement { get; set; }
         public ElementViewModel Element { get; set; }
         public ListBox ElementsListBox {  get; set; }
         public ListBox FunctionsListBox {  get; set; }
@@ -36,6 +40,9 @@ namespace XMLCodeGenerator.View
             DataContext = this;
             ElementsListBox = (ListBox)this.FindName("listBox");
             FunctionsListBox = (ListBox)this.FindName("functionsListBox");
+            CopiedElement = MainWindow.Document.Clipboard;
+            ClipboardNotEmpty = CopiedElement != null;
+            PasteButtonLabel = ClipboardNotEmpty ? "Paste "+CopiedElement.Name : "";
             if (!replacement)
                 SupportedChildElements = ElementModelProvider.GetModelsForNewChildElement(element.Element).Where(e=>e is not FunctionModel).ToList();
             else
@@ -48,6 +55,8 @@ namespace XMLCodeGenerator.View
             }
             if (SupportedChildElements == null)
                 tab.SelectedIndex = 1;
+            if (ClipboardNotEmpty && !SupportedChildElements.Any(m => m == CopiedElement.Model))
+                ClipboardNotEmpty = false;
             ElementsListBox.ItemsSource = SupportedChildElements;
             FunctionsListBox.ItemsSource = SupportedFunctionCalls;
             ElementsListBox.SelectedIndex = 0;
@@ -190,6 +199,12 @@ namespace XMLCodeGenerator.View
             }
             FunctionsListBox.ItemsSource = newListFunctions;
             if (FunctionsListBox.SelectedIndex == -1) FunctionsListBox.SelectedIndex = 0;
+        }
+
+        private void PasteElement_Click(object sender, RoutedEventArgs e)
+        {
+            ElementPasted = true;
+            this.DialogResult = true;
         }
     }
 }
