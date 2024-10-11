@@ -49,6 +49,10 @@ namespace XMLCodeGenerator.View
         }
         private void DeleteElement_Click(object sender, RoutedEventArgs e)
         {
+            DeleteElement();
+        }
+        private void DeleteElement()
+        {
             if (Element.Element.Name.Equals("FunctionDefinition"))
             {
                 if (!Element.FunctionCalls.Split("c")[0].Trim().Equals("0"))
@@ -130,6 +134,11 @@ namespace XMLCodeGenerator.View
         private void Copy_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.Document.Clipboard = Element.Element.Copy();
+        }
+        private void Cut_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Document.Clipboard = Element.Element.Copy();
+            DeleteElement();
         }
 
         private void MapToClassButton_Click(object sender, RoutedEventArgs e)
