@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,7 +60,7 @@ namespace XMLCodeGenerator.ViewModel
             set { }
         }
         public bool IsExtendedAndHasEditableAttributes { get => IsExtended && HasEditableAttributes; set { } }
-        private bool _isExtended;
+        private bool _isExtended = true;
         public bool IsExtended
         {
             get => _isExtended && IsExtendable;
@@ -161,7 +163,7 @@ namespace XMLCodeGenerator.ViewModel
         public bool IsFunctionDefinition { get => Name.Contains("FunctionDefinition"); set { } }
         public ElementViewModel Parent { get; init; }
 
-        private ObservableCollection<AttributeViewModel> _attributes;
+        private ObservableCollection<AttributeViewModel> _attributes = new();
         public ObservableCollection<AttributeViewModel> Attributes
         {
             get { return _attributes; }
@@ -200,7 +202,7 @@ namespace XMLCodeGenerator.ViewModel
             }
             set{}
         }
-        private ObservableCollection<ElementViewModel> _childViewModels;
+        private ObservableCollection<ElementViewModel> _childViewModels = new();
         public ObservableCollection<ElementViewModel> ChildViewModels
         {
             get => _childViewModels;
@@ -217,13 +219,8 @@ namespace XMLCodeGenerator.ViewModel
             Element = element;
             Parent = parent;
             HasRoomForNewChildElement = ElementModelProvider.GetModelsForNewChildElement(Element).Count > 0;
-            IsRemovable = XMLName.Equals("CimClass") || Name.Equals("FunctionDefinition");
             IsReplacable = ElementModelProvider.GetReplacableModelsForElement(Element) != null;
-            Attributes = new();
-            var list = ElementModelProvider.GetModelsForNewChildElement(Element);
-            IsExtended = true;
             Attributes.CollectionChanged += Attributes_CollectionChanged;
-            ChildViewModels = new();
             foreach (var child in element.ChildElements)
                 ChildViewModels.Add(new ElementViewModel(child, this));
             foreach (var attribute in element.Model.Attributes)
@@ -234,6 +231,8 @@ namespace XMLCodeGenerator.ViewModel
                 ElementModelProvider.AddFunctionCall(fun.FunctionName);
                 MainWindow.UpdateFunctionCallsCounter(fun.FunctionName);
             }
+            if (ParentContentBlock == null) return;
+            
         }
         public void RenameFirstElementInContentBlock(ContentBlockModel contentBlock)
         {
@@ -248,37 +247,43 @@ namespace XMLCodeGenerator.ViewModel
         }
         public void SetReplacable()
         {
-            IsReplacable = ElementModelProvider.GetReplacableModelsForElement(Element) != null;
+            var hasReplacableModels = ElementModelProvider.GetReplacableModelsForElement(Element) != null;
+            var copiedElementCanReplaceCurrent = Element.ParentContentBlock.ElementModels.Contains(MainWindow.Document.Clipboard.Model);
+            IsReplacable = hasReplacableModels && copiedElementCanReplaceCurrent;
             foreach (var child in ChildViewModels)
                 child.SetReplacable();
         }
-        public ElementViewModel AddNewChildElement(ElementModel model = null, Element element = null)
+        public ElementViewModel AddNewChildElement(Element element)
         {
-            List<ElementModel> list;
-            if(element!=null) element.ParentContentBlock = Element.Model.GetSuitableContentBlockForChildModel(element.Model);
-            Element newElement = element!=null ? element : new Element(model, Element.Model.GetSuitableContentBlockForChildModel(model));
+            element.ParentContentBlock = Element.Model.GetSuitableContentBlockForChildModel(element.Model);
             for (int i = 0; i < Element.ChildElements.Count; i++)
             {
-                if (Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) < Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
+                if (Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) < Element.Model.ContentBlocks.IndexOf(element.ParentContentBlock))
                     continue;
-                else if (Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) > Element.Model.ContentBlocks.IndexOf(newElement.ParentContentBlock))
-                    newElement.setFirstInContentBlock();
+                else if (Element.Model.ContentBlocks.IndexOf(Element.ChildElements[i].ParentContentBlock) > Element.Model.ContentBlocks.IndexOf(element.ParentContentBlock))
+                    element.setFirstInContentBlock();
                 else
-                    while (Element.ChildElements.Count > i && Element.ChildElements[i].ParentContentBlock == newElement.ParentContentBlock)
+                    while (Element.ChildElements.Count > i && Element.ChildElements[i].ParentContentBlock == element.ParentContentBlock)
                         i++;
-                Element.ChildElements.Insert(i, newElement);
-                ElementViewModel newElementViewModel = new ElementViewModel(newElement, this);
+                Element.ChildElements.Insert(i, element);
+                ElementViewModel newElementViewModel = new ElementViewModel(element, this);
                 ChildViewModels.Insert(i, newElementViewModel);
                 SetRemovableForChildren();
-                list = ElementModelProvider.GetModelsForNewChildElement(Element);
+                if (!newElementViewModel.IsMovableUp)
+                    newElementViewModel.setFirstInContentBlock();
+                else
+                    newElementViewModel.setNotFirstInContentBlock();
                 return newElementViewModel;
             }
-            newElement.setFirstInContentBlock();
-            Element.ChildElements.Add(newElement);
-            ElementViewModel newElementVM = new ElementViewModel(newElement, this);
+            element.setFirstInContentBlock();
+            Element.ChildElements.Add(element);
+            ElementViewModel newElementVM = new ElementViewModel(element, this);
             ChildViewModels.Add(newElementVM);
             SetRemovableForChildren();
-            list = ElementModelProvider.GetModelsForNewChildElement(Element);
+            if (!newElementVM.IsMovableUp)
+                newElementVM.setFirstInContentBlock();
+            else
+                newElementVM.setNotFirstInContentBlock();
             return newElementVM;
         }
         public void DeleteElement()
@@ -291,11 +296,10 @@ namespace XMLCodeGenerator.ViewModel
             Parent.ChildViewModels.Remove(this);
             Parent.Element.ChildElements.Remove(Element);
             Parent.SetRemovableForChildren();
-            var list = ElementModelProvider.GetModelsForNewChildElement(Element);
             RefreshMovable();
             Parent.RenameFirstElementInContentBlock(ParentContentBlock);
         }
-        public ElementViewModel ReplaceElement(ElementModel newElementModel)
+        public ElementViewModel ReplaceElement(Element newElement)
         {
             if(this.Element.Model is FunctionModel) 
             {
@@ -303,13 +307,14 @@ namespace XMLCodeGenerator.ViewModel
                 MainWindow.UpdateFunctionCallsCounter(Element.AttributeValues[0]);
             }
             int index = Parent.ChildViewModels.IndexOf(this);
-            Element newElement = new Element(newElementModel, ParentContentBlock);
+            newElement.ParentContentBlock = ParentContentBlock;
             ElementViewModel newElementViewModel = new ElementViewModel(newElement, Parent);
             Parent.ChildViewModels[index] = newElementViewModel;
             Parent.Element.ChildElements[index] = Parent.ChildViewModels[index].Element;
-            var list = ElementModelProvider.GetModelsForNewChildElement(Element);
             if (!Parent.ChildViewModels[index].IsMovableUp)
-                newElement.setFirstInContentBlock();
+                newElementViewModel.setFirstInContentBlock();
+            else
+                newElementViewModel.setNotFirstInContentBlock();
             return newElementViewModel;
         }
         public void RenameFunction(string oldName, string newName)

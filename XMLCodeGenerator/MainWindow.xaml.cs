@@ -22,7 +22,6 @@ namespace XMLCodeGenerator
     {
         public static ProvidersViewModel ProvidersViewModel { get; set; } = new();
         public static XmlPreviewUserControl xmlPreviewControl { get; set; }
-        public ICommand AddClassCommand { get; set; }
         public ICommand ExportToXmlCommand { get; set; }
         public ICommand OpenExistingFileCommand { get; set; }
         public ICommand OpenNewProjectCommand { get; set; }
@@ -40,7 +39,6 @@ namespace XMLCodeGenerator
         {
             InitializeComponent();
             Document.Setup();
-            AddClassCommand = new RelayCommand(ExecuteAddNewCimClassCommand);
             ExportToXmlCommand = new RelayCommand(ExecuteExportToXmlCommand);
             OpenExistingFileCommand = new RelayCommand(ExecuteOpenExistingFileCommand);
             OpenNewProjectCommand = new RelayCommand(ExecuteOpenNewProjectCommand);
@@ -67,7 +65,31 @@ namespace XMLCodeGenerator
         }
         public void AddNewCimClass_Click(object sender, RoutedEventArgs e)
         {
-            ExecuteAddNewCimClassCommand(null);
+            ElementUserControl.AddChildElement(Document.CimClasses);
+        }
+        public void AddNewCimFunction_Click(object sender, RoutedEventArgs e)
+        {
+            CreateNewFunctionWindow window = new CreateNewFunctionWindow();
+            if (window.ShowDialog() == true)
+            {
+                if (ElementModelProvider.FunctionNameAlreadyInUse(window.Name))
+                {
+                    MessageBox.Show("Function with name " + window.Name + " already exists.");
+                    return;
+                }
+                else
+                {
+                    Document.AddFunctionDefinition(window.Name);
+                }
+            }
+        }
+        public void AddNewPreprocessProcedure_Click(object sender, RoutedEventArgs e)
+        {
+            ElementUserControl.AddChildElement(Document.PreProcessProcedures);
+        }
+        public void AddNewRewritingProcedure_Click(object sender, RoutedEventArgs e)
+        {
+            ElementUserControl.AddChildElement(Document.RewritingProcedures);
         }
         public void OpenExistingFile(object sender, RoutedEventArgs e)
         {
@@ -81,22 +103,6 @@ namespace XMLCodeGenerator
         public static void UpdateFunctionCallsCounter(string functionName)
         {
             Document.UpdateFunctionCallsCounte(functionName);
-        }
-        private void AddNewCimFunction()
-        {
-            CreateNewFunctionWindow window = new CreateNewFunctionWindow();
-            if (window.ShowDialog() == true)
-            {
-                if (ElementModelProvider.FunctionNameAlreadyInUse(window.Name))
-                { 
-                    MessageBox.Show("Function with name " + window.Name + " already exists.");
-                    return;
-                }
-                else
-                {
-                    Document.AddFunctionDefinition(window.Name);
-                }
-            }
         }
         public static void RenameFunction(string oldFunctionName, string newFunctionName)
         {
@@ -121,17 +127,6 @@ namespace XMLCodeGenerator
                     return;
             }
             Document.Reset();
-        }
-
-        public void ExecuteAddNewCimClassCommand(object parameter)
-        {
-            switch (Document.CurrentlyDisplayedTab)
-            {
-                case 0: { Document.AddCimClass(); return; }
-                case 1: { AddNewCimFunction(); return; }
-                case 2: { Document.AddPreprocessProcedure(); return; }
-                case 3: { Document.AddRewritingProcedure(); return; }
-            }
         }
         public void ExecuteOpenExistingFileCommand(object parameter)
         {

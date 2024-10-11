@@ -138,32 +138,14 @@ namespace XMLCodeGenerator.ViewModel
             HasUnsavedChanges = false;
             return xmlDoc;
         }
-        public void AddCimClass()
-        {
-            ElementViewModel newElement = CimClasses.AddNewChildElement(ElementModelProvider.GetElementModelByName("CimClass"));
-            UpdateMovable(CimClasses);
-            MainWindow.ScrollToElement(newElement);
-        }
         public void UpdateFunctionCallsCounte(string functionName)
         {
             ElementViewModel vm = FunctionDefinitions.ChildViewModels.FirstOrDefault(c => c.Attributes[0].Value.Equals(functionName));
             vm.OnPropertyChanged("FunctionCalls");
         }
-        public void AddPreprocessProcedure()
-        {
-            ElementViewModel newElement = PreProcessProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("PreProcessProcedure"));
-            UpdateMovable(PreProcessProcedures);
-            MainWindow.ScrollToElement(newElement);
-        }
-        public void AddRewritingProcedure()
-        {
-            ElementViewModel newElement = RewritingProcedures.AddNewChildElement(ElementModelProvider.GetElementModelByName("RewritingProcedure"));
-            UpdateMovable(RewritingProcedures);
-            MainWindow.ScrollToElement(newElement);
-        }
         public void AddFunctionDefinition(string name)
         {
-            var newElement = FunctionDefinitions.AddNewChildElement(ElementModelProvider.GetElementModelByName("FunctionDefinition"));
+            var newElement = FunctionDefinitions.AddNewChildElement(new Element(ElementModelProvider.GetElementModelByName("FunctionDefinition")));
             FunctionDefinitions.ChildViewModels.Last().Attributes[0].Value = name;
             UpdateMovable(FunctionDefinitions);
             ElementModelProvider.AddNewFunctionDefinition(name);

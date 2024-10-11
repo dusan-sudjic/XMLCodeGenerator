@@ -69,6 +69,8 @@ namespace XMLCodeGenerator.Model.Elements
             Element ret = new Element();
             ret.Model = Model;
             ret.ParentContentBlock = ParentContentBlock;
+            ret.Name = Name;
+            ret.XMLName = XMLName;
             foreach(var attr in AttributeValues)
                 ret.AttributeValues.Add(attr);
             foreach (var child in ChildElements)

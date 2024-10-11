@@ -24,12 +24,12 @@ namespace XMLCodeGenerator.View
         public bool SupportsFunctions { get; set; }
         public bool ClipboardNotEmpty { get; set; }
         public string PasteButtonLabel { get; set; }
-        public bool ElementPasted { get; set; } = false;
         public Element CopiedElement { get; set; }
         public ElementViewModel Element { get; set; }
         public ListBox ElementsListBox {  get; set; }
         public ListBox FunctionsListBox {  get; set; }
-        public ElementModel SelectedElement { get; set; }
+        public ElementModel SelectedElementModel { get; set; }
+        public Element SelectedElement { get; set; }
         WatermarkTextBox searchTextBox { get; set; }
         List<ElementModel> SupportedChildElements { get; set; }
         List<FunctionModel> SupportedFunctionCalls { get; set; }
@@ -55,7 +55,7 @@ namespace XMLCodeGenerator.View
             }
             if (SupportedChildElements == null)
                 tab.SelectedIndex = 1;
-            if (ClipboardNotEmpty && !SupportedChildElements.Any(m => m == CopiedElement.Model))
+            if (ClipboardNotEmpty && !SupportedChildElements.Any(m => m == CopiedElement.Model) && !(replacement && Element.Element.Model==CopiedElement.Model))
                 ClipboardNotEmpty = false;
             ElementsListBox.ItemsSource = SupportedChildElements;
             FunctionsListBox.ItemsSource = SupportedFunctionCalls;
@@ -157,7 +157,7 @@ namespace XMLCodeGenerator.View
             {
                 if (ElementsListBox.SelectedItem != null)
                 {
-                    SelectedElement = ElementsListBox.SelectedItem as ElementModel;
+                    SelectedElement = new Element(ElementsListBox.SelectedItem as ElementModel);
                     this.DialogResult = true;
                 }
                 else
@@ -169,7 +169,7 @@ namespace XMLCodeGenerator.View
             {
                 if (FunctionsListBox.SelectedItem != null)
                 {
-                    SelectedElement = FunctionsListBox.SelectedItem as ElementModel;
+                    SelectedElement = new Element(FunctionsListBox.SelectedItem as ElementModel);
                     this.DialogResult = true;
                 }
                 else
@@ -203,7 +203,7 @@ namespace XMLCodeGenerator.View
 
         private void PasteElement_Click(object sender, RoutedEventArgs e)
         {
-            ElementPasted = true;
+            SelectedElement = MainWindow.Document.Clipboard;
             this.DialogResult = true;
         }
     }

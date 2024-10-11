@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Xml.Linq;
 using XMLCodeGenerator.Model.Elements;
 using XMLCodeGenerator.ViewModel;
 
@@ -20,21 +21,6 @@ namespace XMLCodeGenerator.View
         private void ElementUserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             itemsControlChildren.ItemsSource = Element.ChildViewModels;
-            SetButtons();
-        }
-        public void SetButtons()
-        {
-            var addButton = (Button)this.FindName("AddButton");
-            addButton.ToolTip = "Add new element to " + Element.Name;
-            var deleteButton = (Button)this.FindName("DeleteButton");
-            deleteButton.ToolTip = "Delete " + Element.Name;
-            var replaceButton = (Button)this.FindName("ReplaceButton");
-            replaceButton.ToolTip = "Replace " + Element.Name;
-            var toggleButton = (ToggleButton)this.FindName("ToggleButton");
-            toggleButton.Content = Element.IsExtended ? "-" : "+";
-            Border dock = (Border)this.FindName("Border");
-            dock.HorizontalAlignment = Element.IsExtended ? HorizontalAlignment.Stretch : HorizontalAlignment.Left;
-            dock.HorizontalAlignment = !Element.IsExtendable ? HorizontalAlignment.Stretch : dock.HorizontalAlignment;
         }
         public void ReplaceElement()
         {
@@ -42,7 +28,6 @@ namespace XMLCodeGenerator.View
             if (window.ShowDialog() == true)
             {
                 var newElement = Element.ReplaceElement(window.SelectedElement);
-                SetButtons();
                 MainWindow.ScrollToElement(newElement);
             }
         }
@@ -61,7 +46,6 @@ namespace XMLCodeGenerator.View
                 dock.HorizontalAlignment = HorizontalAlignment.Left;
                 Element.IsExtended = false;
             }
-            SetButtons();
         }
         private void DeleteElement_Click(object sender, RoutedEventArgs e)
         {
@@ -89,19 +73,31 @@ namespace XMLCodeGenerator.View
         }
         private void AddChildElement_Click(object sender, RoutedEventArgs e)
         {
-            AddChildElementWindow window = new AddChildElementWindow(Element);
+            AddChildElement(Element);   
+        }
+
+        public static void AddChildElement(ElementViewModel element)
+        {
+            var supportedChildElements = ElementModelProvider.GetModelsForNewChildElement(element.Element).Where(e => e is not FunctionModel).ToList();
+            if (!(MainWindow.Document.Clipboard != null && supportedChildElements.Any(m => m == MainWindow.Document.Clipboard.Model))
+                && supportedChildElements.Count == 1)
+            {
+                var newElement = element.AddNewChildElement(new Element(supportedChildElements[0]));
+                MainWindow.ScrollToElement(newElement);
+                return;
+            }
+
+            AddChildElementWindow window = new AddChildElementWindow(element);
             if (window.ShowDialog() == true)
             {
-                ElementViewModel newElement;
-                if (window.ElementPasted)
-                    newElement = Element.AddNewChildElement(null, MainWindow.Document.Clipboard);
-                else if (window.SelectedElement != null)
-                    newElement = Element.AddNewChildElement(window.SelectedElement);
-                else return;
-                SetButtons();
-                MainWindow.ScrollToElement(newElement);
+                if (window.SelectedElement != null)
+                {
+                    var newElement = element.AddNewChildElement(window.SelectedElement);
+                    MainWindow.ScrollToElement(newElement);
+                }
             }
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
