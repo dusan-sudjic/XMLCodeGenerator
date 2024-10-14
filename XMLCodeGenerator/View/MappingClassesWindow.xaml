@@ -20,7 +20,7 @@
             </Grid>
         </GroupBox>
         <xctk:WatermarkTextBox Width="160" x:Name="search" Watermark="Search" TextChanged="TextChanged" Margin="10 0 10 10"></xctk:WatermarkTextBox>
-        <ListBox x:Name="listBox" SelectionMode="Single" Height="220" ItemsSource="{Binding Classes}" SelectedItem="{Binding SelectedClass}"></ListBox>
+        <ListBox MouseDoubleClick="listBox_MouseDoubleClick" x:Name="listBox" SelectionMode="Single" Height="220" ItemsSource="{Binding Classes}" SelectedItem="{Binding SelectedClass}"></ListBox>
         <Button Content="Select" Click="OKButton_Click" Margin="10" Width="100"/>
     </StackPanel>
 </Window>

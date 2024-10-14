@@ -39,10 +39,12 @@ namespace XMLCodeGenerator.View
         private void UpArrow_Click(object sender, RoutedEventArgs e)
         {
             SearchDocumentViewModel.UpArrowClicked();
+            lb.ScrollIntoView(SearchDocumentViewModel.SelectedSearchResult);
         }
         private void DownArrow_Click(object sender, RoutedEventArgs e)
         {
             SearchDocumentViewModel.DownArrowClicked();
+            lb.ScrollIntoView(SearchDocumentViewModel.SelectedSearchResult);
         }
 
         private void SearchDocument_SelectionChanged(object sender, SelectionChangedEventArgs e)

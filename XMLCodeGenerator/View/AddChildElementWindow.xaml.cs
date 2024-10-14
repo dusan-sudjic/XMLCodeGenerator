@@ -91,62 +91,76 @@ namespace XMLCodeGenerator.View
                 if (ElementsListBox.SelectedIndex == -1)
                 {
                     ElementsListBox.SelectedIndex = 0;
-                    return;
                 }
-                if (ElementsListBox.SelectedIndex == ElementsListBox.Items.Count - 1)
+                else if (ElementsListBox.SelectedIndex == ElementsListBox.Items.Count - 1)
                 {
                     ElementsListBox.SelectedIndex = 0;
-                    return;
                 }
-                ElementsListBox.SelectedIndex++;
+                else
+                {
+                    ElementsListBox.SelectedIndex++;
+                }
+                ElementsListBox.ScrollIntoView(ElementsListBox.SelectedItem);
             }
             else
             {
                 if (FunctionsListBox.SelectedIndex == -1)
                 {
                     FunctionsListBox.SelectedIndex = 0;
-                    return;
                 }
-                if (FunctionsListBox.SelectedIndex == ElementsListBox.Items.Count - 1)
+                else if (FunctionsListBox.SelectedIndex == FunctionsListBox.Items.Count - 1)
                 {
                     FunctionsListBox.SelectedIndex = 0;
-                    return;
                 }
-                FunctionsListBox.SelectedIndex++;
+                else
+                {
+                    FunctionsListBox.SelectedIndex++;
+                }
+                FunctionsListBox.ScrollIntoView(FunctionsListBox.SelectedItem);
             }
         }
+
         private void OnUpArrowPressed()
         {
             if (tab.SelectedIndex == 1)
             {
                 if (FunctionsListBox.SelectedIndex == -1)
                 {
-                    FunctionsListBox.SelectedIndex = ElementsListBox.Items.Count - 1;
-                    return;
+                    FunctionsListBox.SelectedIndex = FunctionsListBox.Items.Count - 1;
                 }
-                if (FunctionsListBox.SelectedIndex == 0)
+                else if (FunctionsListBox.SelectedIndex == 0)
                 {
-                    FunctionsListBox.SelectedIndex = ElementsListBox.Items.Count - 1;
-                    return;
+                    FunctionsListBox.SelectedIndex = FunctionsListBox.Items.Count - 1;
                 }
-                FunctionsListBox.SelectedIndex--;
+                else
+                {
+                    FunctionsListBox.SelectedIndex--;
+                }
+                FunctionsListBox.ScrollIntoView(FunctionsListBox.SelectedItem);
             }
             else
             {
                 if (ElementsListBox.SelectedIndex == -1)
                 {
                     ElementsListBox.SelectedIndex = ElementsListBox.Items.Count - 1;
-                    return;
                 }
-                if (ElementsListBox.SelectedIndex == 0)
+                else if (ElementsListBox.SelectedIndex == 0)
                 {
                     ElementsListBox.SelectedIndex = ElementsListBox.Items.Count - 1;
-                    return;
                 }
-                ElementsListBox.SelectedIndex--;
+                else
+                {
+                    ElementsListBox.SelectedIndex--;
+                }
+                ElementsListBox.ScrollIntoView(ElementsListBox.SelectedItem);
             }
         }
+
         public void OKButton_Click(object sender, RoutedEventArgs e)
+        {
+            Select();
+        }
+        public void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Select();
         }

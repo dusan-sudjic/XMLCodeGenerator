@@ -122,28 +122,34 @@ namespace XMLCodeGenerator.View
             if (listBox.SelectedIndex == -1)
             {
                 listBox.SelectedIndex = 0;
+                listBox.ScrollIntoView(listBox.SelectedItem);
                 return;
             }
             if (listBox.SelectedIndex == listBox.Items.Count - 1)
             {
                 listBox.SelectedIndex = 0;
+                listBox.ScrollIntoView(listBox.SelectedItem);
                 return;
             }
             listBox.SelectedIndex++;
+            listBox.ScrollIntoView(listBox.SelectedItem);
         }
         private void OnUpArrowPressed()
         {
             if (listBox.SelectedIndex == -1)
             {
                 listBox.SelectedIndex = listBox.Items.Count - 1;
+                listBox.ScrollIntoView(listBox.SelectedItem);
                 return;
             }
             if (listBox.SelectedIndex == 0)
             {
                 listBox.SelectedIndex = listBox.Items.Count - 1;
+                listBox.ScrollIntoView(listBox.SelectedItem);
                 return;
             }
             listBox.SelectedIndex--;
+            listBox.ScrollIntoView(listBox.SelectedItem);
         }
         public void TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -155,6 +161,10 @@ namespace XMLCodeGenerator.View
             }
             listBox.ItemsSource = newList;
             if (listBox.SelectedIndex == -1) listBox.SelectedIndex = 0;
+        }
+        public void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Select();
         }
         public class ClassItem
         {
