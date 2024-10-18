@@ -53,45 +53,12 @@
                         <MenuItem Header="Open File" Click="OpenExistingFile"/>
                         <MenuItem Header="Save" Click="ExportToXml"/>
                         <Separator />
-                        <MenuItem Header="Recent Files">
-                            <MenuItem Header="File 1" />
-                            <MenuItem Header="File 2" />
-                            <MenuItem Header="File 3" />
-                        </MenuItem>
-                        <Separator />
-                        <MenuItem Header="Exit" />
+                        <MenuItem Header="Exit" Click="Exit_Click"/>
                     </MenuItem>
                     <MenuItem Height="25" Header="Import">
-                        <MenuItem Header="Cim profile" DataContext="{Binding ProviderViewModels}" Command="{Binding ImportCimProfileCommand}"/>
-                        <Separator />
-                        <MenuItem Header="Source provider" DataContext="{Binding ProviderViewModels}" Command="{Binding ImportSourceProviderCommand}" />
-                        <Separator />
-                        <MenuItem Header="Enumeration mapping" DataContext="{Binding ProviderViewModels}" Command="{Binding ImportEnumerationMappingCommand}" />
-                    </MenuItem>
-                    <MenuItem Header="Edit">
-                        <MenuItem Header="Cut" />
-                        <MenuItem Header="Copy" />
-                        <MenuItem Header="Paste" />
-                    </MenuItem>
-                    <MenuItem Header="View">
-                        <MenuItem Header="Zoom">
-                            <MenuItem Header="Zoom In" />
-                            <MenuItem Header="Zoom Out" />
-                        </MenuItem>
-                        <MenuItem Header="Tool Windows">
-                            <MenuItem Header="Solution Explorer" />
-                            <MenuItem Header="Properties" />
-                        </MenuItem>
-                    </MenuItem>
-                    <MenuItem Header="Options">
-                        <MenuItem Header="Settings">
-                            <MenuItem Header="General" />
-                            <MenuItem Header="Advanced" />
-                        </MenuItem>
-                        <MenuItem Header="Preferences">
-                            <MenuItem Header="Appearance" />
-                            <MenuItem Header="Behavior" />
-                        </MenuItem>
+                        <MenuItem Header="Cim profile" DataContext="{Binding ProvidersViewModel}" Command="{Binding ImportCimProfileCommand}"/>
+                        <MenuItem Header="Source provider" DataContext="{Binding ProvidersViewModel}" Command="{Binding ImportSourceProviderCommand}" />
+                        <MenuItem Header="Enumeration mapping" DataContext="{Binding ProvidersViewModel}" Command="{Binding ImportEnumerationMappingCommand}" />
                     </MenuItem>
                 </Menu>
                 <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Orientation="Horizontal" DataContext="{Binding ProvidersViewModel}">

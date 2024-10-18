@@ -299,5 +299,16 @@ namespace XMLCodeGenerator
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            if (Document.HasUnsavedChanges)
+            {
+                MessageBoxResult result = MessageBox.Show("You have some unsaved changes, are you sure you want to exit?", "Confirmation",
+                                                  MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                    Close();
+            }
+            else Close();
+        }
     }
 }
