@@ -299,7 +299,7 @@ namespace XMLCodeGenerator.ViewModel
             RefreshMovable();
             Parent.RenameFirstElementInContentBlock(ParentContentBlock);
         }
-        public ElementViewModel ReplaceElement(Element newElement)
+        public ElementViewModel ReplaceElement(Element newElement, bool keepingContent = false)
         {
             if(this.Element.Model is FunctionModel) 
             {
@@ -308,6 +308,8 @@ namespace XMLCodeGenerator.ViewModel
             }
             int index = Parent.ChildViewModels.IndexOf(this);
             newElement.ParentContentBlock = ParentContentBlock;
+            if (keepingContent)
+                newElement.AddChildren(Element.ChildElements);
             ElementViewModel newElementViewModel = new ElementViewModel(newElement, Parent);
             Parent.ChildViewModels[index] = newElementViewModel;
             Parent.Element.ChildElements[index] = Parent.ChildViewModels[index].Element;

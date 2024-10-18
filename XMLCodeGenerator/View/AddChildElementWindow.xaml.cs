@@ -21,6 +21,7 @@ namespace XMLCodeGenerator.View
 {
     public partial class AddChildElementWindow : Window
     {
+        public bool ElementPastedFromClipboard { get; set; } = false;
         public bool SupportsFunctions { get; set; }
         public bool ClipboardNotEmpty { get; set; }
         public string PasteButtonLabel { get; set; }
@@ -218,6 +219,7 @@ namespace XMLCodeGenerator.View
         private void PasteElement_Click(object sender, RoutedEventArgs e)
         {
             SelectedElement = MainWindow.Document.Clipboard;
+            ElementPastedFromClipboard = true;
             this.DialogResult = true;
         }
     }

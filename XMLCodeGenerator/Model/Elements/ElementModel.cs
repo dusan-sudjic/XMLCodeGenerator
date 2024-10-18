@@ -66,6 +66,39 @@ namespace XMLCodeGenerator.Model.Elements
             foreach (ContentBlockModel contentBlock in ContentBlocks)
                 contentBlock.SetContent(elementTypes);
         }
+        public bool SupportsContentOfElement(Element element)
+        {
+            int currentBlockIndex = 0;
+            if (!ContentBlocks.Any()) return false;
+            var currentContentBlock = ContentBlocks[currentBlockIndex];
+            int elementsIncludedInCurrentContentBlock = 0;
+            foreach(var child in element.ChildElements)
+            {
+                if (currentContentBlock.ElementModels.Contains(child.Model))
+                {
+                    elementsIncludedInCurrentContentBlock++;
+                }
+                else
+                {
+                    if(elementsIncludedInCurrentContentBlock<currentContentBlock.MinSize 
+                        || (currentContentBlock.MaxSize==-1 || elementsIncludedInCurrentContentBlock > currentContentBlock.MaxSize))
+                        return false;
+                    currentBlockIndex++;
+                    currentContentBlock = ContentBlocks[currentBlockIndex];
+                    elementsIncludedInCurrentContentBlock = 0;
+                    if (currentContentBlock == null) return false;
+                }
+            }
+            if (elementsIncludedInCurrentContentBlock < currentContentBlock.MinSize
+                        || (currentContentBlock.MaxSize != -1 && elementsIncludedInCurrentContentBlock > currentContentBlock.MaxSize))
+                return false;
+            for(int i = currentBlockIndex+1; i < ContentBlocks.Count; i++)
+            {
+                if (ContentBlocks[i].MinSize != 0)
+                    return false;
+            }
+            return true;
+        }
         public override string ToString()
         {
             return Name;

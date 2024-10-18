@@ -77,6 +77,13 @@ namespace XMLCodeGenerator.Model.Elements
                 ret.ChildElements.Add(child.Copy());
             return ret;
         }
+        public void AddChildren(List<Element> children)
+        {
+            ChildElements.Clear();
+            foreach (var c in children)
+                c.ParentContentBlock = Model.GetSuitableContentBlockForChildModel(c.Model);
+            ChildElements.AddRange(children);
+        }
         public override string ToString()
         {
             if (Model.Name == "Function")

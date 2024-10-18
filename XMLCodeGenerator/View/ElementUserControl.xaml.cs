@@ -24,28 +24,23 @@ namespace XMLCodeGenerator.View
         }
         public void ReplaceElement()
         {
+            bool keepingContent = false;
             AddChildElementWindow window = new AddChildElementWindow(Element, true);
             if (window.ShowDialog() == true)
             {
-                var newElement = Element.ReplaceElement(window.SelectedElement);
+                if (!window.ElementPastedFromClipboard && window.SelectedElement.Model.SupportsContentOfElement(Element.Element))
+                {
+                    MessageBoxResult result = MessageBox.Show("Do you want to keep the content of "+Element.Name+"?", "Confirmation",
+                                                  MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    keepingContent = result == MessageBoxResult.Yes;
+                }
+                var newElement = Element.ReplaceElement(window.SelectedElement, keepingContent);
                 MainWindow.ScrollToElement(newElement);
             }
         }
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            Border dock = (Border)this.FindName("Border");
-            if (!Element.IsExtended)
-            {
-                ((ToggleButton)sender).Content = "-";
-                dock.HorizontalAlignment = HorizontalAlignment.Stretch;
-                Element.IsExtended = true;
-            }
-            else
-            {
-                ((ToggleButton)sender).Content = "+";
-                dock.HorizontalAlignment = HorizontalAlignment.Left;
-                Element.IsExtended = false;
-            }
+            Element.IsExtended = !Element.IsExtended;
         }
         private void DeleteElement_Click(object sender, RoutedEventArgs e)
         {
