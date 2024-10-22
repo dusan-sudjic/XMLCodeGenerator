@@ -91,6 +91,18 @@ namespace XMLCodeGenerator
         {
             ElementUserControl.AddChildElement(Document.RewritingProcedures);
         }
+        public void UnloadSourceProvider_Click(object sender, RoutedEventArgs e)
+        {
+            ProvidersViewModel.UnloadSourceProvider();
+        }
+        public void UnloadCimProfile_Click(object sender, RoutedEventArgs e)
+        {
+            ProvidersViewModel.UnloadCimProfile();
+        }
+        public void UnloadEnumerationMapping_Click(object sender, RoutedEventArgs e)
+        {
+            ProvidersViewModel.UnloadEnumerationMapping();
+        }
         public void OpenExistingFile(object sender, RoutedEventArgs e)
         {
             ExecuteOpenExistingFileCommand(null);

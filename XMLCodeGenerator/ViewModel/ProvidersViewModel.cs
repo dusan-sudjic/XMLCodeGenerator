@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,7 +54,7 @@ namespace XMLCodeGenerator.ViewModel
             }
         }
         private bool _isSourceProviderImported;
-        public bool isSourceProviderImported
+        public bool IsSourceProviderImported
         {
             get => _isSourceProviderImported;
             set
@@ -68,7 +69,7 @@ namespace XMLCodeGenerator.ViewModel
         public ProvidersViewModel() 
         {
             IsCimProfileImported = false;
-            isSourceProviderImported = false;
+            IsSourceProviderImported = false;
             IsEnumerationMappingImported = false;
 
             ImportCimProfileCommand = new RelayCommand(ImportCimProfile);
@@ -95,7 +96,19 @@ namespace XMLCodeGenerator.ViewModel
             }
             catch (Exception ex)
             {
+                if (String.IsNullOrEmpty(CimProfilePath))
+                    return;
                 MessageBox.Show($"Error loading classes from file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        public void UnloadCimProfile()
+        {
+            MessageBoxResult result = MessageBox.Show("Do you want to unload cim profile?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                CimProfilePath = null;
+                CimProfileClasses.Clear();
+                IsCimProfileImported = false;
             }
         }
 
@@ -135,14 +148,26 @@ namespace XMLCodeGenerator.ViewModel
                             }
                         SourceProviderEntities.Add(entity);
                     }
-                    isSourceProviderImported = true;
+                    IsSourceProviderImported = true;
                 }
                 else
                     MessageBox.Show("No <Entity> elements found in the XML document.");
             }
             catch (Exception ex)
             {
+                if (String.IsNullOrEmpty(SourceProviderPath))
+                    return;
                 MessageBox.Show($"Error loading or processing XML file: {ex.Message}");
+            }
+        }
+        public void UnloadSourceProvider()
+        {
+            MessageBoxResult result = MessageBox.Show("Do you want to unload source provider?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                SourceProviderPath = null;
+                SourceProviderEntities.Clear();
+                IsSourceProviderImported = false;
             }
         }
 
@@ -170,7 +195,19 @@ namespace XMLCodeGenerator.ViewModel
             }
             catch (Exception ex)
             {
+                if (String.IsNullOrEmpty(EnumerationMappingPath))
+                    return;
                 MessageBox.Show($"Error loading or processing XML file: {ex.Message}");
+            }
+        }
+        public void UnloadEnumerationMapping()
+        {
+            MessageBoxResult result = MessageBox.Show("Do you want to unload enumeration mapping?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                EnumerationMappingPath = null;
+                Enumerations.Clear();
+                IsEnumerationMappingImported = false;
             }
         }
         private void ImportEnumerationMapping(object parameter)
