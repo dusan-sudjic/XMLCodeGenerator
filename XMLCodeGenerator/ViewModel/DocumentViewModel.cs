@@ -70,10 +70,18 @@ namespace XMLCodeGenerator.ViewModel
         public void LoadFromXmlDocument(string path)
         {
             Reset();
-            OutputPath = path;
             XmlDocument document = new XmlDocument();
             document.Load(path);
-            XmlNodeList functionDefinitionNodes = document.SelectNodes("//FunctionDefinitions/Function");
+            XmlNodeList rootNodes = document.SelectNodes("/ElementMapping/*");
+            if(rootNodes==null || rootNodes.Count == 0)
+            {
+                MessageBox.Show("Invalid document");
+                return;
+            }
+            XmlNodeList functionDefinitionNodes = document.SelectNodes("ElementMapping/FunctionDefinitions/Function");
+            XmlNodeList cimClassNodes = document.SelectNodes("ElementMapping/CimClasses/CimClass");
+            XmlNodeList preprocessProcedures = document.SelectNodes("ElementMapping/PreProcessProcedures/PreProcessProcedure");
+            XmlNodeList rewritingProcedures = document.SelectNodes("ElementMapping/RewritingProcedures/RewritingProcedure");
             if (functionDefinitionNodes != null)
             {
                 foreach (XmlElement functionDefinitionNode in functionDefinitionNodes)
@@ -86,7 +94,6 @@ namespace XMLCodeGenerator.ViewModel
                     FunctionDefinitions.SetRemovableForChildren();
                 }
             }
-            XmlNodeList cimClassNodes = document.SelectNodes("//CimClass");
             if (cimClassNodes != null)
             {
                 foreach (XmlElement cimClassNode in cimClassNodes)
@@ -98,7 +105,6 @@ namespace XMLCodeGenerator.ViewModel
                     CimClasses.SetRemovableForChildren();
                 }
             }
-            XmlNodeList preprocessProcedures = document.SelectNodes("//PreProcessProcedures/PreProcessProcedure");
             if (preprocessProcedures != null)
             {
                 foreach (XmlElement procedure in preprocessProcedures)
@@ -110,7 +116,6 @@ namespace XMLCodeGenerator.ViewModel
                     PreProcessProcedures.SetRemovableForChildren();
                 }
             }
-            XmlNodeList rewritingProcedures = document.SelectNodes("//RewritingProcedures/RewritingProcedure");
             if (rewritingProcedures != null)
             {
                 foreach (XmlElement procedure in rewritingProcedures)
@@ -122,6 +127,7 @@ namespace XMLCodeGenerator.ViewModel
                     RewritingProcedures.SetRemovableForChildren();
                 }
             }
+            OutputPath = path;
             HasUnsavedChanges = false;
         }
         public XmlDocument ExportToXmlDocument()

@@ -83,6 +83,11 @@ namespace XMLCodeGenerator.ViewModel
                 CimProfileClasses.Clear();
                 Assembly assembly = Assembly.LoadFrom(CimProfilePath);
                 Type[] types = assembly.GetTypes();
+                if (types.Length == 0)
+                {
+                    MessageBox.Show("0 classes found.");
+                    return;
+                }
                 foreach (Type type in types)
                     if (!type.IsAbstract)
                         CimProfileClasses.Add(new CimProfileClass(type));
@@ -101,16 +106,33 @@ namespace XMLCodeGenerator.ViewModel
             {
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(SourceProviderPath);
-                XmlNodeList entitityNodes = xmlDoc.SelectNodes("//Entity");
+                XmlNodeList entityNodes = xmlDoc.SelectNodes("//Entity");
 
-                if (entitityNodes != null)
+                if (entityNodes != null && entityNodes.Count>0)
                 {
-                    foreach (XmlNode node in entitityNodes)
+                    foreach (XmlNode node in entityNodes)
                     {
                         string name = node.SelectSingleNode("Name")?.InnerText.Trim();
+                        if (name == null)
+                        {
+                            MessageBox.Show("Invalid entity found in source provider. Try with other file.");
+                            SourceProviderEntities.Clear();
+                            return;
+                        }
                         SourceProviderEntity entity = new SourceProviderEntity(name);
-                        foreach (XmlNode attributeNode in node.SelectNodes("EntityAttribute"))
-                            entity.Attributes.Add(new SourceProviderAttribute(attributeNode.Attributes["Name"]?.Value));
+                        var attributeNodes = node.SelectNodes("EntityAttribute");
+                        if (attributeNodes != null)
+                            foreach (XmlNode attributeNode in attributeNodes)
+                            {
+                                var attributeName = attributeNode.Attributes["Name"]?.Value;
+                                if(attributeName == null)
+                                {
+                                    MessageBox.Show("Invalid entity attribute found in source provider. Try with other file.");
+                                    SourceProviderEntities.Clear();
+                                    return;
+                                }
+                                entity.Attributes.Add(new SourceProviderAttribute(attributeName));
+                            }
                         SourceProviderEntities.Add(entity);
                     }
                     isSourceProviderImported = true;
