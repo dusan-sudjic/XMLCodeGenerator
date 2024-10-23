@@ -92,7 +92,17 @@
                     <TabItem Header="Cim Classes">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" x:Name="CimClassesScroll" Padding="6">
                             <StackPanel>
-                                <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new CIM class element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="140" Click="AddNewCimClass_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add CIM Class</Button>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new CIM class element" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="140" Click="AddNewCimClass_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add CIM Class</Button>
+                                    <Button Grid.Column="2" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Collapse all" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="White" Width="90" Click="CollapseAll_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Right">Collapse all</Button>
+                                    <Button Grid.Column="3" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Expand all" Margin="0 5 5 5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="White" Width="90" Click="ExpandAll_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Right">Expand all</Button>
+                                </Grid>
                                 <StackPanel x:Name="Stack" Margin="0 0 0 60">
                                     <ItemsControl x:Name="itemsControlClasses" ItemsSource="{Binding Document.CimClasses.ChildViewModels}">
                                         <ItemsControl.ItemTemplate>
@@ -108,7 +118,17 @@
                     <TabItem Header="Function Definitions">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" x:Name="CimFunctionsScroll" Padding="6">
                             <StackPanel>
-                                <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new CIM function element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="140" Click="AddNewCimFunction_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add CIM Function</Button>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new function definition element" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="160" Click="AddNewCimFunction_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add Function Definition</Button>
+                                    <Button Grid.Column="2" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Collapse all" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="White" Width="90" Click="CollapseAll_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Right">Collapse all</Button>
+                                    <Button Grid.Column="3" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Expand all" Margin="0 5 5 5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="White" Width="90" Click="ExpandAll_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Right">Expand all</Button>
+                                </Grid>
                                 <StackPanel x:Name="FunctionsStack" Margin="0 0 0 60">
                                     <ItemsControl x:Name="itemsControlFunctions" ItemsSource="{Binding Document.FunctionDefinitions.ChildViewModels}">
                                         <ItemsControl.ItemTemplate>
@@ -124,7 +144,17 @@
                     <TabItem Header="PreProcess procedures">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" x:Name="PreprocessScroll" Padding="6">
                             <StackPanel>
-                                <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new preprocess procedure element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="180" Click="AddNewPreprocessProcedure_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add Preprocess Procedure</Button>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new preprocess procedure element" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="180" Click="AddNewPreprocessProcedure_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add Preprocess Procedure</Button>
+                                    <Button Grid.Column="2" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Collapse all" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="White" Width="90" Click="CollapseAll_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Right">Collapse all</Button>
+                                    <Button Grid.Column="3" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Expand all" Margin="0 5 5 5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="White" Width="90" Click="ExpandAll_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Right">Expand all</Button>
+                                </Grid>
                                 <StackPanel x:Name="PreprocessStack" Margin="0 0 0 60">
                                     <ItemsControl x:Name="itemsControlPreprocess" ItemsSource="{Binding Document.PreProcessProcedures.ChildViewModels}">
                                         <ItemsControl.ItemTemplate>
@@ -140,7 +170,17 @@
                     <TabItem Header="Rewriting procedures">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" x:Name="RewritingScroll" Padding="6">
                             <StackPanel>
-                                <Button Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new rewriting procedure element (Shortcut CTRL+A)" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="180" Click="AddNewRewritingProcedure_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add Rewriting Procedure</Button>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Add new rewriting procedure element" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="LightCyan" Width="180" Click="AddNewRewritingProcedure_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Left">➕ Add Rewriting Procedure</Button>
+                                    <Button Grid.Column="2" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Collapse all" Margin="5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="White" Width="90" Click="CollapseAll_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Right">Collapse all</Button>
+                                    <Button Grid.Column="3" Height="25" Style="{StaticResource RoundedButton}" ToolTip="Expand all" Margin="0 5 5 5" BorderBrush="CornflowerBlue" Cursor="Hand" Background="White" Width="90" Click="ExpandAll_Click" BorderThickness="2" Foreground="CornflowerBlue" HorizontalAlignment="Right">Expand all</Button>
+                                </Grid>
                                 <StackPanel x:Name="RewritingStack" Margin="0 0 0 60">
                                     <ItemsControl x:Name="itemsControlRewriting" ItemsSource="{Binding Document.RewritingProcedures.ChildViewModels}">
                                         <ItemsControl.ItemTemplate>

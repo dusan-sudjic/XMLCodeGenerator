@@ -322,5 +322,25 @@ namespace XMLCodeGenerator
             }
             else Close();
         }
+        private void CollapseAll_Click(object sender, RoutedEventArgs e)
+        {
+            switch (Document.CurrentlyDisplayedTab)
+            {
+                case 0: { Document.CimClasses.CollapseAll(); return; }
+                case 1: { Document.FunctionDefinitions.CollapseAll(); return; }
+                case 2: { Document.PreProcessProcedures.CollapseAll(); return; }
+                case 3: { Document.RewritingProcedures.CollapseAll(); return; }
+            }
+        }
+        private void ExpandAll_Click(object sender, RoutedEventArgs e)
+        {
+            switch (Document.CurrentlyDisplayedTab)
+            {
+                case 0: { Document.CimClasses.ExpandAll(); return; }
+                case 1: { Document.FunctionDefinitions.ExpandAll(); return; }
+                case 2: { Document.PreProcessProcedures.ExpandAll(); return; }
+                case 3: { Document.RewritingProcedures.ExpandAll(); return; }
+            }
+        }
     }
 }

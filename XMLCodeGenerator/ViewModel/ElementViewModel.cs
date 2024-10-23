@@ -352,6 +352,18 @@ namespace XMLCodeGenerator.ViewModel
             }
             RefreshMovable();
         }
+        public void CollapseAll()
+        {
+            IsExtended = !IsNotWrapperElement || false;
+            foreach(var child in ChildViewModels)
+                child.CollapseAll();
+        }
+        public void ExpandAll()
+        {
+            IsExtended = true;
+            foreach(var child in ChildViewModels)
+                child.ExpandAll();
+        }
         public void setFirstInContentBlock()
         {
             Element.setFirstInContentBlock();
