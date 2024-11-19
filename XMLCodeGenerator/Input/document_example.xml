@@ -1,0 +1,118 @@
+<ElementMapping xmlns:fn="http://example.com/fn" xmlns:cs="http://example.com/cs" xmlns:op="http://example.com/op" xmlns:cc="http://example.com/cc" xmlns:cp="http://example.com/cp" xmlns:cr="http://example.com/cr" xmlns:op1="http://example.com/op1" xmlns:op2="http://example.com/op2">
+  <PreProcessProcedures>
+    <PreProcessProcedure ClassName="Procedura" AssemblyName="Foldermmmmmmmmmmmmmmmmmmmmmmmmmmmmmm" AdditionalFolderStructure="cvunbuvuyk.ytcsdvyufiyoju.oiubvydvfihoj.ubdkwnfffffrxa,mrr">
+      <Parameters>
+        <Parameter Name="Parameter1">129</Parameter>
+        <Parameter Name="Parameter2">399</Parameter>
+      </Parameters>
+    </PreProcessProcedure>
+    <PreProcessProcedure ClassName="Procedura2" AssemblyName="Foldermmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm" AdditionalFolderStructure="jjj" />
+  </PreProcessProcedures>
+  <RewritingProcedures>
+    <RewritingProcedure ClassName="Procedura3" AssemblyName="Folder" AdditionalFolderStructure="jjj">
+      <Parameters>
+        <Parameter Name="sto">100</Parameter>
+        <Parameter Name="drugi">120</Parameter>
+      </Parameters>
+    </RewritingProcedure>
+  </RewritingProcedures>
+  <FunctionDefinitions>
+    <Function Name="LogAndSkipInstanceTypeCreation">
+      <fn:Log LogLevel="DebugLog">
+        <op:Constant Value="Instance type creation was skipped due to a compilation error." />
+      </fn:Log>
+      <fn:BreakInstanceTypeCreation />
+    </Function>
+    <Function Name="Funkcija1">
+      <fn:SwitchCase>
+        <cs:InputParameter>
+          <op:GetSourceTable EntityName="connection" />
+        </cs:InputParameter>
+        <cs:Case Name="12">
+          <op:Constant Value="120" />
+        </cs:Case>
+        <cs:Default>
+          <op:Constant Value="30" />
+        </cs:Default>
+      </fn:SwitchCase>
+    </Function>
+  </FunctionDefinitions>
+  <CimClasses>
+    <CimClass name="IdentifiedObject" source="SourceId, ElectricConfig, PoweredSystem">
+      <cc:CimProperty name="Description" mandatory="true">
+        <cp:ProjectCustomOperator Name="GetEnumStringValue" AssemblyName="Procedures">
+          <op:Constant Value="20" />
+        </cp:ProjectCustomOperator>
+      </cc:CimProperty>
+      <cc:CimRelationship name="Relationship" mandatory="true">
+        <cr:GetValue EntityName="Entity" />
+      </cc:CimRelationship>
+    </CimClass>
+    <CimClass name="PowerSystemResource" source="PowerStation, Client, ElectricConfig, PoweredSystem">
+      <cc:CimProperty name="MRID" mandatory="true">
+        <cp:If>
+          <cs:OrConditions InverseLogic="true">
+            <op:StringIsNullOrEmpty InverseLogic="false">
+              <op1:StringSplit Separator="/" Index="5">
+                <op2:GetValue SourceName="CostPerUnit" />
+              </op1:StringSplit>
+            </op:StringIsNullOrEmpty>
+            <op:IsNull>
+              <op1:GetValue SourceName="Atribut4" />
+            </op:IsNull>
+          </cs:OrConditions>
+          <cs:Function Name="LogAndSkipInstanceTypeCreation" />
+        </cp:If>
+        <cp:ElseIf>
+          <cs:Condition InverseLogic="false">
+            <op:IsNotNull>
+              <op1:GetValue EntityName="Atribut394" />
+            </op:IsNotNull>
+          </cs:Condition>
+          <cs:Constant Value="20" />
+        </cp:ElseIf>
+      </cc:CimProperty>
+      <cc:CimRelationship name="Underground" mandatory="true">
+        <cr:If>
+          <cs:Condition InverseLogic="true">
+            <op:IsNotNull>
+              <op1:GetValue EntityName="ElectricConfig" />
+            </op:IsNotNull>
+          </cs:Condition>
+          <cs:Function Name="LogAndSkipInstanceTypeCreation" />
+        </cr:If>
+        <cr:Else>
+          <cs:GetValue EntityName="Client" />
+        </cr:Else>
+      </cc:CimRelationship>
+      <cc:CimProperty name="PSRType" mandatory="true">
+        <cp:SwitchCase>
+          <cs:InputParameter>
+            <op:Constant Value="10" />
+          </cs:InputParameter>
+          <cs:Case Name="10">
+            <op:Constant Value="10" />
+          </cs:Case>
+          <cs:Case Name="25">
+            <op:If>
+              <cs:Condition InverseLogic="false">
+                <op:IsFalse>
+                  <op1:Addition>
+                    <op2:Function Name="Funkcija1" />
+                    <op2:Constant Value="" />
+                  </op1:Addition>
+                </op:IsFalse>
+              </cs:Condition>
+              <cs:Constant Value="null" />
+            </op:If>
+          </cs:Case>
+          <cs:Default>
+            <op:Substring StartIndex="4">
+              <op1:Constant Value="const" />
+            </op:Substring>
+          </cs:Default>
+        </cp:SwitchCase>
+      </cc:CimProperty>
+    </CimClass>
+  </CimClasses>
+</ElementMapping>

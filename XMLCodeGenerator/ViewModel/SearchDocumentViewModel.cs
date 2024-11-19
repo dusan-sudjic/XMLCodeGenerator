@@ -81,7 +81,7 @@ namespace XMLCodeGenerator.ViewModel
                 }
             }
         }
-        public ObservableCollection<ElementViewModel> SearchResults { get; set; } = new();
+        public ObservableCollection<ElementViewModel> SearchResults { get; set; } = new ObservableCollection<ElementViewModel>();
         public DocumentViewModel Document { get => MainWindow.Document; }
         public SearchDocumentViewModel()
         {
@@ -90,7 +90,7 @@ namespace XMLCodeGenerator.ViewModel
         public void SearchDocument(int selectedTabIndex)
         {
             resetDocumentSearch();
-            List<ElementViewModel> results = new();
+            List<ElementViewModel> results = new List<ElementViewModel>();
             if (SearchParameter.Trim().Equals(",") || SearchParameter.Trim().Length == 0 || SearchParameter.Trim().Equals("[") || SearchParameter.Trim().Equals("]"))
                 return;
             string[] parameters = SearchParameter.Split(' ');

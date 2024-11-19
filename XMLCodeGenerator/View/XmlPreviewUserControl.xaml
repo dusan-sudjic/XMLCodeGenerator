@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XMLCodeGenerator.View" 
-             xmlns:xmlstack="clr-namespace:System.Xml;assembly=netstandard"
+             xmlns:xmlstack="clr-namespace:System.Xml;assembly=System.Xml"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>

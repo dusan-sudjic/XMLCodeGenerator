@@ -9,7 +9,7 @@ namespace XMLCodeGenerator.Model.Elements
 {
     public static class XmlElementFactory
     {
-        public static Dictionary<string, string> Namespaces = new();
+        public static Dictionary<string, string> Namespaces = new Dictionary<string, string>();
         public static XmlElement GetXmlElement(Element element, XmlDocument doc = null, XmlNode parentXmlElement = null, string parentName = null)
         {
             if (element.XMLName.Equals("val"))

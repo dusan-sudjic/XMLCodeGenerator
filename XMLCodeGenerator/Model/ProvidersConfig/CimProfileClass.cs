@@ -15,7 +15,7 @@ namespace XMLCodeGenerator.Model.ProvidersConfig
         {
             InheritedClass = type.BaseType.Name;
             Namespace = type.Namespace;
-            Properties = new();
+            Properties = new List<CimProfileProperty>();
             foreach (var property in type.GetProperties())
                 if(!property.Name.EndsWith("HasValue") && !(property.Name.StartsWith("Is") && property.Name.EndsWith("Mandatory")) && !property.Name.EndsWith("Prefix"))
                     Properties.Add(new CimProfileProperty(property.Name, property.PropertyType.Name, Name));

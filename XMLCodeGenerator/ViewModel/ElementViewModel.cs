@@ -4,8 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -161,9 +159,9 @@ namespace XMLCodeGenerator.ViewModel
             set { }
         }
         public bool IsFunctionDefinition { get => Name.Contains("FunctionDefinition"); set { } }
-        public ElementViewModel Parent { get; init; }
+        public ElementViewModel Parent { get; set; }
 
-        private ObservableCollection<AttributeViewModel> _attributes = new();
+        private ObservableCollection<AttributeViewModel> _attributes = new ObservableCollection<AttributeViewModel>();
         public ObservableCollection<AttributeViewModel> Attributes
         {
             get { return _attributes; }
@@ -202,7 +200,7 @@ namespace XMLCodeGenerator.ViewModel
             }
             set{}
         }
-        private ObservableCollection<ElementViewModel> _childViewModels = new();
+        private ObservableCollection<ElementViewModel> _childViewModels = new ObservableCollection<ElementViewModel>();
         public ObservableCollection<ElementViewModel> ChildViewModels
         {
             get => _childViewModels;
@@ -248,8 +246,8 @@ namespace XMLCodeGenerator.ViewModel
         public void SetReplacable()
         {
             var hasReplacableModels = ElementModelProvider.GetReplacableModelsForElement(Element) != null;
-            var copiedElementCanReplaceCurrent = Element.ParentContentBlock.ElementModels.Contains(MainWindow.Document.Clipboard.Model);
-            IsReplacable = hasReplacableModels && copiedElementCanReplaceCurrent;
+            var copiedElementCanReplaceCurrent = MainWindow.Document.Clipboard != null && Element.ParentContentBlock.ElementModels.Contains(MainWindow.Document.Clipboard.Model);
+            IsReplacable = hasReplacableModels || copiedElementCanReplaceCurrent;
             foreach (var child in ChildViewModels)
                 child.SetReplacable();
         }

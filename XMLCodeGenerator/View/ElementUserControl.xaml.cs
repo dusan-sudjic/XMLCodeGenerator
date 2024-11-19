@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,7 +51,7 @@ namespace XMLCodeGenerator.View
         {
             if (Element.Element.Name.Equals("FunctionDefinition"))
             {
-                if (!Element.FunctionCalls.Split("c")[0].Trim().Equals("0"))
+                if (!Element.FunctionCalls.Split('c')[0].Trim().Equals("0"))
                 {
                     MessageBox.Show("This function cant be deleted because its still used in document.");
                     return;
@@ -77,7 +78,7 @@ namespace XMLCodeGenerator.View
 
         public static void AddChildElement(ElementViewModel element)
         {
-            var supportedChildElements = ElementModelProvider.GetModelsForNewChildElement(element.Element).Where(e => e is not FunctionModel).ToList();
+            var supportedChildElements = ElementModelProvider.GetModelsForNewChildElement(element.Element).Where(e => !(e is FunctionModel)).ToList();
             if (!(MainWindow.Document.Clipboard != null && supportedChildElements.Any(m => m == MainWindow.Document.Clipboard.Model))
                 && supportedChildElements.Count == 1)
             {
@@ -141,7 +142,7 @@ namespace XMLCodeGenerator.View
             string mappingInterface = getMappingInterface();
             if (mappingInterface != null)
             {
-                MappingClassesWindow window = new(Element, mappingInterface);
+                MappingClassesWindow window = new MappingClassesWindow(Element, mappingInterface);
                 window.ShowDialog();
             }
         }

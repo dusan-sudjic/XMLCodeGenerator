@@ -16,8 +16,9 @@ namespace XMLCodeGenerator.Model.Elements
             CallsCounter = 0;
             Name = "FunctionCall";
             XMLName = "Function";
-            ContentBlocks = new();
-            Attributes = [AttributeModel.CreateAttributeModelForFunctionCall(functionName)];
+            ContentBlocks = new List<ContentBlockModel>();
+            Attributes = new List<AttributeModel>();
+            Attributes.Add(AttributeModel.CreateAttributeModelForFunctionCall(functionName));
         }
         public override ContentBlockModel GetSuitableContentBlockForChildModel(ElementModel model)
         {

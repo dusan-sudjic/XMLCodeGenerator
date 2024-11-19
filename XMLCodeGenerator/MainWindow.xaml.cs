@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,12 +23,12 @@ namespace XMLCodeGenerator
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public static ProvidersViewModel ProvidersViewModel { get; set; } = new();
+        public static ProvidersViewModel ProvidersViewModel { get; set; } = new ProvidersViewModel();
         public static XmlPreviewUserControl xmlPreviewControl { get; set; }
         public ICommand ExportToXmlCommand { get; set; }
         public ICommand OpenExistingFileCommand { get; set; }
         public ICommand OpenNewProjectCommand { get; set; }
-        public static DocumentViewModel Document { get; set; } = new();
+        public static DocumentViewModel Document { get; set; } = new DocumentViewModel();
         public static ItemsControl ItemsControlClasses { get; set; }
         public static ItemsControl ItemsControlFunctions { get; set; }
         public static ItemsControl ItemsControlPreprocess { get; set; }

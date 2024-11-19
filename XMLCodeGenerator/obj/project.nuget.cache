@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "paPSaFQon7iU5RiaNbrGPLjF92p/fbBNEWOe9Pqk4MOrL5ObWmXhAEUZBlHikxtV4QgSjIcP1nvzI6EaKaxdhQ==",
+  "dgSpecHash": "r5s5q9cGVwnKk2nQc+aYpeQ/90miKm0ves5bSPQja5EYN1OmeMGQmXLDIBTUjD06JSwInTH+UO+bRAkq0R/1WA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Dušan\\Desktop\\diplomski\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj",
+  "projectFilePath": "C:\\Users\\Dušan\\Desktop\\elementMaping48\\XMLCodeGenerator\\XMLCodeGenerator\\XMLCodeGenerator.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dušan\\.nuget\\packages\\dotnetkit.wpf.autocompletecombobox\\1.6.0\\dotnetkit.wpf.autocompletecombobox.1.6.0.nupkg.sha512",
     "C:\\Users\\Dušan\\.nuget\\packages\\extended.wpf.toolkit\\4.6.1\\extended.wpf.toolkit.4.6.1.nupkg.sha512",

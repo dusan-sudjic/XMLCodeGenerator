@@ -10,7 +10,7 @@ namespace XMLCodeGenerator.Model.ProvidersConfig
     {
         public SourceProviderEntity(string name) : base(name.Trim())
         {
-            Attributes = new();
+            Attributes = new List<SourceProviderAttribute>();
         }
         public List<SourceProviderAttribute> Attributes { get; set; }
     }

@@ -79,7 +79,7 @@ namespace XMLCodeGenerator.ViewModel
         public string Required { get => IsRequired ? "*" : ""; set { } }
         public bool IsTrue { get { return Value == "true"; } set { Value = value ? "true" : "false"; } }
         public AttributeModel Attribute { get; set; }
-        public ElementViewModel Element { get; init; }
+        public ElementViewModel Element { get; set; }
         public AttributeViewModel(AttributeModel attribute, string value, ElementViewModel element)
         {
             Attribute = attribute;

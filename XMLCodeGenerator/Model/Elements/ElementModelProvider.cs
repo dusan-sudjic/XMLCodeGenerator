@@ -1,26 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 using System.Xml;
-using System.Xml.Linq;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace XMLCodeGenerator.Model.Elements
 {
     public static class ElementModelProvider
     {
         private static string path = "../../../Input/model.xml";
-        private static List<ElementModel> ElementModels = new();
-        private static Dictionary<string, FunctionModel> FunctionModels = new();
+        private static List<ElementModel> ElementModels = new List<ElementModel>();
+        private static Dictionary<string, FunctionModel> FunctionModels = new Dictionary<string, FunctionModel>();
         public static void LoadModel()
         {
             try
             {
-                Dictionary<string, List<ElementModel>> elementTypes = new();
+                Dictionary<string, List<ElementModel>> elementTypes = new Dictionary<string, List<ElementModel>>();
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(path);
 
@@ -135,7 +129,7 @@ namespace XMLCodeGenerator.Model.Elements
         }
         public static List<ElementModel> GetModelsForNewChildElement(Element element)
         {
-            List<ElementModel> ret = new();
+            List<ElementModel> ret = new List<ElementModel>();
             foreach (var block in element.Model.ContentBlocks)
             {
                 if (block.MaxSize == -1)

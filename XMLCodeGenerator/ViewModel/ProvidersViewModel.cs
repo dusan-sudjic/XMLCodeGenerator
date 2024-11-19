@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,9 +20,9 @@ namespace XMLCodeGenerator.ViewModel
         public ICommand ImportCimProfileCommand { get; set; }
         public ICommand ImportSourceProviderCommand { get; set; }
 
-        public List<CimProfileClass> CimProfileClasses = new();
-        public List<SourceProviderEntity> SourceProviderEntities = new();
-        public List<ProviderElement> Enumerations = new();
+        public List<CimProfileClass> CimProfileClasses = new List<CimProfileClass>();
+        public List<SourceProviderEntity> SourceProviderEntities = new List<SourceProviderEntity>();
+        public List<ProviderElement> Enumerations = new List<ProviderElement>();
         public string CimProfilePath = "";
         public string SourceProviderPath = "";
         public string EnumerationMappingPath = "";
@@ -240,7 +239,7 @@ namespace XMLCodeGenerator.ViewModel
             CimProfilePath = openFileDialog.FileName;
             LoadCimProfile();
         }
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

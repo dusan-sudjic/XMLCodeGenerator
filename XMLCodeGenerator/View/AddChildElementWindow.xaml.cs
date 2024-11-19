@@ -45,9 +45,9 @@ namespace XMLCodeGenerator.View
             ClipboardNotEmpty = CopiedElement != null;
             PasteButtonLabel = ClipboardNotEmpty ? "Paste "+CopiedElement.Name : "";
             if (!replacement)
-                SupportedChildElements = ElementModelProvider.GetModelsForNewChildElement(element.Element).Where(e=>e is not FunctionModel).ToList();
+                SupportedChildElements = ElementModelProvider.GetModelsForNewChildElement(element.Element).Where(e=>!(e is FunctionModel)).ToList();
             else
-                SupportedChildElements = ElementModelProvider.GetReplacableModelsForElement(element.Element).Where(e => e is not FunctionModel).OrderBy(x=>x.Name).ToList();
+                SupportedChildElements = ElementModelProvider.GetReplacableModelsForElement(element.Element).Where(e => !(e is FunctionModel)).OrderBy(x=>x.Name).ToList();
             if (SupportedChildElements.Where(e => e.Name.Equals("Function")).ToList().Count > 0)
             {
                 SupportsFunctions = true;
@@ -196,7 +196,7 @@ namespace XMLCodeGenerator.View
 
         public void TextChanged(object sender, TextChangedEventArgs e)
         {
-            List<ElementModel> newList = new();
+            List<ElementModel> newList = new List<ElementModel>();
             foreach(var s in SupportedChildElements)
             {
                 if (s.Name.ToLower().Contains(searchTextBox.Text.ToLower()))
@@ -206,7 +206,7 @@ namespace XMLCodeGenerator.View
             if (ElementsListBox.SelectedIndex == -1) ElementsListBox.SelectedIndex = 0;
 
             if (!SupportsFunctions) return;
-            List<ElementModel> newListFunctions = new();
+            List<ElementModel> newListFunctions = new List<ElementModel>();
             foreach (var s in SupportedFunctionCalls)
             {
                 if (s.ToString().ToLower().Contains(searchTextBox.Text.ToLower()))

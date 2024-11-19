@@ -23,8 +23,8 @@ namespace XMLCodeGenerator.View
 {
     public partial class ProviderWindow : Window, INotifyPropertyChanged
     {
-        public List<ProviderElement> ProviderElements { get; set; } = new();
-        public ObservableCollection<SourceProviderEntity> Entities { get; set; } = new();
+        public List<ProviderElement> ProviderElements { get; set; } = new List<ProviderElement>();
+        public ObservableCollection<SourceProviderEntity> Entities { get; set; } = new ObservableCollection<SourceProviderEntity>();
         private bool _multiSelect;
         public bool MultiSelect { 
             get => _multiSelect;
@@ -148,7 +148,8 @@ namespace XMLCodeGenerator.View
         private void selectDefaultValues()
         {
             listBox.SelectedIndex = MultiSelect ? -1 : 0;
-            string[] values = MultiSelect ? Attribute.Value.Split(',').Select(v=> v.Trim()).ToArray() : [Attribute.Value];
+            string[] defaultValues = { Attribute.Value };
+            string[] values = MultiSelect ? Attribute.Value.Split(',').Select(v=> v.Trim()).ToArray() : defaultValues;
             foreach(var choice in listBox.Items)
             {
                 ProviderElement pe = choice as ProviderElement;
@@ -255,7 +256,7 @@ namespace XMLCodeGenerator.View
         {
             string parameter = ChoosingAttribute ? SearchText.ToLower() : search.Text.ToLower();
             List<ProviderElement> newList = ProviderElements
-                .Where(s=> parameter.Split(" ").All(p=>s.ToString().ToLower().Contains(p)))
+                .Where(s=> parameter.Split(' ').All(p=>s.ToString().ToLower().Contains(p)))
                 .ToList();
             listBox.ItemsSource = newList;
             selectDefaultValues();

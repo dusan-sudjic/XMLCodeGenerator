@@ -20,8 +20,8 @@ namespace XMLCodeGenerator.Model.Elements
         protected ElementModel() { }
         public ElementModel(XmlNode node)
         {
-            ContentBlocks = new();
-            Attributes = new();
+            ContentBlocks = new List<ContentBlockModel>();
+            Attributes = new List<AttributeModel>();
             Name = node.Attributes["Name"]?.InnerText;
             XMLName = node.Attributes["XMLName"]?.InnerText;
             NamespacePrefix = node.Attributes["NamespacePrefix"]?.InnerText;

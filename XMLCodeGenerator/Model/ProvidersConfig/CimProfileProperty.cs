@@ -8,8 +8,8 @@ namespace XMLCodeGenerator.Model.ProvidersConfig
 {
     public class CimProfileProperty : ProviderElement
     {
-        private string ClassName { get; init; }
-        private string Type { get; init; }
+        private string ClassName { get; set; }
+        private string Type { get; set; }
         public CimProfileProperty(string name, string type, string className) : base(name)
         {
             Type = type;

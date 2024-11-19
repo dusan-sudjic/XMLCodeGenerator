@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -16,7 +18,7 @@ namespace XMLCodeGenerator.View
         public string MappingInterface { get; set; }
         public ElementViewModel Element { get; set; }
         public ClassItem SelectedClass { get; set; }
-        public ObservableCollection<ClassItem> Classes { get; set; } = new();
+        public ObservableCollection<ClassItem> Classes { get; set; } = new ObservableCollection<ClassItem>();
         public MappingClassesWindow(ElementViewModel element, string mappingInterface)
         {
             InitializeComponent();
@@ -153,7 +155,7 @@ namespace XMLCodeGenerator.View
         }
         public void TextChanged(object sender, TextChangedEventArgs e)
         {
-            List<ClassItem> newList = new();
+            List<ClassItem> newList = new List<ClassItem>();
             foreach (var s in Classes)
             {
                 if (s.ClassName.ToLower().Contains(search.Text.ToLower()))

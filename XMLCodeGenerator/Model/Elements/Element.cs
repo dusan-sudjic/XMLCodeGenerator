@@ -1,12 +1,6 @@
-﻿using System;
+﻿
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Xml;
-using System.Xml.Linq;
 
 namespace XMLCodeGenerator.Model.Elements
 {
@@ -53,7 +47,7 @@ namespace XMLCodeGenerator.Model.Elements
             foreach (var attr in Model.Attributes)
                 AttributeValues.Add(attr.DefaultValue);
 
-            ChildElements = new();
+            ChildElements = new List<Element>();
             foreach (var block in Model.ContentBlocks)
                 for (int i = 0; i < block.MinSize; i++)
                 {
